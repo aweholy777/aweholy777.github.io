@@ -1,0 +1,33 @@
+{{/* layouts/_default/list.html (修改後 - 只顯示 _index.md 內容) */}}
+
+{{ define "main" }}
+  <main class="main list" role="main">
+    {{/* 顯示區段標題 (來自 _index.md 的 front matter) */}}
+    {{- with .Title }}
+    <header class="main__header">
+      <h1 class="main__title">{{ . }}</h1>
+    </header>
+    {{- end }}
+
+    {{/* 只顯示 _index.md 文件本身的內容 */}}
+    {{- with .Content }}
+    <div class="content main__content clearfix">
+      {{ . }}
+    </div>
+    {{- end }}
+
+    {{/* --- 以下區塊被註解掉或刪除 --- */}}
+    {{/*
+    {{- range .Paginator.Pages }}
+        {{- .Render "summary" }}
+    {{- end }}
+    */}}
+    {{/* --- 頁面列表結束 --- */}}
+
+  </main>
+
+  {{/* --- 分頁控件也被註解掉或刪除 --- */}}
+  {{/* {{ partial "pagination.html" . }} */}}
+  {{/* --- 分頁結束 --- */}}
+
+{{ end }}

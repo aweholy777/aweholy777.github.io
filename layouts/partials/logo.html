@@ -1,0 +1,32 @@
+{{- /* layouts/partials/logo.html (修改後 - 使用 absURL) */ -}}
+
+{{- /* 從 hugo.toml 獲取 Logo 相關參數 */ -}}
+{{- $logoImage := .Site.Params.logo.image -}}
+{{- $logoTitle := .Site.Params.logo.title | default .Site.Title -}}
+{{- $logoWidth := .Site.Params.logo.width -}}
+{{- $logoHeight := .Site.Params.logo.height -}}
+{{- $logoAlt := .Site.Params.logo.alt | default (printf "%s logo" $logoTitle) -}}
+{{- $logoSubtitle := .Site.Params.logo.subtitle | default .Site.Params.subtitle -}}
+
+{{- if or $logoImage $logoTitle }}
+<div class="logo">
+    <a class="logo__link" href="{{ "" | relLangURL }}" title="{{ $logoAlt | default $logoTitle }}" rel="home">
+
+        {{- if $logoImage }}
+            {{- /* 如果設定了圖片，只顯示圖片 */ -}}
+            <div class="logo__item logo__imagebox">
+                {{/* --- 修改點：將 relURL 改為 absURL --- */}}
+                <img class="logo__img" src="{{ $logoImage | absURL }}" alt="{{ $logoAlt }}" {{ with $logoWidth }}width="{{ . }}"{{ end }} {{ with $logoHeight }}height="{{ . }}"{{ end }}>
+                {{/* --- 修改結束 --- */}}
+            </div>
+        {{- else if $logoTitle }}
+            {{- /* 否則，如果設定了標題，顯示文字標題 */ -}}
+            <div class="logo__item logo__text">
+                <div class="logo__title">{{ $logoTitle }}</div>
+                {{- with $logoSubtitle }}<div class="logo__tagline">{{ . }}</div>{{ end -}}
+            </div>
+        {{- end }}
+
+    </a>
+</div>
+{{- end }}

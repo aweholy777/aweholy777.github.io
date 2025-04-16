@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聖經閱讀進度記錄</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .container { width: 60%; text-align: left; margin-left: 40px; padding-left: 40px; }
+        .section-title { font-size: 26px; font-weight: bold; margin-top: 40px; margin-bottom: 20px; }
+        .book { margin-bottom: 20px; font-size: 22px; font-weight: bold; }
+        .old-testament { color: green; }
+        .new-testament { color: red; }
+        .chapter { display: inline-block; margin: 5px; padding: 8px; cursor: pointer; border: 1px solid #ccc; font-size: 18px; }
+        .read { background-color: lightgreen; }
+        .progress { font-size: 20px; margin-top: 30px; font-weight: bold; }
+        .book strong { font-size: 24px; }
+        button { margin-top: 10px; padding: 10px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📖 聖經進度記錄</h1>
+        <div id="app"></div>
+    </div>
+
+    <script type="text/babel" data-presets="react">
+        const oldTestamentBooks = {
+            "創世記": 50, "出埃及記": 40, "利未記": 27, "民數記": 36, "申命記": 34,
+            "約書亞記": 24, "士師記": 21, "路得記": 4, "撒母耳記上": 31, "撒母耳記下": 24,
+            "列王紀上": 22, "列王紀下": 25, "歷代志上": 29, "歷代志下": 36,
+            "以斯拉記": 10, "尼希米記": 13, "以斯帖記": 10, "約伯記": 42,
+            "詩篇": 150, "箴言": 31, "傳道書": 12, "雅歌": 8,
+            "以賽亞書": 66, "耶利米書": 52, "耶利米哀歌": 5, "以西結書": 48, "但以理書": 12,
+            "何西阿書": 14, "約珥書": 3, "阿摩司書": 9, "俄巴底亞書": 1, "約拿書": 4,
+            "彌迦書": 7, "那鴻書": 3, "哈巴谷書": 3, "西番雅書": 3, "哈該書": 2,
+            "撒迦利亞書": 14, "瑪拉基書": 4
+        };
+
+        const newTestamentBooks = {
+            "馬太福音": 28, "馬可福音": 16, "路加福音": 24, "約翰福音": 21,
+            "使徒行傳": 28, "羅馬書": 16, "哥林多前書": 16, "哥林多後書": 13,
+            "加拉太書": 6, "以弗所書": 6, "腓立比書": 4, "歌羅西書": 4,
+            "帖撒羅尼迦前書": 5, "帖撒羅尼迦後書": 3, "提摩太前書": 6, "提摩太後書": 4,
+            "提多書": 3, "腓利門書": 1, "希伯來書": 13, "雅各書": 5,
+            "彼得前書": 5, "彼得後書": 3, "約翰一書": 5, "約翰二書": 1,
+            "約翰三書": 1, "猶大書": 1, "啟示錄": 22
+        };
+
+        function BibleTracker() {
+            const [readChapters, setReadChapters] = React.useState(() => {
+                return JSON.parse(localStorage.getItem("bibleProgress")) || {};
+            });
+
+            const toggleChapter = (book, chapter) => {
+                const newReadChapters = { ...readChapters };
+                newReadChapters[book] = newReadChapters[book] || [];
+                newReadChapters[book][chapter] = !newReadChapters[book][chapter];
+                setReadChapters(newReadChapters);
+                localStorage.setItem("bibleProgress", JSON.stringify(newReadChapters));
+            };
+
+            const downloadBackup = () => {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(readChapters));
+                const downloadAnchorNode = document.createElement("a");
+                downloadAnchorNode.setAttribute("href", dataStr);
+                downloadAnchorNode.setAttribute("download", "bible_progress_backup.json");
+                document.body.appendChild(downloadAnchorNode);
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+            };
+
+            const uploadBackup = (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const uploadedData = JSON.parse(e.target.result);
+                        setReadChapters(uploadedData);
+                        localStorage.setItem("bibleProgress", JSON.stringify(uploadedData));
+                        alert("備份已成功上傳並恢復！");
+                    } catch (error) {
+                        alert("上傳的文件格式錯誤！");
+                    }
+                };
+                reader.readAsText(file);
+            };
+
+            return (
+                <div>
+                    <button onClick={downloadBackup}>下載進度備份</button>
+                    <input type="file" accept=".json" onChange={uploadBackup} />
+                    <div className="section-title">舊約聖經</div>
+                    {Object.entries(oldTestamentBooks).map(([book, chapters]) => (
+                        <div key={book} className="book old-testament">
+                            <strong>{book}</strong>
+                            <div>
+                                {[...Array(chapters).keys()].map(i => (
+                                    <span key={i} className={`chapter ${readChapters[book] && readChapters[book][i] ? "read" : ""}`}
+                                          onClick={() => toggleChapter(book, i)}>
+                                        {i + 1}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                    <div className="section-title">新約聖經</div>
+                    {Object.entries(newTestamentBooks).map(([book, chapters]) => (
+                        <div key={book} className="book new-testament">
+                            <strong>{book}</strong>
+                            <div>
+                                {[...Array(chapters).keys()].map(i => (
+                                    <span key={i} className={`chapter ${readChapters[book] && readChapters[book][i] ? "read" : ""}`}
+                                          onClick={() => toggleChapter(book, i)}>
+                                        {i + 1}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById("app")).render(<BibleTracker />);
+    </script>
+</body>
+</html>

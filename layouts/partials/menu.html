@@ -1,0 +1,56 @@
+{{- /* layouts/partials/menu.html (修正並重新測試子菜單邏輯) */ -}}
+{{- if .Site.Menus.main }}
+<nav class="menu">
+    {{- /* 移動版菜單按鈕 (保持不變) */ -}}
+    <button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+        <span class="menu__btn-title" tabindex="-1">{{ T "menu_label" | default "Menu" }}</span>
+    </button>
+
+    {{- /* 主菜單列表 ul */ -}}
+    <ul class="menu__list">
+        {{- $currentNode := . }} {{- /* 保存當前頁面上下文 */ -}}
+
+        {{- /* 遍歷主菜單頂級項目 */ -}}
+        {{- range .Site.Menus.main }}
+            {{- if .Name }} {{- /* 確保有名字 */ -}}
+
+                {{- /* 開始渲染 li (包含 active 和 has-children class) */ -}}
+                <li class="menu__item{{ if or ($currentNode.IsMenuCurrent "main" .) ($currentNode.HasMenuCurrent "main" .) }} menu__item--active{{ end }}{{ if .HasChildren }} menu__item--has-children{{ end }}">
+
+                    {{- /* 父菜單連結 a (包含 ARIA 和下拉指示符) */ -}}
+                    <a class="menu__link" href="{{ .URL | relLangURL }}" {{ if .HasChildren }}aria-haspopup="true" aria-expanded="false"{{ end }}>
+                        {{ .Pre }}
+                        <span class="menu__text">{{ .Name }}</span>
+                        {{- if .HasChildren }} <span class="menu__dropdown-indicator"> ▾</span>{{ end -}}
+                        {{ .Post }}
+                    </a>
+
+                    {{- /* --- 渲染子菜單 (嘗試這個版本) --- */ -}}
+                    {{- if .HasChildren }}
+                    <ul class="sub-menu"> {{/* <<<--- 只使用 'sub-menu' class 試試看 */}}
+                        {{- range .Children }}
+                            {{- if .Name }}
+                            {{/* 子菜單項 li (也加上 active 判斷) */}}
+                            <li class="menu__item{{ if $currentNode.IsMenuCurrent "main" . }} menu__item--active{{ end }}">
+                                <a class="menu__link" href="{{ .URL | relLangURL }}">
+                                    {{ .Pre }}
+                                    <span class="menu__text">{{ .Name }}</span>
+                                    {{ .Post }}
+                                </a>
+                                {{/* 如果需要第三層，可以在這裡遞迴呼叫模板或再加一層 if/range */}}
+                            </li>
+                            {{- end -}} {{- /* end if child .Name */ -}}
+                        {{- end -}} {{- /* end range .Children */ -}}
+                    </ul>
+                    {{- end }} {{- /* end if .HasChildren */ -}}
+                    {{- /* --- 子菜單渲染結束 --- */ -}}
+
+                </li> {{- /* 結束 li */ -}}
+
+            {{- end }} {{- /* 結束 if .Name */ -}}
+        {{- end }} {{- /* 結束 range .Site.Menus.main */ -}}
+    </ul>
+</nav>
+{{ else -}}
+<div class="divider"></div>
+{{- end }} {{- /* 結束 if .Site.Menus.main */ -}}

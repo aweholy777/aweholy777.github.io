@@ -1,0 +1,134 @@
+# hugo.toml (根據新需求和圖片生成)
+
+baseURL = "https://aweholy777.github.io/" # !! 請務必更新為您最終的 GitHub Pages 網址 !!
+languageCode = "zh-TW"
+title = "城市宣培中心" # 根據圖片更新標題
+theme = "mainroad"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+      
+# 分頁設定
+[pagination]
+  pagerSize = 100
+
+# 主題參數
+[params]
+  description = "城市宣培中心 | City Ministration Training Center" # 可選：添加描述
+  # sidebar = true # 可選配置
+  # widgets = ["search", "recent", "categories", "taglist"] # 可選配置
+  customCSS = ["css/custom.css", "css/custom-font.css"] # 載入自訂 CSS
+  customJS = ["js/custom.js"]
+
+
+  # --- 新增或修改 Logo 設定 ---
+  [params.logo]
+    image = "/images/logo.png"  # <-- 重要：指向您放在 static 文件夾下的圖片路徑
+                               #     (如果放在 static/logo.png, 就寫 "/logo.png")
+                               #     開頭的 / 代表相對於 static 目錄
+    width = 360                # 可選：設定 Logo 圖片寬度 (單位 px)，請自行調整
+    height = 120               # 可選：設定 Logo 圖片高度 (單位 px)，請自行調整
+    alt = "城市宣培中心 Logo"   # 可選但建議：圖片的替代文字，用於 SEO 和可訪問性
+  # --- Logo 設定結束 ---
+
+
+
+
+# --- 導覽列定義 (根據圖片和新需求) ---
+
+[[menu.main]]
+  name = "首頁"
+  pageRef = "/" # 指向網站根目錄
+  weight = 10
+
+[[menu.main]]
+  identifier = "daily-qt" # 父菜單標識符
+  name = "每日QT"
+  pageRef = "daily-qt"  # 假設連結到 content/daily-qt/_index.md
+  weight = 20
+
+  # 每日QT 子菜單 (根據圖片)
+  [[menu.main]]
+    name = "QT 2025"
+    pageRef = "daily-qt/2025" # 假設連結到 content/daily-qt/2025/_index.md
+    weight = 21
+    parent = "daily-qt"
+  [[menu.main]]
+    name = "QT 2024"
+    pageRef = "daily-qt/2024" # 假設連結到 content/daily-qt/2024/_index.md
+    weight = 22
+    parent = "daily-qt"
+  [[menu.main]]
+    name = "QT 2023"
+    pageRef = "daily-qt/2023" # 假設連結到 content/daily-qt/2023/_index.md
+    weight = 23
+    parent = "daily-qt"
+  [[menu.main]]
+    name = "QT 2022"
+    pageRef = "daily-qt/2022" # 假設連結到 content/daily-qt/2022/_index.md
+    weight = 24
+    parent = "daily-qt"
+  [[menu.main]]
+    name = "QT 2021"
+    pageRef = "daily-qt/2021" # 假設連結到 content/daily-qt/2021/_index.md
+    weight = 25
+    parent = "daily-qt"
+  [[menu.main]]
+    name = "QT 2020"
+    pageRef = "daily-qt/2020" # 假設連結到 content/daily-qt/2020/_index.md
+    weight = 26
+    parent = "daily-qt"
+  [[menu.main]]
+    name = "QT 2019"
+    pageRef = "daily-qt/2019" # 假設連結到 content/daily-qt/2019/_index.md
+    weight = 27
+    parent = "daily-qt"
+  [[menu.main]]
+    name = "QT 2018"
+    pageRef = "daily-qt/2018" # 假設連結到 content/daily-qt/2018/_index.md
+    weight = 28
+    parent = "daily-qt"
+  [[menu.main]]
+    name = "QT 2016-2017"
+    pageRef = "daily-qt/2016-2017" # 假設連結到 content/daily-qt/2016-2017/_index.md
+    weight = 29
+    parent = "daily-qt"  
+  [[menu.main]]
+    name = "聖經進度記錄表"
+    url = "/daily-qt/bibletracker.html"  # 直接指定連結
+    weight = 31
+    parent = "daily-qt"
+
+[[menu.main]]
+  identifier = "testimonies" # 父菜單標識符
+  name = "雲彩見證"
+  pageRef = "testimonies" # 假設連結到 content/testimonies/_index.md
+  weight = 40
+
+  # 雲彩見證 子菜單 (根據文字描述)
+  [[menu.main]]
+    name = "生活故事"
+    pageRef = "testimonies/life-stories" # 假設連結到 content/testimonies/life-stories.md 或 _index.md
+    weight = 41
+    parent = "testimonies"
+  [[menu.main]]
+    name = "受洗見證"
+    pageRef = "testimonies/baptism" # 假設連結到 content/testimonies/baptism.md 或 _index.md
+    weight = 42
+    parent = "testimonies"
+
+[[menu.main]]
+  name = "一對一門訓"
+  pageRef = "one-on-one" # 假設連結到 content/one-on-one.md
+  weight = 50
+
+[[menu.main]]
+  name = "深淵響應"
+  pageRef = "deep-calls-deep" # 假設連結到 content/deep-calls-deep.md
+  weight = 60
+
+# --- 結束菜單定義 ---
+

@@ -1,0 +1,429 @@
+/* static/css/custom.css - 優化整合版 (已解決衝突) */
+
+
+/* --- 將 Header 中的 Logo 置中 --- */
+
+/* 選擇 Logo 的容器元素 (請用開發者工具確認 class 是否為 .logo) */
+.logo {
+    text-align: center; /* 讓容器內的 inline 或 inline-block 元素置中 */
+    display: block;     /* 確保 .logo 容器是塊級元素，佔據整行寬度 */
+    padding-top: 10px;    /* 可選：調整 Logo 上方留白 */
+    padding-bottom: 10px; /* 可選：調整 Logo 下方留白 */
+    width: 100%;        /* 確保容器寬度足以讓內容置中 */
+}
+
+/* Logo 通常是一個連結包著圖片，確保連結是 inline-block */
+.logo__link {
+     display: inline-block; /* 這樣 text-align: center 才能對它生效 */
+}
+
+/* 通常 Logo 圖片的寬高由 hugo.toml 或 logo.html 控制，這裡一般不用再設 */
+.logo__img {
+     /* max-width: 100%; */ /* 確保圖片不超過容器 */
+     /* height: auto; */
+}
+
+
+
+/* --- 全局設定：移除所有超連結底線 --- */
+a,
+a:visited,
+a:hover,
+a:active,
+a:focus {
+    text-decoration: none !important; /* 關鍵！移除文字裝飾（底線），使用 !important 提高優先級 */
+}
+
+
+/* --- 1. 全站基礎 & 排版優化 --- */
+
+body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif; /* 優先使用 Noto Sans TC, 保留 YaHei */
+    font-size: 1.3em;          /* 基礎字體大小 */
+    font-weight: 400;         /* 標準字重 */
+    line-height: 1.8em;         /* 全局行高 */
+    color: #333333;           /* 主要文字顏色 (深灰) */
+    background-color: #f7f7f7; /* 頁面背景色 (淺灰) */
+    /* (可選) 字體渲染優化 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+  /* --- 增加字間距 --- */
+  /* 使用 em 單位，會隨字體大小縮放，0.05em 是個不錯的起點 */
+    letter-spacing: 0.06em;
+    margin: 0;
+}
+
+/* 標題樣式 */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;       /* 標題加粗 */
+    line-height: 1.4;       /* 標題行距 */
+    color: #111111;         /* 標題顏色 (更深) */
+    margin-top: 1.5em;      /* 標題上方間距 */
+    margin-bottom: 0.8em;   /* 標題下方間距 */
+    /* 繼承 body 的 font-family */
+}
+/* 各級標題大小 */
+h1 { font-size: 2rem; }     /* 約 36px */
+h2 { font-size: 1.6rem; }   /* 約 29px */
+h3 { font-size: 1.3rem; }   /* 約 23px */
+h4 { font-size: 1.1rem; }   /* 約 20px */
+h5, h6 { font-size: 1rem; } /* 約 18px (同 body) */
+
+/* 段落 */
+p {
+    margin-top: 0;
+    margin-bottom: 1.3em;     /* 段落下間距 */
+}
+
+/* 列表 */
+ul, ol {
+    margin-top: 0;
+    margin-bottom: 1.3em;
+    padding-left: 1.8em;   /* 列表內縮 */
+}
+li {
+    margin-bottom: 0.5em;   /* 列表項間距 */
+}
+
+/* 連結樣式 (內文區域) */
+/* 使用多個可能的內容 class 增加兼容性 */
+.content a,
+.post__content a,
+.main__content a,
+.article-content a,
+.entry-content a {
+    color: #f87148; /* 連結顏色 (橘紅) */
+    text-decoration: none;
+    transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+.content a:hover,
+.post__content a:hover,
+.main__content a:hover,
+.article-content a:hover,
+.entry-content a:hover {
+    color: #e04e21; /* 懸停時深一點 */
+    text-decoration: underline; /* 懸停時加底線 */
+}
+
+/* 區塊引言 */
+blockquote {
+    background: #f0f7f0;
+    border-left: 5px solid #91c788;
+    margin: 1.5em 0 1.5em 1em;
+    padding: 1em 1.5em;
+    color: #444;
+    line-height: 2.1em;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* 表格 */
+table {
+    width: 100%;
+    margin-bottom: 1.5rem; /* 加大下邊距 */
+    border-spacing: 0;
+    border-collapse: collapse;
+    border: 1px solid #e0e0e0; /* 外框 */
+    font-size: 0.95em;
+}
+td, th {
+    padding: 10px 14px; /* 加大內邊距 */
+    border: 1px solid #e0e0e0; /* 內部格線 */
+    text-align: left;
+    line-height: 1.5;
+}
+th {
+    font-weight: 700;
+    background-color: #f9f9f9;
+}
+
+
+/* --- 2. 文章內容區域 & 特殊樣式 --- */
+
+/* 文章內容寬度 */
+.content,
+.post__content,
+.main__content,
+.article-content,
+.entry-content {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    width: auto;
+    padding: 0 15px;
+}
+/* 避免在大螢幕時寬度依然受限於 80% (如果容器本身有寬度限制) */
+@media screen and (min-width: 830px) {
+  .content,
+  .post__content,
+  .main__content,
+  .article-content,
+  .entry-content {
+      padding: 0;
+  }
+}
+
+/* 文章內圖片置中 */
+.content img,
+.post__content img,
+.main__content img,
+.article-content img,
+.entry-content img {
+    display: block;
+    margin: 2.5em auto; /* 加大圖片上下間距 */
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+/* QT 文章特殊標題樣式 (段落第一個 strong) */
+.content p > strong:first-child,
+.post__content p > strong:first-child,
+.main__content p > strong:first-child {
+    font-size: 1.1em;
+    display: block;
+    color: #f87148; /* 紅色 */
+    margin-top: 2.5em;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+    line-height: 1.4;
+}
+/* 讓 strong 後面的文字看起來像換行 */
+.content p > strong:first-child::after,
+.post__content p > strong:first-child::after,
+.main__content p > strong:first-child::after {
+    content: "\A"; /* CSS 換行符 */
+    white-space: pre; /* 保留換行符 */
+}
+
+/* --- 3. 導覽列 (Menu) 樣式 --- */
+
+/* 導覽列容器 */
+.menu {
+    background-color: #444444; /* <--- 修改這裡改變【導覽列背景色】 */
+    /* border-bottom: 5px solid #f87148; */ /* 之前的橘紅底線，預設移除，可取消註釋恢復 */
+    border-bottom: 1px solid #555555; /* 或者改成深灰色細線 */
+}
+
+/* 桌面版菜單 (> 767px) */
+@media screen and (min-width: 767px) {
+    /* A. 主菜單項目列表置中 */
+    .menu__list {
+        display: flex;
+        justify-content: center;
+        align-items: stretch; /* 讓項目高度一致 */
+        padding-left: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    /* B. 主菜單項目 */
+    .menu__item {
+        position: relative; /* 為了子菜單定位 */
+        margin: 0; /* 移除項目間的外邊距，改用 padding 控制間距感 */
+    }
+
+    /* C. 主菜單連結 */
+    .menu__list > .menu__item > .menu__link {
+        font-size: 1.0em; /* 主菜單文字大小 */
+        color: #ffffff;
+        text-decoration: none;
+        padding: 14px 20px; /* 增加垂直和水平 padding */
+        display: block;
+        transition: background-color 0.2s ease-out, color 0.2s ease-out;
+        border-bottom: 3px solid transparent; /* 為下方的懸停/活躍邊框預留空間 */
+    }
+
+    /* D. 子菜單 ul (動畫基礎) */
+    /* 假設您在 menu.html 中為子菜單 ul 加了 sub-menu class */
+    .menu__item > ul.sub-menu {
+        position: absolute;
+        left: 0;
+        top: 100%;
+        background-color: #444444; /* <--- 修改這裡改變【下拉選單背景色】 */
+        border: 1px solid #555555;
+        min-width: 180px;
+        z-index: 1000;
+        padding: 0px 0;
+        margin: 0;
+        list-style: none;
+        border-radius: 0 0 4px 4px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+
+        /* 動畫相關：初始狀態 */
+        display: block;
+        visibility: hidden;
+        opacity: 0;
+        transform: translateY(-10px); /* 向上偏移，準備滑下 */
+        transition: opacity 0.25s ease-out, transform 0.25s ease-out, visibility 0s linear 0.25s;
+    }
+
+    /* E. 滑鼠懸停父項時，顯示子菜單 */
+    .menu__item:hover > ul.sub-menu {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0); /* 滑回原位 */
+        transition-delay: 0s;
+    }
+
+    /* F. 子菜單連結樣式 */
+    .menu__item ul.sub-menu .menu__link {
+        display: block;
+        padding: 10px 18px; /* 子菜單 padding */
+        font-size: 0.95em; /* 子菜單字體稍小 */
+        text-align: left;
+        color: #dddddd; /* 子菜單文字顏色 (淺灰) */
+        font-weight: normal;
+        text-transform: none;
+        white-space: nowrap;
+        transition: background-color 0.2s ease-out, color 0.2s ease-out;
+        text-decoration: none;
+        border-bottom: none; /* 子菜單不需要底部邊框 */
+    }
+
+    /* G. 子菜單連結懸停效果 */
+    .menu__item ul.sub-menu .menu__link:hover {
+        background-color: #f87148; /* 背景高亮 */
+        color: #ffffff;           /* 文字變白 */
+    }
+
+    /* H. 當前活躍菜單項樣式 (主菜單) - 改用底部線條指示 */
+    .menu__item--active > .menu__link {
+        background-color: transparent; /* 移除活躍背景色 */
+        color: #ffffff; /* 文字保持白色 */
+        border-bottom-color: #f87148; /* 顯示底部高亮線 */
+    }
+    /* 確保活躍項在 hover 時樣式不變 (或者也可以設置成與普通 hover 一樣) */
+    .menu__item--active > .menu__link:hover {
+        background-color: rgba(255, 255, 255, 0.1); /* 懸停時給一點點背景區分 */
+        border-bottom-color: #f87148; /* 保持底部線 */
+        color: #ffffff;
+    }
+
+
+} /* End @media screen and (min-width: 767px) */
+
+
+/* --- 4. 隱藏文章標題 (如果需要) --- */
+/* 取消下面這段的註釋來隱藏文章標題 */
+/*
+.post__title,
+.entry-title {
+    display: none;
+}
+*/
+
+/* --- 將單篇文章頁面的主標題置中，並調整上下間距 --- */
+.post__header h1.post__title { /* 使用您確認有效的選擇器 */
+    text-align: center; /* 保留置中 */
+
+    /* --- 新增以下兩行來調整間距 --- */
+    margin-top: 1.5em;  /* 增加標題上方的空白 (可調整 1.5 這個數值) */
+    margin-bottom: 1em; /* 增加標題下方的空白 (可調整 1 這個數值) */
+    /* ------------------------------- */
+
+    /* 您也可以嘗試使用像素值，例如： */
+    /* margin-top: 30px; */
+    /* margin-bottom: 25px; */
+}
+
+
+
+.footer {
+    background-color: #f9f9f9; /* 淺灰色背景 */
+    padding: 20px 0;           /* 上下留白 */
+    font-size: 14px;           /* 字體稍微小一點 */
+    color: #555;               /* 深灰色字，溫柔又穩重 */
+    text-align: center;        /* 置中對齊 */
+    border-top: 1px solid #e0e0e0; /* 頂部加一條淡淡的分隔線 */
+  }
+
+  .footer__container {
+    display: flex;
+    justify-content: center;   /* 水平置中 */
+    align-items: center;       /* 垂直置中 */
+    flex-direction: column;    /* 直向排列 */
+  }
+
+  .footer__copyright {
+    margin-top: 10px;
+    font-weight: 400;
+  }
+
+
+/* --- 美化 Google 可程式化搜尋引擎 --- */
+
+/* 調整整個搜尋控制項的背景、邊框和邊距 */
+.gsc-control-cse {
+    background-color: #ffffff; /* 改成您想要的背景色，例如白色 */
+    border: 1px solid #e0e0e0; /* 淺灰色邊框，或 none 移除 */
+    padding: 15px;             /* 增加內邊距 */
+    border-radius: 4px;        /* 輕微圓角 */
+    margin-bottom: 20px;       /* 與下方內容的間距 */
+  }
+  
+  /* 調整輸入框樣式 */
+  .gsc-input-box {
+    border: 1px solid #cccccc; /* 輸入框邊框顏色 */
+    border-radius: 3px;
+  }
+  
+  input.gsc-input {
+    font-size: 1rem;           /* 輸入框字體大小 */
+    padding: 8px 12px;         /* 輸入框內邊距 */
+    background-color: #f9f9f9 !important; /* 可能需要 !important 覆蓋 Google 樣式 */
+    color: #333333;            /* 輸入文字顏色 */
+  }
+  
+  /* 調整搜尋按鈕樣式 */
+  button.gsc-search-button,
+  .gsc-search-button-v2 {
+    background-color: #0056b3; /* 改成您網站的主題色 */
+    border: none;              /* 移除邊框 */
+    border-radius: 3px;
+    padding: 8px 15px;         /* 按鈕內邊距 */
+    cursor: pointer;
+    /* 如果想改變圖示顏色，可能需要更複雜的 SVG 或 CSS filter */
+  }
+  
+  button.gsc-search-button:hover,
+  .gsc-search-button-v2:hover {
+    background-color: #003d80; /* 滑鼠懸停時的顏色 */
+  }
+  
+  /* 移除或修改 "沒有結果" 的黃色背景 */
+  /* 找到控制背景的確切元素和 class，這裡只是猜測 */
+  .gs-no-results-result .gs-snippet {
+    background-color: #f5f5f5 !important; /* 改成淺灰色背景，或 transparent */
+    color: #555555;            /* 修改文字顏色 */
+    padding: 10px;
+    border: 1px dashed #dddddd; /* 添加虛線邊框代替背景色 */
+    border-radius: 3px;
+  }
+  
+  /* 調整結果排序下拉選單 (如果需要) */
+  .gsc-results .gsc-orderby {
+    /* 添加樣式 */
+    color: #666;
+  }
+  
+  /* 調整 Google Branding 文字樣式 */
+  .gsc-branding-text, .gsc-branding-logo {
+    color: #999999 !important;  /* 淡化文字顏色 */
+    font-size: 0.8em !important; /* 縮小字體 */
+  }
+  .gsc-branding {
+    margin-top: 15px; /* 調整與上方內容的間距 */
+  }
+  
+  /* 隱藏 Google 的某些元素 (如果 Google 政策允許且你不需要) */
+  /* 例如隱藏排序選項
+  .gsc-resultsHeader .gsc-orderby {
+    display: none;
+  }
+  */

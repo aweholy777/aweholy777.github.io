@@ -1,0 +1,72 @@
+{{/* layouts/index.html - 自訂首頁佈局 */}}
+
+{{/* 使用主題的基礎模板 (通常是 baseof.html) */}}
+{{ define "main" }} {{/* 或者根據您的主題可能是 define "content" */}}
+  <main class="main" role="main">
+    <div class="content main__content clearfix">
+
+      {{/* 在這裡顯示您放在 content/_index.md 文件中的內容 */}}
+      {{ .Content }}
+
+
+
+      
+      {{/* --- 在 layouts/index.html 中添加以下程式碼 --- */}}
+
+      {{/* --- 列出指定分類的最新文章 --- */}}
+      <section class="homepage-section recent-posts"> {{/* 用 section 包裹，方便加樣式 */}}
+        <h2>最新消息</h2> {{/* 列表的標題 - 您可以修改 */}}
+      
+        {{/* --- 設定要顯示的分類名稱和文章數量 --- */}}
+        {{ $categoryName := "最新消息" }} {{/* <-- 重要：請將這裡替換為您要顯示的【實際分類名稱】 */}}
+        {{ $numberOfPosts := 4 }}     {{/* <-- 要顯示的文章數量 */}}
+      
+        {{/* --- 查找、過濾、排序並限制文章 --- */}}
+        {{/* 1. 使用 where 過濾出屬於指定分類的文章 */}}
+        {{/* "Params.categories" 表示查找 Front Matter 中的 categories 參數 */}}
+        {{/* "intersect" 用於檢查陣列/列表是否包含某個值 */}}
+        {{/* (slice $categoryName) 創建一個只包含目標分類名稱的列表 */}}
+        {{ $pagesInCategory := where .Site.RegularPages "Params.categories" "intersect" (slice $categoryName) }}
+      
+        {{/* 2. 將找到的文章按日期倒序排列 (最新的在前) */}}
+        {{ $sortedPages := $pagesInCategory.ByDate.Reverse }}
+      
+        {{/* 3. 使用 first 選取前面指定數量的文章 */}}
+        {{ $recentPosts := first $numberOfPosts $sortedPages }}
+      
+        {{/* --- 檢查是否有文章符合條件 --- */}}
+        {{ if $recentPosts }}
+          <ul class="post-list"> {{/* 使用 ul 列表來顯示 */}}
+            {{/* --- 遍歷最新的文章並顯示標題和連結 --- */}}
+            {{ range $recentPosts }}
+              <li class="post-item">
+                <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+                {{/* 您也可以在這裡添加日期或其他資訊 */}}
+                {{/* <span class="post-date">({{ .Date.Format "2006-01-02" }})</span> */}}
+              </li>
+            {{ end }}
+          </ul>
+          {{/* 可選：添加一個指向完整分類列表的連結 */}}
+          {{ with .Site.GetPage (printf "/categories/%s" ($categoryName | urlize)) }}
+            <p><a href="{{ .RelPermalink }}">查看所有「{{ $categoryName }}」文章 →</a></p>
+          {{ end }}
+        {{ else }}
+          {{/* 如果該分類下沒有文章，顯示提示訊息 */}}
+          <p>目前分類「{{ $categoryName }}」下沒有文章。</p>
+        {{ end }}
+      </section>
+      {{/* --- 最新文章列表結束 --- */}}
+
+
+      {{/*
+         您可以在這裡添加任何您想在首頁顯示的額外內容，
+         例如：
+         - 特定分類的最新文章列表
+         - 功能區塊
+         - 歡迎訊息等等
+         如果現在只想顯示 content/_index.md 的內容，保持原樣即可。
+      */}}
+
+    </div>
+  </main>
+{{ end }}
