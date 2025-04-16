@@ -1,9 +1,11 @@
+# .github/workflows/deploy.yml
+
 name: Deploy Hugo site to Pages
 
 on:
   # 在推送到 default 分支 (通常是 main) 時觸發工作流程
   push:
-    branches: ["main"]  # <--- 如果您的主要分支是 master，請改成 "master"
+    branches: ["main"]  # <--- 確保這是你的主要分支名稱
 
   # 允許您從 GitHub Actions 頁面手動觸發此工作流程
   workflow_dispatch:
@@ -14,11 +16,10 @@ permissions:
   pages: write
   id-token: write
 
-# 只允許一個部署並行，取消正在進行中的部署之間排隊的運行。
-# 但是，不要取消正在進行中的運行，因為我們希望允許這些生產部署完成。
+# 只允許一個部署並行
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  cancel-in-progress: false # 改為 false 比較安全，避免取消正在進行的部署
 
 # 預設使用 bash
 defaults:
@@ -28,19 +29,30 @@ defaults:
 jobs:
   # 建置工作
   build:
-    runs-on: ubuntu-latest # 使用最新的 Ubuntu 虛擬環境
+    runs-on: ubuntu-latest # 使用最新的 Ubuntu
     env:
-      HUGO_VERSION: 0.111.3 # 指定一個較新的 Hugo 版本，您可以修改為您本地使用的版本
+      HUGO_VERSION: 0.111.3 # 指定 Hugo 版本 (你可以改成你需要或更新的版本)
+      # 或者刪除 HUGO_VERSION 讓 peaceiris/actions-hugo 用預設最新版
     steps:
-      - name: Install Hugo CLI # 安裝 Hugo
-        run: |
-          wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb \
-          && sudo dpkg -i ${{ runner.temp }}/hugo.deb
-      - name: Checkout # 拉取您的原始碼
+      - name: Checkout # 拉取原始碼
         uses: actions/checkout@v4
         with:
-          submodules: recursive # 如果您的主題是 Git Submodule，這會一起拉取
-          # fetch-depth: 0 # 如果需要完整的 Git 歷史 (例如 .Lastmod)，取消註釋
+          submodules: recursive # 拉取 theme submodule
+
+      # --- 建議改用這個 Action 來安裝 Hugo ---
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3 # 使用社群推薦的 Action
+        with:
+          hugo-version: '${{ env.HUGO_VERSION }}' # 使用上面定義的版本
+          # extended: true # 預設就是 true (如果需要 SASS/SCSS)
+
+      # -----------------------------------------
+      # 原本手動安裝 Hugo 的步驟可以刪除或註解掉
+      # - name: Install Hugo CLI
+      #   run: |
+      #     wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb \
+      #     && sudo dpkg -i ${{ runner.temp }}/hugo.deb
+      # -----------------------------------------
 
       - name: Setup Pages # 設定 GitHub Pages 環境
         id: pages
@@ -48,14 +60,12 @@ jobs:
 
       - name: Build with Hugo # 使用 Hugo 建置網站
         env:
-          # 設定 Hugo 環境為 production，確保使用 baseURL 等生產配置
+          # 設定 Hugo 環境為 production
           HUGO_ENVIRONMENT: production
           HUGO_ENV: production
         run: |
           # 使用 configure-pages action 提供的 base URL 來建置
-          # --minify 可選，用於壓縮輸出檔案
           hugo --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
-          # 注意: 對於專案頁面，baseURL 末尾的 / 很重要
 
       - name: Upload artifact # 上傳建置好的網站檔案 (public 目錄)
         uses: actions/upload-pages-artifact@v3

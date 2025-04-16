@@ -1,11 +1,15 @@
-<footer class="footer" role="contentinfo" aria-label="Footer">
-	<div class="container footer__container flex">
-	  <div class="footer-search">
+<footer class="footer py-8 border-t" role="contentinfo" aria-label="Footer">
+	<div class="container footer__container flex flex-col md:flex-row justify-between items-center gap-4">
+  
+	  <div class="footer-google-search w-full md:flex-grow md:max-w-lg">
+		{{/* 呼叫 Google Search partial */}}
 		{{ partial "google-search.html" . }}
 	  </div>
   
-	  <div class="footer__copyright">
-		&copy; 2016 &bull; Built with {{ .Site.Title }}
+	  <div class="footer__copyright text-sm text-gray-600 text-center md:text-right md:flex-shrink-0">
+		{{/* 使用 flex-shrink-0 避免版權文字被壓縮 */}}
+		&copy; {{ now.Year }} &bull; Built with {{ .Site.Title }}
 	  </div>
+  
 	</div>
   </footer>
