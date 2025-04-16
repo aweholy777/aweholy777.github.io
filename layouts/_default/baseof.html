@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html class="no-js" lang="{{ .Site.Language.Lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ block "title" . }}{{ if not .IsHome }}{{ .Title }} - {{ end }}{{ .Site.Title }}{{ end }}</title>
+    <script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+    <meta name="description" content="{{ if .IsHome }}{{ .Site.Params.description }}{{ else }}{{ .Params.Description }}{{ end }}">
+    {{- if .Site.Params.opengraph }}
+        {{ template "_internal/opengraph.html" . }}
+    {{- end }}
+    {{- if .Site.Params.schema }}
+        {{ template "_internal/schema.html" . }}
+    {{- end }}
+    {{- if .Site.Params.twitter_cards }}
+        {{ template "_internal/twitter_cards.html" . }}
+    {{- end }}
+
+    {{- $googleFontsLink := .Site.Params.googleFontsLink | default "https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700" }}
+    {{- if hasPrefix $googleFontsLink "https://fonts.googleapis.com/" }}
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="stylesheet" {{ printf `href="%s"` $googleFontsLink | safeHTMLAttr }}>
+    {{- end }}
+
+    {{/* Process main style.css, allowing Hugo templating inside it */}}
+    {{ $style := resources.Get "css/style.css" | resources.ExecuteAsTemplate "css/style.css" . -}}
+    <link rel="stylesheet" href="{{ $style.RelPermalink }}">
+
+    {{/* Load custom CSS files specified in config */}}
+    {{ range .Site.Params.customCSS -}}
+    <link rel="stylesheet" href="{{ . | relURL }}">
+    {{- end }}
+
+    {{/* Add RSS link if available */}}
+    {{- with .OutputFormats.Get "rss" }}
+    {{ printf `<link rel="%s" type="%s" href="%s" title="%s">` .Rel .MediaType.Type .RelPermalink $.Site.Title | safeHTML }}
+    {{- end }}
+
+    {{/* Favicon */}}
+    <link rel="shortcut icon" href="{{ "favicon.ico" | relURL }}">
+
+    {{/* Conditionally load Google Analytics (only in production) */}}
+    {{- $server := "" }}
+    {{- if gt (int (index (split hugo.Version ".") 1)) "120" }}
+        {{ $server = hugo.IsServer }}
+    {{- else }}
+        {{ $server = .Site.IsServer }}
+    {{- end -}}
+    {{- if not $server }}
+        {{ template "_internal/google_analytics.html" . }}
+    {{- end }}
+    <meta name="google-site-verification" content="c517b71dd612249d6"/> 
+</head>
+<body class="body">
+    <div class="container container--outer">
+        {{ block "header" . }}{{ partial "header.html" . }}{{ end }}
+        <div class="wrapper flex">
+            <div class="primary">
+            {{ block "main" . }}
+                {{/* Render main content if it exists */}}
+                {{ with .Content }}
+                <div class="content main__content clearfix">
+                    {{ . }}
+                </div>
+                {{ end }}
+            {{ end }}
+            </div>
+            {{ block "sidebar" . }}{{ partial "sidebar.html" . }}{{ end }}
+        </div>
+        {{ block "footer" . }}{{ partial "footer.html" . }}{{ end }}
+    </div>
+
+{{/* Load menu script using defer for better performance and execution order */}}
+<script defer src="{{ "js/menu.js" | relURL }}"></script>
+
+{{/* Load custom JS files specified in config */}}
+{{ range .Site.Params.customJS -}}
+<script src="{{ . | relURL }}"></script>
+{{- end }}
+
+{{/* Include MathJax partial if needed */}}
+{{- partial "mathjax.html" . -}}
+
+{{/* !!! The duplicate footer partial call that was here has been REMOVED !!! */}}
+
+</body>
+</html>
