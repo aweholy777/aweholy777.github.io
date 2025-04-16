@@ -4,6 +4,10 @@ baseURL = "https://aweholy777.github.io/" # !! 請務必更新為您最終的 Gi
 languageCode = "zh-TW"
 title = "城市宣培中心" # 根據圖片更新標題
 theme = "mainroad"
+# 正確的 GA4 設定方式
+[services]
+  [services.googleAnalytics]
+    ID = "G-47X9QK2HW3"
 
 [markup]
   [markup.goldmark]
@@ -13,7 +17,7 @@ theme = "mainroad"
       
 # 分頁設定
 [pagination]
-  pagerSize = 100
+  pagerSize = 10
 
 # 主題參數
 [params]
