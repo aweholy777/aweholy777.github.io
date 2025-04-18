@@ -1,6 +1,6 @@
 ---
-title: "QT2025"
-date: 2025-05-01
+title: "QT 2025"
+date: 2025-04-16
 description: "每日 QT 默想經文目錄，自動整理分月"
 draft: false
 ---
