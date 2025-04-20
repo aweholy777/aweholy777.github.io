@@ -1,9 +1,9 @@
 # hugo.toml (根據新需求和圖片生成)
 
 
-baseURL = "https://aweholy777.github.io/" # !! 請務必更新為您最終的 GitHub Pages 網址 !!
+#baseURL = "https://aweholy777.github.io/" # !! 請務必更新為您最終的 GitHub Pages 網址 !!
 
-#baseURL = "https://cmtc.tw/" # !! 請務必更新為您最終的 GitHub Pages 網址 !!
+baseURL = "https://cmtc.tw/" # !! 請務必更新為您最終的 GitHub Pages 網址 !!
 languageCode = "zh-TW"
 title = "城市宣培中心" # 根據圖片更新標題
 theme = "mainroad"

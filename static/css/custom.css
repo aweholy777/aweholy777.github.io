@@ -102,6 +102,7 @@ li {
 .article-content a:hover,
 .entry-content a:hover {
     color: #e04e21; /* 懸停時深一點 */
+
     text-decoration: underline; /* 懸停時加底線 */
 }
 
@@ -186,8 +187,8 @@ th {
     font-size: 1.1em;
     display: block;
     color: #f87148; /* 紅色 */
-    margin-top: 2.5em;
-    margin-bottom: 0.5em;
+    margin-top: 3.2em;
+    margin-bottom: 0.7em;
     font-weight: bold;
     line-height: 1.4;
 }
