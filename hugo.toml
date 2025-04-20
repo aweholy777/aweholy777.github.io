@@ -1,13 +1,20 @@
 # hugo.toml (根據新需求和圖片生成)
 
+
 baseURL = "https://aweholy777.github.io/" # !! 請務必更新為您最終的 GitHub Pages 網址 !!
+
+#baseURL = "https://cmtc.tw/" # !! 請務必更新為您最終的 GitHub Pages 網址 !!
 languageCode = "zh-TW"
 title = "城市宣培中心" # 根據圖片更新標題
 theme = "mainroad"
 # 正確的 GA4 設定方式
 [services]
   [services.googleAnalytics]
-    ID = "G-47X9QK2HW3"
+    ID = "G-99DBKKYEC1"
+
+# 这样默认就会把未来内容编译进 public/。
+[build]
+  buildFuture = true
 
 [markup]
   [markup.goldmark]
