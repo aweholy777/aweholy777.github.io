@@ -1,5 +1,5 @@
 ---
-title: "2016~2017 城市宣培中心"
+title: "受洗見證"
 date: 2025-04-14
 description: "受洗見證整理分年"
 draft: false
