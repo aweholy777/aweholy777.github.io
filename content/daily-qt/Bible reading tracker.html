@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>聖經已讀統計｜可勾選 & 自動記錄</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111827;
+      --muted:#94a3b8;
+      --text:#e5e7eb;
+      --accent:#22c55e;
+      --accent-2:#60a5fa;
+      --border:#1f2937;
+      --chip:#0b1220;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 10% -10%, #1e293b 0, transparent 50%), 
+                  radial-gradient(800px 400px at 120% -10%, #1f2937 0, transparent 50%), 
+                  var(--bg);
+      color:var(--text);
+      line-height:1.5;
+    }
+    header{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter:saturate(160%) blur(12px);
+      background: linear-gradient(0deg, transparent, rgba(2,6,23,.8) 80%);
+      padding: 16px 12px 12px;
+      border-bottom:1px solid var(--border);
+    }
+    .container{max-width:1100px; margin:0 auto; padding: 0 14px 60px;}
+    h1{margin:0; font-weight:800; letter-spacing:.3px; font-size:clamp(20px, 3.2vw, 30px)}
+    .sub{color:var(--muted); margin-top:4px; font-size:14px}
+    .toolbar{
+      margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; align-items:center
+    }
+    button, .chip, label.btn{
+      border:1px solid var(--border); background:var(--chip); color:var(--text);
+      padding:8px 12px; border-radius:10px; cursor:pointer; font-size:14px
+    }
+    button:hover, label.btn:hover{border-color:#2b3547}
+    .chip{display:inline-flex; align-items:center; gap:8px; user-select:none}
+    .chip b{font-weight:700}
+    progress{
+      width:240px; height:14px; vertical-align:middle; border-radius:8px; overflow:hidden;
+      background:#0b1220; border:1px solid var(--border);
+    }
+    progress::-webkit-progress-bar{background:#0b1220}
+    progress::-webkit-progress-value{background:linear-gradient(90deg, var(--accent), var(--accent-2))}
+    progress::-moz-progress-bar{background:linear-gradient(90deg, var(--accent), var(--accent-2))}
+    .books{
+      margin-top:18px; display:grid; gap:12px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+    details.book{
+      border:1px solid var(--border); border-radius:14px; background:rgba(17,24,39,.55);
+      box-shadow: 0 10px 30px rgba(2,6,23,.35) inset, 0 2px 10px rgba(0,0,0,.25);
+    }
+    details>summary{
+      list-style:none; cursor:pointer; user-select:none;
+      padding:14px 14px; border-bottom:1px solid var(--border); display:flex; gap:8px; align-items:center; justify-content:space-between
+    }
+    details[open]>summary{background:linear-gradient(0deg, rgba(255,255,255,.02), transparent)}
+    summary .title{display:flex; gap:10px; align-items:baseline; flex-wrap:wrap}
+    .title h3{margin:0; font-size:16px}
+    .title .meta{color:var(--muted); font-size:12px}
+    .summary-actions{display:flex; gap:8px; flex-wrap:wrap}
+    .chapters{padding:12px 12px 16px}
+    .grid{
+      display:grid; grid-template-columns: repeat(10, 1fr); gap:6px;
+    }
+    .cell{
+      display:flex; align-items:center; gap:6px; font-size:12px;
+      padding:6px 8px; border:1px solid var(--border); border-radius:10px; background:rgba(2,6,23,.5);
+    }
+    .cell input[type="checkbox"]{width:16px; height:16px; cursor:pointer}
+    .cell.read{background:linear-gradient(180deg, rgba(34,197,94,.15), rgba(2,6,23,.5)); border-color:#223f2f}
+    .cell .stamp{color:var(--muted); font-size:10px; margin-left:auto}
+    .filters{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    input[type="search"], input[type="file"]{
+      background:var(--chip); color:var(--text); border:1px solid var(--border);
+      padding:8px 12px; border-radius:10px; font-size:14px; outline:none;
+    }
+    .note{margin-top:8px; color:var(--muted); font-size:12px}
+    .foot{margin-top:30px; color:var(--muted); font-size:12px; text-align:center}
+    .hidden{display:none!important}
+    @media (max-width: 480px){
+      .grid{grid-template-columns: repeat(6, 1fr)}
+      progress{width:100%}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>📖 聖經已讀統計（可勾選・自動記錄）</h1>
+      <div class="sub">
+        參考 <a href="https://cmtc.tw/daily-qt/bibletracker.html" target="_blank" rel="noopener" style="color:#93c5fd">CMTC 讀經追蹤</a>，此頁支援勾選章節、進度統計、匯出/匯入，以及本機自動儲存（localStorage）。
+      </div>
+      <div class="toolbar">
+        <span class="chip">全書章數：<b id="totalChapters">—</b>　已讀：<b id="readCount">0</b>　(<b id="percent">0</b>%)</span>
+        <progress id="progress" value="0" max="1189" aria-label="總進度"></progress>
+        <button id="toggleUnread">只顯示未讀</button>
+        <button id="expandAll">展開全部</button>
+        <button id="collapseAll">收合全部</button>
+        <button id="resetAll">全部清除</button>
+        <button id="exportBtn">匯出進度</button>
+        <label class="btn">
+          匯入進度
+          <input id="importInput" type="file" accept="application/json" class="hidden" />
+        </label>
+      </div>
+      <div class="filters">
+        <input id="search" type="search" placeholder="搜尋書卷或章節，例如：創、創世記 1、John 3" />
+        <span class="note">資料僅儲存在您的裝置（不會上傳）。</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="books" class="books"></section>
+    <div class="foot">v1.0 · 製作：您的教會／小組 · 可離線使用</div>
+  </main>
+
+<script>
+const bibleData = [
+  ["創世記",50],["出埃及記",40],["利未記",27],["民數記",36],["申命記",34],
+  ["約書亞記",24],["士師記",21],["路得記",4],["撒母耳記上",31],["撒母耳記下",24],
+  ["列王紀上",22],["列王紀下",25],["歷代志上",29],["歷代志下",36],["以斯拉記",10],
+  ["尼希米記",13],["以斯帖記",10],["約伯記",42],["詩篇",150],["箴言",31],
+  ["傳道書",12],["雅歌",8],["以賽亞書",66],["耶利米書",52],["耶利米哀歌",5],
+  ["以西結書",48],["但以理書",12],["何西阿書",14],["約珥書",3],["阿摩司書",9],
+  ["俄巴底亞書",1],["約拿書",4],["彌迦書",7],["那鴻書",3],["哈巴谷書",3],
+  ["西番雅書",3],["哈該書",2],["撒迦利亞書",14],["瑪拉基書",4],
+  ["馬太福音",28],["馬可福音",16],["路加福音",24],["約翰福音",21],["使徒行傳",28],
+  ["羅馬書",16],["哥林多前書",16],["哥林多後書",13],["加拉太書",6],["以弗所書",6],
+  ["腓立比書",4],["歌羅西書",4],["帖撒羅尼迦前書",5],["帖撒羅尼迦後書",3],
+  ["提摩太前書",6],["提摩太後書",4],["提多書",3],["腓利門書",1],["希伯來書",13],
+  ["雅各書",5],["彼得前書",5],["彼得後書",3],["約翰一書",5],["約翰二書",1],
+  ["約翰三書",1],["猶大書",1],["啟示錄",22]
+];
+const totalChapters = bibleData.reduce((sum,b)=>sum+b[1],0);
+document.getElementById("totalChapters").textContent = totalChapters;
+
+const booksContainer = document.getElementById("books");
+const readData = JSON.parse(localStorage.getItem("bibleProgress")||"{}");
+
+function saveData(){
+  localStorage.setItem("bibleProgress", JSON.stringify(readData));
+  updateProgress();
+}
+
+function updateProgress(){
+  let readCount=0;
+  Object.values(readData).forEach(book=>{
+    Object.values(book).forEach(val=>{
+      if(val) readCount++;
+    });
+  });
+  document.getElementById("readCount").textContent = readCount;
+  document.getElementById("percent").textContent = ((readCount/totalChapters)*100).toFixed(1);
+  document.getElementById("progress").value = readCount;
+}
+
+function createBook(name,chapters){
+  const details=document.createElement("details");
+  details.className="book";
+  const summary=document.createElement("summary");
+  const titleDiv=document.createElement("div");
+  titleDiv.className="title";
+  const h3=document.createElement("h3");
+  h3.textContent=name;
+  const meta=document.createElement("span");
+  meta.className="meta";
+  meta.textContent=`共 ${chapters} 章`;
+  titleDiv.appendChild(h3);
+  titleDiv.appendChild(meta);
+
+  const actions=document.createElement("div");
+  actions.className="summary-actions";
+  const btnAll=document.createElement("button");
+  btnAll.textContent="全選";
+  btnAll.onclick=(e)=>{e.stopPropagation();for(let i=1;i<=chapters;i++){setRead(name,i,true);}saveData();render();};
+  const btnClear=document.createElement("button");
+  btnClear.textContent="清除";
+  btnClear.onclick=(e)=>{e.stopPropagation();for(let i=1;i<=chapters;i++){setRead(name,i,false);}saveData();render();};
+  actions.appendChild(btnAll);
+  actions.appendChild(btnClear);
+
+  summary.appendChild(titleDiv);
+  summary.appendChild(actions);
+  details.appendChild(summary);
+
+  const chapWrap=document.createElement("div");
+  chapWrap.className="chapters";
+  const grid=document.createElement("div");
+  grid.className="grid";
+  for(let i=1;i<=chapters;i++){
+    const cell=document.createElement("label");
+    cell.className="cell";
+    const cb=document.createElement("input");
+    cb.type="checkbox";
+    cb.checked = readData[name] && readData[name][i];
+    cb.onchange=()=>{
+      setRead(name,i,cb.checked);
+      saveData();
+      render();
+    };
+    const span=document.createElement("span");
+    span.textContent=i;
+    cell.appendChild(cb);
+    cell.appendChild(span);
+    const stamp=document.createElement("span");
+    stamp.className="stamp";
+    if(readData[name] && readData[name][i] && typeof readData[name][i]==="string"){
+      stamp.textContent=readData[name][i];
+    }
+    cell.appendChild(stamp);
+    if(cb.checked) cell.classList.add("read");
+    grid.appendChild(cell);
+  }
+  chapWrap.appendChild(grid);
+  details.appendChild(chapWrap);
+  booksContainer.appendChild(details);
+}
+
+function setRead(book,chapter,val){
+  if(!readData[book]) readData[book]={};
+  if(val){
+    const date=new Date();
+    readData[book][chapter]=`${date.getFullYear()}/${(date.getMonth()+1).toString().padStart(2,"0")}/${date.getDate().toString().padStart(2,"0")}`;
+  }else{
+    delete readData[book][chapter];
+  }
+}
+
+function render(){
+  booksContainer.innerHTML="";
+  bibleData.forEach(([name,ch])=>{
+    createBook(name,ch);
+  });
+  updateProgress();
+}
+
+render();
+
+// 功能按鈕
+document.getElementById("toggleUnread").onclick=()=>{
+  document.querySelectorAll(".book").forEach(book=>{
+    if(book.open===false) book.open=true;
+    book.querySelectorAll(".cell").forEach(cell=>{
+      const cb=cell.querySelector("input");
+      cell.classList.remove("hidden");
+      if(document.getElementById("toggleUnread").dataset.mode!=="unread") return;
+      if(cb.checked) cell.classList.add("hidden");
+    });
+  });
+  if(document.getElementById("toggleUnread").dataset.mode==="unread"){
+    document.getElementById("toggleUnread").dataset.mode="";
+    document.getElementById("toggleUnread").textContent="只顯示未讀";
+  }else{
+    document.getElementById("toggleUnread").dataset.mode="unread";
+    document.getElementById("toggleUnread").textContent="顯示全部";
+  }
+};
+
+document.getElementById("expandAll").onclick=()=>{
+  document.querySelectorAll(".book").forEach(b=>b.open=true);
+};
+document.getElementById("collapseAll").onclick=()=>{
+  document.querySelectorAll(".book").forEach(b=>b.open=false);
+};
+
+document.getElementById("resetAll").onclick=()=>{
+  if(confirm("確定要清除全部紀錄嗎？")){
+    localStorage.removeItem("bibleProgress");
+    Object.keys(readData).forEach(k=>delete readData[k]);
+    render();
+  }
+};
+
+document.getElementById("exportBtn").onclick=()=>{
+  const blob=new Blob([JSON.stringify(readData)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download="bible-progress.json";
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+document.getElementById("importInput").onchange=(e)=>{
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const data=JSON.parse(reader.result);
+      Object.keys(data).forEach(b=>{
+        readData[b]=data[b];
+      });
+      saveData();
+      render();
+    }catch(err){alert("匯入失敗：檔案格式錯誤");}
+  };
+  reader.readAsText(file);
+};
+
+// 搜尋功能
+document.getElementById("search").oninput=(e)=>{
+  const val=e.target.value.trim().toLowerCase();
+  document.querySelectorAll(".book").forEach(book=>{
+    const name=book.querySelector("h3").textContent.toLowerCase();
+    let match=false;
+    if(!val){match=true;}
+    else if(name.includes(val)) match=true;
+    else{
+      const matchChap = val.match(/^(.+?)\s*(\d+)$/);
+      if(matchChap){
+        const bookName = matchChap[1];
+        const chapNum = parseInt(matchChap[2]);
+        if(name.includes(bookName.toLowerCase())){
+          book.open=true;
+          book.querySelectorAll(".cell").forEach(cell=>{
+            const spanNum=cell.querySelector("span").textContent;
+            if(parseInt(spanNum)===chapNum) cell.scrollIntoView({behavior:"smooth",block:"center"});
+          });
+          match=true;
+        }
+      }
+    }
+    book.style.display=match?"":"none";
+  });
+};
+</script>
+
+</body>
+</html>
+
+
+
+
+
+

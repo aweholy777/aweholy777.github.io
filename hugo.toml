@@ -108,6 +108,11 @@ theme = "mainroad"
     weight = 29
     parent = "daily-qt"  
   [[menu.main]]
+    name = "線上聖經"
+    url = "/bible/index.html"  # 直接指定連結
+    weight = 30
+    parent = "daily-qt"
+  [[menu.main]]
     name = "聖經進度記錄表"
     url = "/daily-qt/bibletracker.html"  # 直接指定連結
     weight = 31
