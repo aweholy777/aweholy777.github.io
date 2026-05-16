@@ -1,15 +1,185 @@
 <footer class="footer py-8 border-t" role="contentinfo" aria-label="Footer">
-	<div class="container footer__container flex flex-col md:flex-row justify-between items-center gap-4">
-  
-	  <div class="footer-google-search w-full md:flex-grow md:max-w-lg">
-		{{/* 呼叫 Google Search partial */}}
-		{{ partial "google-search.html" . }}
-	  </div>
-  
-	  <div class="footer__copyright text-sm text-gray-600 text-center md:text-right md:flex-shrink-0">
-		{{/* 使用 flex-shrink-0 避免版權文字被壓縮 */}}
-		&copy; {{ now.Year }} &bull; Built with {{ .Site.Title }}
-	  </div>
-  
-	</div>
-  </footer>
+  <div class="container footer__container flex flex-col md:flex-row justify-between items-center gap-4">
+
+    <div class="footer-google-search w-full md:flex-grow md:max-w-lg">
+      {{/* 呼叫 Google Search partial */}}
+      {{ partial "google-search.html" . }}
+    </div>
+
+    <div class="footer__copyright text-sm text-gray-600 text-center md:text-right md:flex-shrink-0">
+      {{/* 使用 flex-shrink-0 避免版權文字被壓縮 */}}
+      &copy; {{ now.Year }} &bull; Built with {{ .Site.Title }}
+    </div>
+
+  </div>
+</footer>
+
+{{ if in .RelPermalink "/daily-qt/2026" }}
+<div id="announcement-modal" class="custom-modal hidden">
+  <div class="custom-modal-content">
+    <button id="close-modal-btn" class="custom-modal-close" aria-label="Close">&times;</button>
+    <h2
+      style="margin-top:0; font-size:1.5rem; color:#2d3748; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 20px;">
+      停更公告與感恩分享</h2>
+
+    <div
+      style="color:#4a5568; margin-bottom:24px; line-height:1.8; font-size: 1.05rem; max-height: 60vh; overflow-y: auto; padding-right: 10px;"
+      class="modal-scrollbar">
+      <p style="margin-bottom: 16px;"><strong>親愛的弟兄姊妹平安！</strong></p>
+
+      <p style="margin-bottom: 16px;">感謝主，10 年前開始接觸到以「活潑的生命」來操練 QT
+        的靈修方法，便持續無間斷地寫到今天。當初的想法，就是想要把整本聖經的進度走完一遍。直到如今，舊約只剩下以西結書的 25~48 章，其餘舊約都已走過一遍，詩篇超過一遍，新約也邁入第二遍。</p>
+
+      <p style="margin-bottom: 16px;">這過程中有許多不知名的弟兄姊妹陪我一起經歷神的恩典，也有在 LINE 群組中一群同伴每天的激勵陪伴，使我能走到今天。<span
+          style="color: #c53030; font-weight: bold;">在此想向大家宣布，每日的更新將先告一段落了！</span> 除了以西結書的後 24
+        章我還在等待外，未來大家若有需要，可以利用網頁下方的搜尋功能，找到過去的文章。</p>
+
+      <p style="margin-bottom: 16px;">
+        從十年前我個人非常不成熟的生命與分享，隨著每天靈修、天天悔改與更新，其實對神的話語與認識稍有長進。所以在讀過去的靈修心得時，也發現自己過去如此幼稚不成熟，也算給大家作為鑑戒！基督徒的生命不是一下子變成完美，而是在不斷長大成熟中慢慢前行。
+      </p>
+
+      <p style="margin-bottom: 0;">
+        這網站從來沒有宣傳，隨著大數據讓有緣人看到，都是在主裡的恩典與關係。<span
+          style="color: #c53030; font-weight: bold;">祝福大家繼續保持每日靈修、晝夜思想神話語的好習慣，生命繼續追求成長成熟，迎主再來！</span></p>
+    </div>
+
+    <div style="text-align:right; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+      <button id="confirm-modal-btn" class="custom-modal-btn">感謝主，我知道了！</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* 懸浮視窗的自訂樣式 */
+  .custom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    padding: 20px;
+  }
+
+  .custom-modal.hidden {
+    display: none !important;
+    opacity: 0;
+  }
+
+  .custom-modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 650px;
+    width: 100%;
+    position: relative;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .custom-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 32px;
+    cursor: pointer;
+    color: #a0aec0;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .custom-modal-close:hover {
+    color: #2d3748;
+  }
+
+  .custom-modal-btn {
+    background-color: #3182ce;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.2s;
+  }
+
+  .custom-modal-btn:hover {
+    background-color: #2b6cb0;
+  }
+
+  /* 美化滾動條 */
+  .modal-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .modal-scrollbar::-webkit-scrollbar-track {
+    background: #f7fafc;
+    border-radius: 4px;
+  }
+
+  .modal-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 4px;
+  }
+
+  .modal-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+  }
+
+  @keyframes modalPop {
+    0% {
+      transform: scale(0.95) translateY(10px);
+      opacity: 0;
+    }
+
+    100% {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // 您可以更改 'announcement_2026' 來強制所有用戶再次看到新公告
+    const storageKey = 'announcement_2026_v1';
+
+    // 檢查是否已經顯示過公告
+    if (!localStorage.getItem(storageKey)) {
+      const modal = document.getElementById('announcement-modal');
+      const closeBtn = document.getElementById('close-modal-btn');
+      const confirmBtn = document.getElementById('confirm-modal-btn');
+
+      // 顯示 modal
+      modal.classList.remove('hidden');
+
+      // 關閉功能
+      function closeModal() {
+        modal.classList.add('hidden');
+        // 紀錄已經看過，設定在 localStorage 就不會每次重整都跳出來
+        localStorage.setItem(storageKey, 'true');
+      }
+
+      closeBtn.addEventListener('click', closeModal);
+      confirmBtn.addEventListener('click', closeModal);
+
+      // 點擊背景也能關閉
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+    }
+  });
+</script>
+{{ end }}
