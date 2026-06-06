@@ -26,6 +26,9 @@ theme = "mainroad"
 [pagination]
   pagerSize = 10
 
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
 # 主題參數
 [params]
   description = "城市宣培中心 | City Ministration Training Center" # 可選：添加描述
@@ -68,55 +71,17 @@ theme = "mainroad"
     weight = 20
     parent = "daily-qt"
   [[menu.main]]
-    name = "QT 2026"
-    pageRef = "daily-qt/2026" # 假設連結到 content/daily-qt/2026/_index.md
+    identifier = "otqt"
+    name = "舊約QT"
+    pageRef = "daily-qt/otqt"
     weight = 21
     parent = "daily-qt"
   [[menu.main]]
-    name = "QT 2025"
-    pageRef = "daily-qt/2025" # 假設連結到 content/daily-qt/2025/_index.md
+    identifier = "ntqt"
+    name = "新約QT"
+    pageRef = "daily-qt/ntqt"
     weight = 22
     parent = "daily-qt"
-  [[menu.main]]
-    name = "QT 2024"
-    pageRef = "daily-qt/2024" # 假設連結到 content/daily-qt/2024/_index.md
-    weight = 23
-    parent = "daily-qt"
-  [[menu.main]]
-    name = "QT 2023"
-    pageRef = "daily-qt/2023" # 假設連結到 content/daily-qt/2023/_index.md
-    weight = 24
-    parent = "daily-qt"
-  [[menu.main]]
-    name = "QT 2022"
-    pageRef = "daily-qt/2022" # 假設連結到 content/daily-qt/2022/_index.md
-    weight = 25
-    parent = "daily-qt"
-  [[menu.main]]
-    name = "QT 2021"
-    pageRef = "daily-qt/2021" # 假設連結到 content/daily-qt/2021/_index.md
-    weight = 26
-    parent = "daily-qt"
-  [[menu.main]]
-    name = "QT 2020"
-    pageRef = "daily-qt/2020" # 假設連結到 content/daily-qt/2020/_index.md
-    weight = 27
-    parent = "daily-qt"
-  [[menu.main]]
-    name = "QT 2019"
-    pageRef = "daily-qt/2019" # 假設連結到 content/daily-qt/2019/_index.md
-    weight = 28
-    parent = "daily-qt"
-  [[menu.main]]
-    name = "QT 2018"
-    pageRef = "daily-qt/2018" # 假設連結到 content/daily-qt/2018/_index.md
-    weight = 29
-    parent = "daily-qt"
-  [[menu.main]]
-    name = "QT 2016-2017"
-    pageRef = "daily-qt/2016-2017" # 假設連結到 content/daily-qt/2016-2017/_index.md
-    weight = 30
-    parent = "daily-qt"  
   [[menu.main]]
     name = "線上聖經"
     url = "/bible/index.html"  # 直接指定連結
@@ -155,6 +120,12 @@ theme = "mainroad"
   name = "深淵響應"
   pageRef = "deep-calls-deep" # 假設連結到 content/deep-calls-deep.md
   weight = 60
+
+[[menu.main]]
+  identifier = "search"
+  name = "搜尋"
+  pageRef = "search"
+  weight = 999
 
 # --- 結束菜單定義 ---
 

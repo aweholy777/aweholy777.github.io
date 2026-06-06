@@ -1,0 +1,27 @@
+{{ define "main" }}
+<main class="main list site-search" role="main">
+  <header class="main__header">
+    <h1 class="main__title">{{ .Title }}</h1>
+  </header>
+
+  <div class="content main__content clearfix">
+    {{ .Content }}
+
+    <div class="site-search__box" data-search-root>
+      <label class="site-search__label" for="site-search-input">搜尋文章內容</label>
+      <div class="site-search__controls">
+        <input id="site-search-input" class="site-search__input" type="search" placeholder="輸入經文、關鍵字或日期" autocomplete="off" data-search-input>
+        <select class="site-search__select" aria-label="搜尋範圍" data-search-section>
+          <option value="">全部</option>
+          <option value="舊約QT">舊約QT</option>
+          <option value="新約QT">新約QT</option>
+          <option value="每日QT">每日QT</option>
+        </select>
+      </div>
+      <div class="site-search__status" data-search-status>正在載入搜尋索引...</div>
+      <div class="site-search__results" data-search-results></div>
+    </div>
+  </div>
+</main>
+<script defer src="{{ "js/site-search.js" | relURL }}"></script>
+{{ end }}

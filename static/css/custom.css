@@ -457,3 +457,69 @@ th {
 .footer .footer-search .gsc-resultsRoot {
     background-color: #ffffff !important; /* 例如確保結果區背景是白色 */
 }
+
+/* --- Site Search --- */
+.site-search__box {
+    margin-top: 1.5rem;
+}
+
+.site-search__label {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-weight: 700;
+}
+
+.site-search__controls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 140px;
+    gap: 10px;
+    align-items: center;
+}
+
+.site-search__input,
+.site-search__select {
+    width: 100%;
+    min-height: 44px;
+    padding: 9px 12px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    background: #ffffff;
+    color: #333333;
+    font: inherit;
+    box-sizing: border-box;
+}
+
+.site-search__status {
+    margin: 1rem 0;
+    color: #666666;
+    font-size: 0.95em;
+}
+
+.site-search__result {
+    padding: 1rem 0;
+    border-top: 1px solid #e6e6e6;
+}
+
+.site-search__title {
+    display: inline-block;
+    font-weight: 700;
+    line-height: 1.45;
+}
+
+.site-search__meta {
+    margin-top: 0.25rem;
+    color: #777777;
+    font-size: 0.9em;
+}
+
+.site-search__snippet {
+    margin: 0.45rem 0 0;
+    color: #444444;
+    line-height: 1.65;
+}
+
+@media screen and (max-width: 640px) {
+    .site-search__controls {
+        grid-template-columns: 1fr;
+    }
+}
