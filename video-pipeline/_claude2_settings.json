@@ -1,0 +1,6 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "\"C:\\Program Files\\Git\\bin\\bash.exe\" -c \"export PATH=/c/Users/aweholy/anaconda3/Library/mingw-w64/bin:/c/Users/aweholy/anaconda3/Library/bin:$PATH; bash ~/.claude/statusline-command.sh\""
+  }
+}

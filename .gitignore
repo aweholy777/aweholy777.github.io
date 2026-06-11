@@ -6,3 +6,9 @@ hugo.exe* # 忽略 hugo 執行檔
 *.py
 *.exe
 download_images.py
+!video-pipeline/*.py
+video-output/
+# YouTube OAuth 憑證與權杖：絕不可進公開 repo
+video-pipeline/client_secret.json
+video-pipeline/yt_token.json
+video-pipeline/_*.txt

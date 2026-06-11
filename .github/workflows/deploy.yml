@@ -1,85 +1,56 @@
 # .github/workflows/deploy.yml
+#
+# ✅ 已改用 Cloudflare Pages 自動部署
+# Cloudflare Pages 會直接監聽 GitHub push 事件，自動 build 並部署。
+# 此 workflow 已停用 GitHub Pages 部署，改為只做 Hugo build 驗證（確保每次 push 不會壞掉）。
+#
+# Cloudflare Pages 設定：
+#   Build command:       hugo --minify --buildFuture
+#   Build output:        public
+#   Environment var:     HUGO_VERSION=0.111.3
 
-name: Deploy Hugo site to Pages
+name: Hugo Build Check
 
 on:
-  # 在推送到 default 分支 (通常是 main) 時觸發工作流程
   push:
-    branches: ["main"]  # <--- 確保這是你的主要分支名稱
-
-  # 允許您從 GitHub Actions 頁面手動觸發此工作流程
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
   workflow_dispatch:
 
-# 設定 GITHUB_TOKEN 的權限，以允許部署到 GitHub Pages
+# 最小權限
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
-# 只允許一個部署並行
 concurrency:
-  group: "pages"
-  cancel-in-progress: false # 改為 false 比較安全，避免取消正在進行的部署
+  group: "build-check-${{ github.ref }}"
+  cancel-in-progress: true
 
-# 預設使用 bash
 defaults:
   run:
     shell: bash
 
 jobs:
-  # 建置工作
   build:
-    runs-on: ubuntu-latest # 使用最新的 Ubuntu
+    name: Verify Hugo Build
+    runs-on: ubuntu-latest
     env:
-      HUGO_VERSION: 0.111.3 # 指定 Hugo 版本 (你可以改成你需要或更新的版本)
-      # 或者刪除 HUGO_VERSION 讓 peaceiris/actions-hugo 用預設最新版
+      HUGO_VERSION: 0.111.3
     steps:
-      - name: Checkout # 拉取原始碼
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: recursive # 拉取 theme submodule
+          submodules: recursive
 
-      # --- 建議改用這個 Action 來安裝 Hugo ---
       - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3 # 使用社群推薦的 Action
+        uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: '${{ env.HUGO_VERSION }}' # 使用上面定義的版本
-          # extended: true # 預設就是 true (如果需要 SASS/SCSS)
+          hugo-version: '${{ env.HUGO_VERSION }}'
 
-      # -----------------------------------------
-      # 原本手動安裝 Hugo 的步驟可以刪除或註解掉
-      # - name: Install Hugo CLI
-      #   run: |
-      #     wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb \
-      #     && sudo dpkg -i ${{ runner.temp }}/hugo.deb
-      # -----------------------------------------
-
-      - name: Setup Pages # 設定 GitHub Pages 環境
-        id: pages
-        uses: actions/configure-pages@v5
-
-      - name: Build with Hugo # 使用 Hugo 建置網站
+      - name: Build with Hugo (驗證用，不部署)
         env:
-          # 設定 Hugo 環境為 production
           HUGO_ENVIRONMENT: production
           HUGO_ENV: production
         run: |
-          # 使用 configure-pages action 提供的 base URL 來建置
-          hugo --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
-
-      - name: Upload artifact # 上傳建置好的網站檔案 (public 目錄)
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./public # Hugo 預設的輸出目錄
-
-  # 部署工作
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }} # 部署完成後的網址
-    runs-on: ubuntu-latest
-    needs: build # 需要先完成 build 工作
-    steps:
-      - name: Deploy to GitHub Pages # 執行部署
-        id: deployment
-        uses: actions/deploy-pages@v4 # 使用官方的部署 action
+          hugo --minify --buildFuture --baseURL "https://cmtc.tw/"
+          echo "✅ Hugo build 成功！Cloudflare Pages 將自動完成部署。"
