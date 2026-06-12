@@ -1,30 +1,23 @@
 # .github/workflows/deploy.yml
-#
-# ✅ 已改用 Cloudflare Pages 自動部署
-# Cloudflare Pages 會直接監聽 GitHub push 事件，自動 build 並部署。
-# 此 workflow 已停用 GitHub Pages 部署，改為只做 Hugo build 驗證（確保每次 push 不會壞掉）。
-#
-# Cloudflare Pages 設定：
-#   Build command:       hugo --minify --buildFuture
-#   Build output:        public
-#   Environment var:     HUGO_VERSION=0.111.3
+# GitHub Pages 部署（2026-06-12 恢復）
+# 說明：Cloudflare Pages 遷移尚未接通前，由本 workflow 負責正式部署。
+# CF Pages 接通並驗證後，可再把本檔降級為 build check。
 
-name: Hugo Build Check
+name: Deploy Hugo site to Pages
 
 on:
   push:
     branches: ["main"]
-  pull_request:
-    branches: ["main"]
   workflow_dispatch:
 
-# 最小權限
 permissions:
   contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-  group: "build-check-${{ github.ref }}"
-  cancel-in-progress: true
+  group: "pages"
+  cancel-in-progress: false
 
 defaults:
   run:
@@ -32,25 +25,37 @@ defaults:
 
 jobs:
   build:
-    name: Verify Hugo Build
     runs-on: ubuntu-latest
     env:
-      HUGO_VERSION: 0.111.3
+      HUGO_VERSION: 0.144.2
     steps:
+      - name: Install Hugo CLI
+        run: |
+          wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb
+          sudo dpkg -i ${{ runner.temp }}/hugo.deb
       - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: recursive
-
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3
-        with:
-          hugo-version: '${{ env.HUGO_VERSION }}'
-
-      - name: Build with Hugo (驗證用，不部署)
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
+      - name: Build with Hugo
         env:
           HUGO_ENVIRONMENT: production
-          HUGO_ENV: production
-        run: |
-          hugo --minify --buildFuture --baseURL "https://cmtc.tw/"
-          echo "✅ Hugo build 成功！Cloudflare Pages 將自動完成部署。"
+        run: hugo --minify --buildFuture
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
