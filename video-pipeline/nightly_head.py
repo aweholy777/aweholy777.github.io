@@ -9,6 +9,7 @@
 
 用 --dry 可以只列出接下來 10 篇的隊列，不實際生成。
 """
+import csv
 import datetime
 import re
 import sys
@@ -49,12 +50,30 @@ def build_queue():
     return queue
 
 
+def _done_slugs():
+    """已完成（已上傳/已嵌入）的 slug。跨機器只用『檔名』比對，不比 csv 絕對路徑。"""
+    slugs = set()
+    csv_path = REPO / "video-pipeline" / "yt_uploaded.csv"
+    if csv_path.exists():
+        with open(csv_path, encoding="utf-8") as f:
+            for row in csv.reader(f):
+                if row and row[0] and row[0] != "md_path":
+                    raw = row[0].strip().replace("\\", "/")
+                    slugs.add(raw.rsplit("/", 1)[-1].removesuffix(".md"))
+    return slugs
+
+
 def pending(queue):
+    done = _done_slugs()
     for sub, slug in queue:
         md = REPO / "content" / "daily-qt" / sub / f"{slug}.md"
         if not md.exists():
             continue
         if (OUTDIR / f"{slug}.mp4").exists():
+            continue
+        if slug in done:                       # B: csv 已記錄（已上傳）
+            continue
+        if "{{< youtube" in md.read_text(encoding="utf-8"):  # B: 文章已嵌入
             continue
         yield sub, slug, md
 

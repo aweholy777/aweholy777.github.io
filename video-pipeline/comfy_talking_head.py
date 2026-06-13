@@ -8,6 +8,7 @@
 
 前提：Comfy Desktop 正在執行（API 在 127.0.0.1:8000 或 8188）。
 """
+import os
 import json
 import shutil
 import time
@@ -19,7 +20,20 @@ from pathlib import Path
 
 COMFY_URLS = ["http://127.0.0.1:8000", "http://127.0.0.1:8188"]
 LAN_URL = "http://192.168.68.61:8188"   # MS-S1 MAX（Ubuntu，57GB VRAM）
-COMFY_INPUT_DIR = Path(r"C:\Users\aweholy\ComfyUI-Shared\input")
+# 跨機器：不硬編 user 名。可用環境變數 COMFY_INPUT_DIR 覆寫（多個用 os.pathsep 分隔）。
+# 本機生成會把素材複製進所有可建立的 input 目錄，由 ComfyUI 取用。
+def _input_dirs():
+    env = os.environ.get("COMFY_INPUT_DIR")
+    if env:
+        return [Path(p) for p in env.split(os.pathsep) if p.strip()]
+    home = Path.home()
+    return [
+        home / "ComfyUI" / "ComfyUI" / "input",                       # git-clone 版（如 5090）
+        home / "ComfyUI-Shared" / "input",                            # 共享 input（舊 3060）
+        home / "ComfyUI-Installs" / "ComfyUI" / "ComfyUI" / "input",  # 桌面安裝（新 3060）
+    ]
+COMFY_INPUT_DIRS = _input_dirs()
+COMFY_INPUT_DIR = COMFY_INPUT_DIRS[0]
 DEFAULT_WORKFLOW = Path(__file__).parent / "workflows" / "wanvideo_2_1_14B_I2V_InfiniteTalk_example_03.json"
 
 VIRTUAL = {"Note", "MarkdownNote", "SetNode", "GetNode", "PreviewAny"}
@@ -182,9 +196,10 @@ def generate(image_path, audio_path, workflow_json=None, out_path=None,
         # 本機：直接複製進 input 目錄（最可靠）
         img_name = "qt_" + image_path.name
         aud_name = "qt_" + audio_path.stem + audio_path.suffix
-        COMFY_INPUT_DIR.mkdir(parents=True, exist_ok=True)
-        shutil.copy(image_path, COMFY_INPUT_DIR / img_name)
-        shutil.copy(audio_path, COMFY_INPUT_DIR / aud_name)
+        for _d in COMFY_INPUT_DIRS:
+            _d.mkdir(parents=True, exist_ok=True)
+            shutil.copy(image_path, _d / img_name)
+            shutil.copy(audio_path, _d / aud_name)
     else:
         # 遠端（LAN 主機）：用 API 上傳
         img_name = upload_file(base, image_path)
