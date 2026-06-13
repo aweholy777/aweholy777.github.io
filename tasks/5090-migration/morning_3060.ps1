@@ -14,10 +14,10 @@ Write-Host "`n== 5090 昨晚（自上次同步以來）的 commit ==" -Foregroun
 if ($before -eq $after) { Write-Host "（無新 commit）" } else { git log --oneline "$before..$after" }
 
 Write-Host "`n== 信箱：5090 -> 3060 最新訊息（注意有無 BLOCKED）==" -ForegroundColor Cyan
-Get-Content "$repo\tasks\handoff\5090-to-3060.md" -TotalCount 14
+Get-Content "$repo\tasks\handoff\5090-to-3060.md" -TotalCount 14 -Encoding UTF8
 
 Write-Host "`n== 昨晚新上傳的 YouTube（yt_uploaded.csv 末 5 列）==" -ForegroundColor Cyan
-Get-Content "$repo\video-pipeline\yt_uploaded.csv" -Tail 5
+Get-Content "$repo\video-pipeline\yt_uploaded.csv" -Tail 5 -Encoding UTF8
 
 Write-Host "`n== 本機 Hugo 建置檢查（可選；Actions 已自動部署）==" -ForegroundColor Cyan
 if (Get-Command hugo -ErrorAction SilentlyContinue) {
