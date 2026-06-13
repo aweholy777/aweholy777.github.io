@@ -1,4 +1,4 @@
-# nightly_5090.ps1 — 5090 每晚自動生成 + 上傳（由 Task Scheduler 於 21:00 呼叫）
+﻿# nightly_5090.ps1 — 5090 每晚自動生成 + 上傳（由 Task Scheduler 於 21:00 呼叫）
 # 純腳本，不需 Claude Code。routine 直接跑；ComfyUI 起不來才把 BLOCKED 寫進信箱給 3060。
 # 角色與分工見 repo 的 CLAUDE.md / CLAUDE.local.md：5090 只生成+上傳，不發布網站。
 param([int]$Count = 4)
