@@ -95,11 +95,35 @@ if __name__ == "__main__":
             print(f"  {i+1}. [{sub}] {slug}  {title}")
         sys.exit(0)
 
+    # 解析 --count N 與 --server X（沿用簡易 sys.argv 解析，與 --dry 一致）
+    def _argval(flag, default=None):
+        if flag in sys.argv:
+            i = sys.argv.index(flag)
+            if i + 1 < len(sys.argv):
+                return sys.argv[i + 1]
+        return default
+    count = int(_argval("--count", "1"))
+    server = _argval("--server", None)
+
     from make_video import make_one
+    made = 0
+    attempts = 0
     for sub, slug, md in todo:
-        print(f"[{datetime.datetime.now():%F %T}] 今晚生成：[{sub}] {md.name}", flush=True)
-        r = make_one(md, OUTDIR, mode="head")
-        print(r, flush=True)
-        break
+        if made >= count:
+            break
+        if attempts >= count + 3:   # 容錯上限：避免連續失敗時跑遍整個隊列
+            print("連續失敗過多，今晚提前結束。", flush=True)
+            break
+        attempts += 1
+        print(f"[{datetime.datetime.now():%F %T}] 生成 ({made+1}/{count})：[{sub}] {md.name}", flush=True)
+        try:
+            r = make_one(md, OUTDIR, mode="head", server=server)
+            print(r, flush=True)
+            if isinstance(r, dict) and r.get("ok"):
+                made += 1
+        except Exception as e:
+            print(f"  生成失敗，跳過 {md.name}：{e}", flush=True)
+    if made == 0:
+        print("本次沒有成功生成（可能全部完成，或皆失敗）。", flush=True)
     else:
-        print("沒有待生成的文章（全部完成！）")
+        print(f"本次完成 {made} 篇。", flush=True)
