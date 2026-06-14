@@ -33,11 +33,21 @@ def _spoken_title(title: str) -> str:
     return f"{y}年{int(mo)}月{int(d)}日，每日QT。今天的經文進度是：{rest}。"
 
 
+# 時間詞：其後的「時：分」是鐘點時間，不可轉成「章節」（如「清晨5：30」）。
+# 範圍／帶「節」字的引用不受影響，只防護裸 X：Y 那條規則。
+_TIME_CTX = re.compile(r"(清晨|早晨|早上|上午|中午|下午|傍晚|晚上|凌晨|半夜)\s*\d{0,2}$")
+
+
 def _spokenize_refs(s: str) -> str:
     """內文章節引用轉口語：'10：14~22' → '10章14到22節'，'林前 10：17' → '林前 10章17節'"""
     s = re.sub(r"(\d+)\s*：\s*(\d+)\s*[～~]\s*(\d+)\s*節?", r"\1章\2到\3節", s)
     s = re.sub(r"(\d+)\s*：\s*(\d+)\s*節", r"\1章\2節", s)
-    s = re.sub(r"(\d+)\s*：\s*(\d+)(?![\d節])", r"\1章\2節", s)
+
+    def _bare(m):
+        if _TIME_CTX.search(s[:m.start()]):   # 前文是時間詞 → 鐘點時間，保留原樣
+            return m.group(0)
+        return f"{m.group(1)}章{m.group(2)}節"
+    s = re.sub(r"(\d+)\s*：\s*(\d+)(?![\d節])", _bare, s)
     return s
 
 

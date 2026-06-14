@@ -19,7 +19,6 @@ import argparse
 import csv
 import os
 import re
-import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -33,7 +32,6 @@ from googleapiclient.http import MediaFileUpload
 
 HERE = Path(__file__).parent
 REPO = HERE.parent
-PUB_REPO = Path(r"C:\Users\aweholy\qt-publish\aweholy777.github.io")  # 獨立發布副本
 SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
 CLIENT_SECRET = HERE / "client_secret.json"
 TOKEN = HERE / "yt_token.json"
@@ -69,8 +67,14 @@ def get_service(allow_interactive=True):
 
 
 def find_md(video_path: Path):
-    """依檔名（日期）找對應文章：先 ntqt 再 otqt"""
+    """從影片檔名找對應文章。新命名 <sub>_<date>.mp4 直接帶書卷；
+    舊命名 <date>.mp4 則退回『先 ntqt 再 otqt』猜測（向後相容）。"""
     stem = video_path.stem
+    m = re.match(r"(ntqt|otqt)_(\d{4}-\d{2}-\d{2})$", stem)
+    if m:
+        sub, date = m.groups()
+        p = REPO / "content" / "daily-qt" / sub / f"{date}.md"
+        return (p, sub) if p.exists() else (None, None)
     for sub in ("ntqt", "otqt"):
         p = REPO / "content" / "daily-qt" / sub / f"{stem}.md"
         if p.exists():
@@ -78,17 +82,21 @@ def find_md(video_path: Path):
     return None, None
 
 
-def _md_name(path_str: str) -> str:
-    """取 csv 路徑欄的檔名（跨機 dedup 用，不比對絕對路徑——舊機 aweholy 與新機 user 路徑不同）"""
-    return Path(path_str.strip().replace("\\", "/")).name
+def _md_key(path_str: str) -> str:
+    """csv／md 路徑 → '<sub>/<date>' 跨機 dedup key（取後兩段，不比對絕對路徑——
+    舊機 aweholy 與新機 user 前綴不同；保留書卷避免 ntqt/otqt 同日同名互相誤判）"""
+    parts = path_str.strip().replace("\\", "/").rstrip("/").split("/")
+    stem = parts[-1].removesuffix(".md")
+    sub = parts[-2] if len(parts) >= 2 else ""
+    return f"{sub}/{stem}" if sub else stem
 
 
 def already_uploaded(md_path: Path) -> bool:
     if not CSV_PATH.exists():
         return False
-    target = md_path.name
+    target = _md_key(str(md_path))
     with open(CSV_PATH, encoding="utf-8") as f:
-        return any(row and row[0] and _md_name(row[0]) == target for row in csv.reader(f))
+        return any(row and row[0] and _md_key(row[0]) == target for row in csv.reader(f))
 
 
 def upload(yt, video_path: Path, title: str, description: str, privacy: str) -> str:
@@ -160,43 +168,6 @@ def publish_one(yt, video_path: Path, privacy: str) -> str:
             + ("（已嵌入文章）" if did_embed else "（文章已有嵌入，未重複）"))
 
 
-def publish_push(items):
-    """在獨立發布副本內：pull → 對副本的 md 做同樣的嵌入 → commit → push。
-    完全不動主資料夾的 git（那裡有未整理的變更）。
-    items: [(主資料夾 md Path, video_id), ...]"""
-    if not items:
-        return "publish: 本次無嵌入，跳過"
-    if not PUB_REPO.exists():
-        return f"publish: 找不到發布副本 {PUB_REPO}（請先跑 setup_publish_clone.bat）"
-
-    def run(*args):
-        return subprocess.run(["git", *args], cwd=PUB_REPO, capture_output=True,
-                              text=True, encoding="utf-8", errors="replace")
-
-    pull = run("pull", "--ff-only")
-    if pull.returncode != 0:
-        return "publish: git pull 失敗：" + (pull.stderr or pull.stdout)[-300:]
-
-    changed = []
-    for md_path, vid in items:
-        rel = md_path.relative_to(REPO)
-        clone_md = PUB_REPO / rel
-        if clone_md.exists() and embed(clone_md, vid):
-            changed.append(str(rel))
-            run("add", str(rel))
-    if not changed:
-        return "publish: 副本無需變更（可能已嵌入過）"
-
-    msg = f"auto: embed youtube videos {datetime.now():%Y-%m-%d %H:%M}"
-    c = run("commit", "-m", msg)
-    if c.returncode != 0:
-        return "publish: commit 失敗：" + (c.stderr or c.stdout)[-300:]
-    p = run("push")
-    if p.returncode != 0:
-        return "publish: push 失敗：" + (p.stderr or p.stdout)[-300:]
-    return f"publish: 已推送 {len(changed)} 篇 → 網站將自動部署（{msg}）"
-
-
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--video", help="單支影片路徑")
@@ -205,19 +176,11 @@ def main():
     ap.add_argument("--limit", type=int, default=5, help="auto 模式單次上限（配額保護）")
     ap.add_argument("--privacy", default="public",
                     choices=["public", "unlisted", "private"])
-    ap.add_argument("--no-push", action="store_true", help="不自動 git push")
+    ap.add_argument("--no-push", action="store_true",
+                    help="（已棄用、保留相容）發布已由 GitHub Actions 處理，本腳本不再 push")
     a = ap.parse_args()
 
     yt = get_service(allow_interactive=not a.auto)
-    embedded = []   # [(md_path, video_id)]
-
-    def vid_of(md_path):
-        target = md_path.name
-        with open(CSV_PATH, encoding="utf-8") as f:
-            for row in csv.reader(f):
-                if row and row[0] and _md_name(row[0]) == target:
-                    return row[1]
-        return None
 
     def _is_quota(e: HttpError) -> bool:
         txt = str(e).lower()
@@ -231,9 +194,6 @@ def main():
             print(f"上傳 {v.name} 失敗（HTTP {getattr(e.resp,'status','?')}）：{e}")
             return
         print(msg)
-        if msg.startswith("OK"):
-            md, _ = find_md(v)
-            embedded.append((md, vid_of(md)))
     elif a.auto:
         vids = sorted((REPO / "video-output" / "head").glob("*.mp4"), reverse=True)
         done = 0
@@ -250,14 +210,10 @@ def main():
                 continue
             print(msg)
             if msg.startswith("OK"):
-                md, _ = find_md(v)
-                embedded.append((md, vid_of(md)))
                 done += 1
     else:
         print("請指定 --video 或 --auto")
         return
-    if not a.no_push:
-        print(publish_push(embedded))
 
 
 if __name__ == "__main__":

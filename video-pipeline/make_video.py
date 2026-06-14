@@ -179,7 +179,9 @@ def make_one(md_path, outdir, voice=DEFAULT_VOICE, rate=DEFAULT_RATE,
     """回傳 {ok, out, skipped, warnings, error}"""
     md_path = Path(md_path)
     outdir = Path(outdir)
-    out_mp4 = outdir / (md_path.stem + ".mp4")
+    # 檔名帶書卷（<sub>_<date>.mp4）：避免 ntqt/otqt 同日同名時 mp4 互相覆蓋，
+    # 且讓 yt_publish.find_md 能直接從檔名判斷書卷（不再靠「ntqt 優先」猜測）。
+    out_mp4 = outdir / f"{md_path.parent.name}_{md_path.stem}.mp4"
     if out_mp4.exists() and out_mp4.stat().st_size > 0:
         return {"ok": True, "out": str(out_mp4), "skipped": True, "warnings": [], "error": ""}
 

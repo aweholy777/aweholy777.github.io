@@ -29,4 +29,29 @@
 **建議**：限縮成只在像經文引用的上下文（前面有書卷名或「經」字）才轉，或維持現狀（成本/收益低）。
 
 ---
+
+## ✅ 處理結果（2026-06-14，於 5090 執行節點）
+
+三項全數處理完畢，改動侷限 `video-pipeline/`（4 檔，淨 -24 行），未動 content/config/網站。
+
+**第 1 項（同日同名碰撞）——已修，但用更省的做法（未加 csv 欄）**：
+書卷其實已存在於 csv 的 `md_path` 路徑裡，故改用「`<sub>/<date>`（路徑後兩段）」當跨機 dedup key，
+對既有 5 筆 csv 完全相容、零 schema 遷移：
+- `make_video.make_one`：out_mp4 → `<sub>_<date>.mp4`。
+- `nightly_head`：新增 `_md_key()`，`_done_slugs()`→`_done_keys()` 回 `<sub>/<date>`，`pending()` 用 `(sub,slug)` 比對。
+- `yt_publish`：`find_md()` 改從 `<sub>_<date>.mp4` 直接讀書卷（舊式 `<date>.mp4` 仍退回 ntqt 優先，向後相容）；
+  `_md_name()`→`_md_key()`，`already_uploaded()` 用 `<sub>/<date>` 比對。
+- 既有 `video-output/head/*.mp4`（2 支 ntqt）已就地改名為 `ntqt_*.mp4`，避免重生。
+- 驗證：`pending()` 正確跳過 csv 內 4 篇＋改名 2 支，從 2026-01-16 起；`otqt/2026-01-14` 不再被誤判已上傳。
+
+**第 2 項（PUB_REPO 舊機路徑）——已移除死碼**：
+發布已全交 GitHub Actions（push main 即部署），`publish_push`/`PUB_REPO`/`setup_publish_clone` 流程廢棄。
+整段移除 `publish_push()`、`PUB_REPO` 常數、`subprocess` import 與 main 的呼叫；
+`--no-push` flag 保留為相容性 no-op（5090 既有指令不報錯）。
+
+**第 3 項（誤念比例／時間）——已加時間詞防護**：
+全語料 67,525 個「數：數」中真正的時間誤判僅 1 例（「清晨5：30」），「以及13：11」等實為經文引用。
+故只在 `_spokenize_refs` 裸 X：Y 規則前加 `_TIME_CTX` 防護（清晨/早上/下午…），
+不碰 67,524 個合法引用（含「 1：5 」逐節列表）。驗證：時間原樣保留、各式經文引用照常轉換。
+
 （高風險修復與目錄清理見 commit 59321b8 與 5090-to-3060.md 同日 DONE 條目。）

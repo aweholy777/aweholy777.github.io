@@ -50,28 +50,36 @@ def build_queue():
     return queue
 
 
-def _done_slugs():
-    """已完成（已上傳/已嵌入）的 slug。跨機器只用『檔名』比對，不比 csv 絕對路徑。"""
-    slugs = set()
+def _md_key(path_str: str) -> str:
+    """content/daily-qt/<sub>/<date>.md → '<sub>/<date>'（取路徑後兩段）。
+    跨機器只比相對結構、不比 csv 絕對路徑前綴；保留書卷以免 ntqt/otqt 同日同名互相誤判。"""
+    parts = path_str.strip().replace("\\", "/").rstrip("/").split("/")
+    stem = parts[-1].removesuffix(".md")
+    sub = parts[-2] if len(parts) >= 2 else ""
+    return f"{sub}/{stem}" if sub else stem
+
+
+def _done_keys():
+    """已完成（已上傳/已嵌入）的 '<sub>/<date>' key 集合。"""
+    keys = set()
     csv_path = REPO / "video-pipeline" / "yt_uploaded.csv"
     if csv_path.exists():
         with open(csv_path, encoding="utf-8") as f:
             for row in csv.reader(f):
                 if row and row[0] and row[0] != "md_path":
-                    raw = row[0].strip().replace("\\", "/")
-                    slugs.add(raw.rsplit("/", 1)[-1].removesuffix(".md"))
-    return slugs
+                    keys.add(_md_key(row[0]))
+    return keys
 
 
 def pending(queue):
-    done = _done_slugs()
+    done = _done_keys()
     for sub, slug in queue:
         md = REPO / "content" / "daily-qt" / sub / f"{slug}.md"
         if not md.exists():
             continue
-        if (OUTDIR / f"{slug}.mp4").exists():
+        if (OUTDIR / f"{sub}_{slug}.mp4").exists():
             continue
-        if slug in done:                       # B: csv 已記錄（已上傳）
+        if f"{sub}/{slug}" in done:            # B: csv 已記錄（已上傳）
             continue
         if "{{< youtube" in md.read_text(encoding="utf-8"):  # B: 文章已嵌入
             continue
