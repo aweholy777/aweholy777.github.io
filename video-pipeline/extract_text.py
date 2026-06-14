@@ -88,13 +88,15 @@ def extract(md_path) -> dict:
             lines_out.append(s)
 
     narration_body = "\n".join(lines_out)
-    if len(narration_body) < 100:
+    ok = len(narration_body) >= 100      # 結構化旗標：內文足夠才算解析成功
+    if not ok:
         warnings.append(f"內文過短（{len(narration_body)} 字），可能解析失敗")
 
     spoken_title = _spoken_title(title) if title else ""
     narration = (spoken_title + "\n" + narration_body).strip()
 
     return {
+        "ok": ok,
         "title": title,
         "spoken_title": spoken_title,
         "date": date,

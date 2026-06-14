@@ -184,9 +184,9 @@ def make_one(md_path, outdir, voice=DEFAULT_VOICE, rate=DEFAULT_RATE,
         return {"ok": True, "out": str(out_mp4), "skipped": True, "warnings": [], "error": ""}
 
     info = extract(md_path)
-    if "可能解析失敗" in " ".join(info["warnings"]):
+    if not info.get("ok", True):       # 結構化旗標判解析成功，不再靠 warning 文案字串比對
         return {"ok": False, "out": "", "skipped": False,
-                "warnings": info["warnings"], "error": "解析失敗，需人工檢查"}
+                "warnings": info["warnings"], "error": "解析失敗（內文過短），需人工檢查"}
 
     # 主播模式預設用 assets/presenter.png 當人物圖
     if mode == "head" and bg is None:
