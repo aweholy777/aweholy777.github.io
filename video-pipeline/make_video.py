@@ -18,6 +18,13 @@ import sys
 import tempfile
 from pathlib import Path
 
+# ffmpeg 絕對路徑：優先用 imageio_ffmpeg 內建（含 libass，不依賴 PATH），找不到才退回 PATH 的 ffmpeg
+try:
+    import imageio_ffmpeg
+    FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
+except Exception:
+    FFMPEG = "ffmpeg"
+
 import edge_tts
 
 from extract_text import extract
@@ -113,12 +120,13 @@ def render(bg: Path, mp3: Path, srt: Path, title: str, out_mp4: Path, font: str)
         shutil.copy(bg, tdp / ("bg" + bg.suffix))
         shutil.copy(mp3, tdp / "a.mp3")
         shutil.copy(srt, tdp / "s.srt")
-        style = (f"FontName={font},FontSize=16,PrimaryColour=&H00FFFFFF,"
-                 f"OutlineColour=&H99000000,Outline=2,MarginV=36")
+        style = (f"FontName={font},FontSize=20,PrimaryColour=&H00FFFFFF,"
+                 f"OutlineColour=&H00000000,Outline=3,Shadow=1,MarginV=40")
+        style_esc = style.replace(",", r"\,")
         vf = (f"scale=1920:1080:force_original_aspect_ratio=decrease,"
               f"pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=black,"
-              f"subtitles=s.srt:force_style='{style}'")
-        cmd = ["ffmpeg", "-y", "-loop", "1", "-framerate", "10",
+              f"subtitles=filename=s.srt:force_style='{style_esc}'")
+        cmd = [FFMPEG, "-y", "-loop", "1", "-framerate", "10",
                "-i", "bg" + bg.suffix, "-i", "a.mp3",
                "-vf", vf,
                "-c:v", "libx264", "-tune", "stillimage", "-preset", "veryfast",
@@ -142,12 +150,13 @@ def render_head(head_mp4: Path, mp3: Path, srt: Path, title: str,
         shutil.copy(head_mp4, tdp / "h.mp4")
         shutil.copy(mp3, tdp / "a.mp3")
         shutil.copy(srt, tdp / "s.srt")
-        style = (f"FontName={font},FontSize=16,PrimaryColour=&H00FFFFFF,"
-                 f"OutlineColour=&H99000000,Outline=2,MarginV=36")
+        style = (f"FontName={font},FontSize=20,PrimaryColour=&H00FFFFFF,"
+                 f"OutlineColour=&H00000000,Outline=3,Shadow=1,MarginV=40")
+        style_esc = style.replace(",", r"\,")
         vf = (f"scale=1920:1080:force_original_aspect_ratio=decrease,"
               f"pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=black,"
-              f"subtitles=s.srt:force_style='{style}'")
-        cmd = ["ffmpeg", "-y", "-i", "h.mp4", "-i", "a.mp3",
+              f"subtitles=filename=s.srt:force_style='{style_esc}'")
+        cmd = [FFMPEG, "-y", "-i", "h.mp4", "-i", "a.mp3",
                "-vf", vf, "-map", "0:v", "-map", "1:a",
                "-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
                "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "96k", "-shortest",

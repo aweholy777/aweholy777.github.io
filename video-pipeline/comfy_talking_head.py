@@ -34,6 +34,17 @@ def _input_dirs():
     ]
 COMFY_INPUT_DIRS = _input_dirs()
 COMFY_INPUT_DIR = COMFY_INPUT_DIRS[0]
+
+def _output_dirs():
+    return [d.parent / "output" for d in COMFY_INPUT_DIRS if d.name.lower() == "input"]
+
+def _find_local_output(prefix):
+    # 本機 ComfyUI 輸出資料夾中，找檔名以 prefix 開頭的最新影片（快取命中時的退路）
+    cands = []
+    for d in _output_dirs():
+        if d.exists():
+            cands += list(d.glob(prefix + "*.mp4")) + list(d.glob(prefix + "*.webm"))
+    return max(cands, key=lambda p: p.stat().st_mtime) if cands else None
 DEFAULT_WORKFLOW = Path(__file__).parent / "workflows" / "wanvideo_2_1_14B_I2V_InfiniteTalk_example_03.json"
 
 VIRTUAL = {"Note", "MarkdownNote", "SetNode", "GetNode", "PreviewAny"}
@@ -259,6 +270,17 @@ def generate(image_path, audio_path, workflow_json=None, out_path=None,
             mins = (time.time() - t0) / 60
             print(f"  生成完成，耗時 {mins:.1f} 分鐘", flush=True)
             return out_path
+        if st.get("status_str") == "success" or st.get("completed"):
+            fb = _find_local_output("qt_head_" + audio_path.stem)
+            if fb is not None:
+                out_path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy(fb, out_path)
+                mins = (time.time() - t0) / 60
+                print(f"  生成完成（success 但 outputs 空，已取回 {fb.name}，{mins:.1f} 分鐘）", flush=True)
+                return out_path
+            raise RuntimeError(
+                "ComfyUI 回報 success 但 outputs 無影片（疑似快取命中），"
+                f"且輸出資料夾找不到 qt_head_{audio_path.stem}*。請重啟 ComfyUI 清快取後重試。")
     raise TimeoutError(f"等待 {timeout_min} 分鐘仍未完成")
 
 
