@@ -17,6 +17,7 @@
 """
 import argparse
 import csv
+import os
 import re
 import subprocess
 import sys
@@ -27,6 +28,7 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
 
 HERE = Path(__file__).parent
@@ -41,16 +43,27 @@ sys.path.insert(0, str(HERE))
 from extract_text import extract  # noqa: E402
 
 
-def get_service():
+def get_service(allow_interactive=True):
+    """allow_interactive=False（如 --auto 夜間排程）時，憑證無效一律報錯退出，
+    絕不開瀏覽器互動授權（run_local_server 會讓無人值守排程永久卡死）。"""
     creds = None
     if TOKEN.exists():
         creds = Credentials.from_authorized_user_file(str(TOKEN), SCOPES)
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
+            try:
+                creds.refresh(Request())
+            except Exception as e:
+                raise RuntimeError(
+                    f"YouTube token 更新失敗（可能已撤銷/過期/離線）：{e}。"
+                    "請在有桌面的環境重新授權（yt_first_run）後再排程。") from e
+        elif allow_interactive:
             flow = InstalledAppFlow.from_client_secrets_file(str(CLIENT_SECRET), SCOPES)
             creds = flow.run_local_server(port=0)
+        else:
+            raise RuntimeError(
+                "YouTube 憑證無效且為非互動模式（--auto）：不開啟瀏覽器授權以免夜間排程卡死。"
+                "請先手動重新授權後再排程。")
         TOKEN.write_text(creds.to_json(), encoding="utf-8")
     return build("youtube", "v3", credentials=creds)
 
@@ -65,11 +78,17 @@ def find_md(video_path: Path):
     return None, None
 
 
+def _md_name(path_str: str) -> str:
+    """取 csv 路徑欄的檔名（跨機 dedup 用，不比對絕對路徑——舊機 aweholy 與新機 user 路徑不同）"""
+    return Path(path_str.strip().replace("\\", "/")).name
+
+
 def already_uploaded(md_path: Path) -> bool:
     if not CSV_PATH.exists():
         return False
+    target = md_path.name
     with open(CSV_PATH, encoding="utf-8") as f:
-        return any(row and row[0] == str(md_path) for row in csv.reader(f))
+        return any(row and row[0] and _md_name(row[0]) == target for row in csv.reader(f))
 
 
 def upload(yt, video_path: Path, title: str, description: str, privacy: str) -> str:
@@ -135,6 +154,8 @@ def publish_one(yt, video_path: Path, privacy: str) -> str:
             w.writerow(["md_path", "video_id", "youtube_url", "uploaded_at"])
         w.writerow([str(md_path), vid, f"https://youtu.be/{vid}",
                     datetime.now().isoformat(timespec="seconds")])
+        f.flush()
+        os.fsync(f.fileno())   # 影片已上傳成功，務必把 csv 落地，避免下次重傳
     return (f"OK {video_path.name} → https://youtu.be/{vid}"
             + ("（已嵌入文章）" if did_embed else "（文章已有嵌入，未重複）"))
 
@@ -187,19 +208,28 @@ def main():
     ap.add_argument("--no-push", action="store_true", help="不自動 git push")
     a = ap.parse_args()
 
-    yt = get_service()
+    yt = get_service(allow_interactive=not a.auto)
     embedded = []   # [(md_path, video_id)]
 
     def vid_of(md_path):
+        target = md_path.name
         with open(CSV_PATH, encoding="utf-8") as f:
             for row in csv.reader(f):
-                if row and row[0] == str(md_path):
+                if row and row[0] and _md_name(row[0]) == target:
                     return row[1]
         return None
 
+    def _is_quota(e: HttpError) -> bool:
+        txt = str(e).lower()
+        return getattr(e.resp, "status", None) == 403 and ("quota" in txt or "limit" in txt)
+
     if a.video:
         v = Path(a.video)
-        msg = publish_one(yt, v, a.privacy)
+        try:
+            msg = publish_one(yt, v, a.privacy)
+        except HttpError as e:
+            print(f"上傳 {v.name} 失敗（HTTP {getattr(e.resp,'status','?')}）：{e}")
+            return
         print(msg)
         if msg.startswith("OK"):
             md, _ = find_md(v)
@@ -210,7 +240,14 @@ def main():
         for v in vids:
             if done >= a.limit:
                 break
-            msg = publish_one(yt, v, a.privacy)
+            try:
+                msg = publish_one(yt, v, a.privacy)
+            except HttpError as e:
+                if _is_quota(e):
+                    print("YouTube 配額/上限已用盡，停止本次上傳（其餘留待下次）。", flush=True)
+                    break
+                print(f"上傳 {v.name} 失敗（HTTP {getattr(e.resp,'status','?')}），跳過。", flush=True)
+                continue
             print(msg)
             if msg.startswith("OK"):
                 md, _ = find_md(v)

@@ -64,10 +64,14 @@ def _split_cues(text: str):
 
 
 def _audio_seconds(mp3_path: Path) -> float:
-    r = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
-                        "-of", "default=noprint_wrappers=1:nokey=1", str(mp3_path)],
+    # 用 FFMPEG（imageio 內建，不依賴 PATH 的 ffprobe）讀音訊時長：解析 stderr 的 Duration
+    r = subprocess.run([FFMPEG, "-i", str(mp3_path), "-hide_banner"],
                        capture_output=True, text=True, encoding="utf-8", errors="replace")
-    return float(r.stdout.strip())
+    m = re.search(r"Duration:\s*(\d+):(\d+):(\d+(?:\.\d+)?)", r.stderr)
+    if not m:
+        return 0.0
+    h, mn, s = m.groups()
+    return int(h) * 3600 + int(mn) * 60 + float(s)
 
 
 async def tts_with_subs(text: str, mp3_path: Path, srt_path: Path, voice: str, rate: str):
@@ -204,7 +208,10 @@ def make_one(md_path, outdir, voice=DEFAULT_VOICE, rate=DEFAULT_RATE,
 
     work = outdir / "_assets" / md_path.stem
     work.mkdir(parents=True, exist_ok=True)
-    mp3, srt = work / "audio.mp3", work / "subs.srt"
+    # 音檔以「書卷_日期」唯一命名（不可固定為 audio.mp3）：ComfyUI 的 filename_prefix 依此 stem 而定。
+    # 固定名或僅用日期會讓不同篇（含 ntqt/otqt 同日同名）prefix 相同，導致快取退路誤抓別篇舊輸出。
+    slug = f"{md_path.parent.name}_{md_path.stem}"
+    mp3, srt = work / (slug + ".mp3"), work / "subs.srt"
     try:
         asyncio.run(tts_with_subs(info["narration"], mp3, srt, voice, rate))
         if mode == "head":
@@ -214,6 +221,9 @@ def make_one(md_path, outdir, voice=DEFAULT_VOICE, rate=DEFAULT_RATE,
             render_head(head_mp4, mp3, srt, info["title"], out_mp4, font)
         else:
             render(Path(bg), mp3, srt, info["title"], out_mp4, font)
+    except Exception as e:
+        return {"ok": False, "out": "", "skipped": False,
+                "warnings": info["warnings"], "error": f"生成失敗：{type(e).__name__}: {e}"}
     finally:
         if not keep_assets:
             shutil.rmtree(work, ignore_errors=True)

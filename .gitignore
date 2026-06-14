@@ -14,3 +14,8 @@ video-pipeline/yt_token.json
 video-pipeline/_*.txt
 # 機器專屬 Claude Code 指令（5090 執行者版放這裡，不進 repo、不覆蓋 CLAUDE.md）
 CLAUDE.local.md
+# Python bytecode 與生成/上傳的暫存落地檔（不進 repo）
+__pycache__/
+*.pyc
+video-pipeline/.gen_*
+video-pipeline/.upload_*

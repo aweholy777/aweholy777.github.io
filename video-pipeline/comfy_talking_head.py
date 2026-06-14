@@ -196,7 +196,7 @@ def ui_to_api(ui: dict, object_info: dict) -> dict:
 
 
 def generate(image_path, audio_path, workflow_json=None, out_path=None,
-             timeout_min=1800, poll_sec=20, server=None) -> Path:
+             timeout_min=240, poll_sec=20, server=None) -> Path:
     """跑一次 InfiniteTalk，回傳下載好的影片路徑"""
     image_path, audio_path = Path(image_path), Path(audio_path)
     out_path = Path(out_path)
@@ -204,13 +204,23 @@ def generate(image_path, audio_path, workflow_json=None, out_path=None,
 
     is_local = "127.0.0.1" in base or "localhost" in base
     if is_local:
-        # 本機：直接複製進 input 目錄（最可靠）
+        # 本機：直接複製進 input 目錄（最可靠）。只寫進「該 ComfyUI 安裝確實存在」的 input，
+        # 避免在別台機才有的候選路徑下憑空建立空目錄樹污染檔案系統。
         img_name = "qt_" + image_path.name
         aud_name = "qt_" + audio_path.stem + audio_path.suffix
+        copied = False
         for _d in COMFY_INPUT_DIRS:
+            if not _d.parent.exists():     # 對應的 ComfyUI 安裝不存在 → 跳過
+                continue
             _d.mkdir(parents=True, exist_ok=True)
             shutil.copy(image_path, _d / img_name)
             shutil.copy(audio_path, _d / aud_name)
+            copied = True
+        if not copied:                      # 沒有任何既有安裝，退而建立主要那個
+            d0 = COMFY_INPUT_DIRS[0]
+            d0.mkdir(parents=True, exist_ok=True)
+            shutil.copy(image_path, d0 / img_name)
+            shutil.copy(audio_path, d0 / aud_name)
     else:
         # 遠端（LAN 主機）：用 API 上傳
         img_name = upload_file(base, image_path)
@@ -291,7 +301,7 @@ if __name__ == "__main__":
     ap.add_argument("--audio", required=True)
     ap.add_argument("--workflow", default=None)
     ap.add_argument("--out", required=True)
-    ap.add_argument("--timeout-min", type=int, default=1800)
+    ap.add_argument("--timeout-min", type=int, default=240)
     ap.add_argument("--server", default=None, help="local / lan / 完整URL")
     a = ap.parse_args()
     print(generate(a.image, a.audio, a.workflow, a.out, a.timeout_min, server=a.server))

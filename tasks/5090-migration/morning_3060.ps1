@@ -2,7 +2,8 @@
 # 發布是自動的：push 到 main 由 GitHub Actions（deploy.yml）建置部署。
 # 本腳本不發布，只做：同步 5090 昨晚成果 → 看信箱 → 列新上傳 → 本機建置檢查。
 
-$repo = "C:\Users\aweholy\Desktop\clone2026010\aweholy777.github.io"
+# repo 根目錄用腳本相對路徑（此檔在 <repo>\tasks\5090-migration\），跨機/換帳號都正確
+$repo = (Resolve-Path "$PSScriptRoot\..\..").Path
 Set-Location $repo
 
 Write-Host "== 同步 5090 昨晚成果 ==" -ForegroundColor Cyan
