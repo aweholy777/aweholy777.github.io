@@ -456,7 +456,7 @@
         "Node name for S&R": "WanVideoBlockSwap"
       },
       "widgets_values": [
-        40,
+        0,
         false,
         false,
         true,
