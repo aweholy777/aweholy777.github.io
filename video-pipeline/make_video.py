@@ -175,8 +175,12 @@ def render_head(head_mp4: Path, mp3: Path, srt: Path, title: str,
                  f"OutlineColour=&H00000000,Outline=3,Shadow=1,"
                  f"Alignment=2,MarginV=45")
         style_esc = style.replace(",", r"\,")
+        # tpad 在燒字幕前把影片最後一格克隆延長 10 秒：InfiniteTalk 影片常比音訊短幾秒，
+        # 若不補長，-shortest 會以影片為準把音訊結尾（最後幾句）切掉。補長後字幕照樣渲染整段，
+        # 再由 -shortest 以「音訊長度」收尾 → 音訊完整、結尾定格不黑屏（影片較長時則照常裁掉多餘）。
         vf = (f"scale=1920:1080:force_original_aspect_ratio=decrease,"
               f"pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=black,"
+              f"tpad=stop_mode=clone:stop_duration=10,"
               f"subtitles=filename=s.srt:force_style='{style_esc}'")
         cmd = [FFMPEG, "-y", "-i", "h.mp4", "-i", "a.mp3",
                "-vf", vf, "-map", "0:v", "-map", "1:a",
