@@ -12,6 +12,15 @@ video-output/
 video-pipeline/client_secret.json
 video-pipeline/yt_token.json
 video-pipeline/_*.txt
+# 機密：Claude Code 設定快照含 API token（DeepSeek/Anthropic），絕不可進公開 repo
+video-pipeline/_new_settings.json
+video-pipeline/_claude2_settings.json
+# 執行期 debug dump 與煙霧測試輸出：每次生成都會變，追蹤只會造成跨機 rebase 衝突
+video-pipeline/_last_prompt.json
+video-pipeline/_*.png
+video-pipeline/nightly_head_log.txt
+# 本機備忘（檔案自述「未追蹤、不 push」）
+5090-每日備忘.md
 # 機器專屬 Claude Code 指令（5090 執行者版放這裡，不進 repo、不覆蓋 CLAUDE.md）
 CLAUDE.local.md
 # Python bytecode 與生成/上傳的暫存落地檔（不進 repo）
