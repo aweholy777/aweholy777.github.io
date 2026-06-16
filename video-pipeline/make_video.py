@@ -31,7 +31,7 @@ from extract_text import extract
 
 DEFAULT_VOICE = "zh-TW-HsiaoChenNeural"
 DEFAULT_RATE = "+10%"          # 朗讀稍快，全文較長
-MAX_CUE_CHARS = 20             # 單行字幕長度上限
+MAX_CUE_CHARS = 14             # 單行字幕長度上限（壓到一次只顯示一短行，避免被折成多行擋臉）
 SENT_BREAK = "。！？；："
 
 
@@ -61,6 +61,36 @@ def _split_cues(text: str):
     if buf.strip():
         cues.append(buf.strip())
     return cues
+
+
+def _wrap_cue(st: int, en: int, txt: str):
+    """保險：把過長的字幕行切成多段，每段 <= MAX_CUE_CHARS，時間依字數比例分配。
+    確保畫面上一次只顯示一短行（避免 libass 自動把長句折成 5-6 行往上堆、擋住人臉）。
+    優先在標點處斷，否則硬切。回傳 [(st, en, text), ...]。"""
+    txt = txt.strip()
+    if len(txt) <= MAX_CUE_CHARS:
+        return [(st, en, txt)]
+    parts, buf = [], ""
+    for ch in txt:
+        buf += ch
+        if len(buf) >= MAX_CUE_CHARS or ch in SENT_BREAK or ch in "，、":
+            parts.append(buf.strip())
+            buf = ""
+    if buf.strip():
+        parts.append(buf.strip())
+    parts = [p for p in parts if p]
+    if len(parts) <= 1:
+        return [(st, en, txt)]
+    total = sum(len(p) for p in parts) or 1
+    span = max(en - st, 1)
+    out, t = [], st
+    for p in parts:
+        d = int(span * len(p) / total)
+        out.append((t, t + d, p))
+        t += d
+    last = out[-1]
+    out[-1] = (last[0], en, last[2])   # 末段對齊原結束時間，不留空隙
+    return out
 
 
 def _audio_seconds(mp3_path: Path) -> float:
@@ -111,6 +141,9 @@ async def tts_with_subs(text: str, mp3_path: Path, srt_path: Path, voice: str, r
             cues.append((int(t * 1e7), int((t + d) * 1e7), c))
             t += d
 
+    # 保險：把任何過長的 cue 再切短，確保畫面一次只顯示一短行（位置才會固定在下方、不擋臉）
+    cues = [c for cue in cues for c in _wrap_cue(*cue)]
+
     with open(srt_path, "w", encoding="utf-8") as f:
         for i, (st, en, txt) in enumerate(cues, 1):
             f.write(f"{i}\n{_ticks_to_srt(st)} --> {_ticks_to_srt(en)}\n{txt}\n\n")
@@ -124,8 +157,9 @@ def render(bg: Path, mp3: Path, srt: Path, title: str, out_mp4: Path, font: str)
         shutil.copy(bg, tdp / ("bg" + bg.suffix))
         shutil.copy(mp3, tdp / "a.mp3")
         shutil.copy(srt, tdp / "s.srt")
-        style = (f"FontName={font},FontSize=20,PrimaryColour=&H00FFFFFF,"
-                 f"OutlineColour=&H00000000,Outline=3,Shadow=1,MarginV=40")
+        style = (f"FontName={font},FontSize=18,PrimaryColour=&H00FFFFFF,"
+                 f"OutlineColour=&H00000000,Outline=3,Shadow=1,"
+                 f"Alignment=2,MarginV=45")
         style_esc = style.replace(",", r"\,")
         vf = (f"scale=1920:1080:force_original_aspect_ratio=decrease,"
               f"pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=black,"
@@ -154,8 +188,9 @@ def render_head(head_mp4: Path, mp3: Path, srt: Path, title: str,
         shutil.copy(head_mp4, tdp / "h.mp4")
         shutil.copy(mp3, tdp / "a.mp3")
         shutil.copy(srt, tdp / "s.srt")
-        style = (f"FontName={font},FontSize=20,PrimaryColour=&H00FFFFFF,"
-                 f"OutlineColour=&H00000000,Outline=3,Shadow=1,MarginV=40")
+        style = (f"FontName={font},FontSize=18,PrimaryColour=&H00FFFFFF,"
+                 f"OutlineColour=&H00000000,Outline=3,Shadow=1,"
+                 f"Alignment=2,MarginV=45")
         style_esc = style.replace(",", r"\,")
         vf = (f"scale=1920:1080:force_original_aspect_ratio=decrease,"
               f"pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=black,"
