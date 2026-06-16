@@ -30,8 +30,19 @@
 - `MultiTalkWav2VecEmbeds` 的 `fps`、`VHS_VideoCombine` 的 `frame_rate` 同改為選定值（20 或 16）。
 - （`run_one.py` 的 `mutate()` 已有「找值替換」邏輯可參考。）
 
+## 結論（2026-06-17 定案）：全部不採用，維持原設定 25fps
+
+軍師看片後判定 **fps20 與 fps16 都出現「口型與聲音不同步」**——InfiniteTalk 的嘴型生成是綁 25fps 的，
+改 fps 會破壞 lip-sync。因此 **fps 不是可用的加速槓桿**，維持 **25fps 不變**。
+- fp8_fast：與 lightx2v LoRA 不相容（淘汰）。
+- fps20/fps16：加速有（1.27x／1.57x）但**畫質不過關（嘴音不同步）→ 淘汰**。
+- production workflow 全程未被改動，無需還原。
+
+**未來若要再榨速度**：TeaCache（本輪未測）是最大潛在來源；或 SageAttention 2.x（需 Blackwell wheel）。
+**不要再回頭試降 fps**（已證實會破壞 InfiniteTalk lip-sync）。
+
 ## 狀態
 - [x] BASE / fps20 / fps16 實測
 - [x] fp8_fast（淘汰：LoRA 不相容）
-- [ ] 軍師看 fps20/fps16 樣片，定採用哪個 fps
-- [ ] 採用後改 production workflow（單行小改）
+- [x] 軍師看片：fps20/fps16 嘴音不同步 → 全部淘汰，維持 25fps
+- [x] production workflow 維持原樣（未動）
