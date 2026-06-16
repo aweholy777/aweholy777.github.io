@@ -31,8 +31,11 @@ from extract_text import extract
 
 DEFAULT_VOICE = "zh-TW-HsiaoChenNeural"
 DEFAULT_RATE = "+10%"          # 朗讀稍快，全文較長
-MAX_CUE_CHARS = 14             # 單行字幕長度上限（壓到一次只顯示一短行，避免被折成多行擋臉）
-SENT_BREAK = "。！？；："
+# 字幕斷行：先語意、再標點、字數只當最後防線
+SENT_END = "。！？!?…"          # 句末/語氣完結：一定斷 → 一句完整意思自成一段
+CLAUSE_BREAK = "，、；：,;"      # 句中停頓：只有當行已偏長（>= SOFT_CHARS）才在此斷
+SOFT_CHARS = 13                # 軟門檻：未達此長度的短句保持完整，不在逗號處硬斷
+HARD_CHARS = 24                # 硬上限：完全沒有標點的長串，最後才在此硬斷（避免折成多行擋臉）
 
 
 def _ticks_to_srt(t: int) -> str:
@@ -45,52 +48,33 @@ def _ticks_to_srt(t: int) -> str:
 
 
 def _split_cues(text: str):
-    """把全文切成字幕行（滿 MAX_CUE_CHARS 或遇標點斷行）"""
+    """以語意為主、標點為輔，把全文切成字幕行：
+    - 句末標點（。！？…）一定斷 → 一句完整意思自成一行（或數行）
+    - 句子偏長（>= SOFT_CHARS）時，才在句中停頓標點（，、；：）處斷
+    - 完全沒標點的長串，最後才以 HARD_CHARS 硬斷（避免被 libass 折成多行擋臉）
+    換行符（段落界線）視為強斷點；保留標點，維持語意可讀。"""
     cues, buf = [], ""
+
+    def flush():
+        nonlocal buf
+        t = buf.strip(" 　\n")
+        if t:
+            cues.append(t)
+        buf = ""
+
     for ch in text:
         if ch == "\n":
-            if buf.strip():
-                cues.append(buf.strip())
-            buf = ""
+            flush()
             continue
         buf += ch
-        if len(buf) >= MAX_CUE_CHARS or ch in SENT_BREAK or ch in "，、":
-            if buf.strip():
-                cues.append(buf.strip())
-            buf = ""
-    if buf.strip():
-        cues.append(buf.strip())
+        if ch in SENT_END:                                   # 句末：意思完整 → 一定斷
+            flush()
+        elif ch in CLAUSE_BREAK and len(buf) >= SOFT_CHARS:  # 偏長才在停頓處斷
+            flush()
+        elif len(buf) >= HARD_CHARS:                         # 無標點長串的最後防線
+            flush()
+    flush()
     return cues
-
-
-def _wrap_cue(st: int, en: int, txt: str):
-    """保險：把過長的字幕行切成多段，每段 <= MAX_CUE_CHARS，時間依字數比例分配。
-    確保畫面上一次只顯示一短行（避免 libass 自動把長句折成 5-6 行往上堆、擋住人臉）。
-    優先在標點處斷，否則硬切。回傳 [(st, en, text), ...]。"""
-    txt = txt.strip()
-    if len(txt) <= MAX_CUE_CHARS:
-        return [(st, en, txt)]
-    parts, buf = [], ""
-    for ch in txt:
-        buf += ch
-        if len(buf) >= MAX_CUE_CHARS or ch in SENT_BREAK or ch in "，、":
-            parts.append(buf.strip())
-            buf = ""
-    if buf.strip():
-        parts.append(buf.strip())
-    parts = [p for p in parts if p]
-    if len(parts) <= 1:
-        return [(st, en, txt)]
-    total = sum(len(p) for p in parts) or 1
-    span = max(en - st, 1)
-    out, t = [], st
-    for p in parts:
-        d = int(span * len(p) / total)
-        out.append((t, t + d, p))
-        t += d
-    last = out[-1]
-    out[-1] = (last[0], en, last[2])   # 末段對齊原結束時間，不留空隙
-    return out
 
 
 def _audio_seconds(mp3_path: Path) -> float:
@@ -108,30 +92,32 @@ async def tts_with_subs(text: str, mp3_path: Path, srt_path: Path, voice: str, r
     """Edge TTS：寫 mp3＋SRT。優先用 TTS 回傳的時間戳；
     沒有時間戳時，按音訊總長以字數比例估算（誤差約 ±1 秒，足夠同步）。"""
     communicate = edge_tts.Communicate(text, voice, rate=rate)
-    words = []  # (offset_ticks, duration_ticks, text)
+    # 中文 edge-tts 回傳的是「整句」時間戳（SentenceBoundary，text=一整句；WordBoundary 多為 0）
+    sents = []  # (offset_ticks, duration_ticks, sentence_text)
     with open(mp3_path, "wb") as f:
         async for chunk in communicate.stream():
             if chunk["type"] == "audio":
                 f.write(chunk["data"])
-            elif chunk["type"] in ("WordBoundary", "SentenceBoundary"):
-                words.append((chunk["offset"], chunk["duration"], chunk["text"]))
+            elif chunk["type"] in ("SentenceBoundary", "WordBoundary"):
+                sents.append((chunk["offset"], chunk["duration"], chunk["text"]))
 
     cues = []
-    if words:
-        # 把詞合併成字幕行：滿 MAX_CUE_CHARS 或遇句末標點就斷行
-        buf, start = "", None
-        for off, dur, w in words:
-            if start is None:
-                start = off
-            buf += w
-            end = off + dur
-            if len(buf) >= MAX_CUE_CHARS or (buf and buf[-1] in SENT_BREAK):
-                cues.append((start, end, buf))
-                buf, start = "", None
-        if buf:
-            cues.append((start, words[-1][0] + words[-1][1], buf))
+    if sents:
+        # 用每句的時間跨度 + _split_cues 把該句切成語意/標點小段，段內時間按字數比例分配。
+        # 如此既以語意斷行、又有逐句的真實時間錨點（比全段比例估算更準）。
+        for off, dur, stext in sents:
+            parts = _split_cues(stext)
+            if not parts:
+                continue
+            total = sum(len(p) for p in parts) or 1
+            t = off
+            for p in parts:
+                d = int(dur * len(p) / total)
+                cues.append((t, t + d, p))
+                t += d
+            cues[-1] = (cues[-1][0], off + dur, cues[-1][2])   # 末段對齊該句結束時間
     else:
-        # 後備：按字數比例分配音訊總長
+        # 後備（完全無時間戳時）：整段以語意/標點切行，再按音訊總長依字數比例配時間
         total_sec = _audio_seconds(mp3_path)
         lines = _split_cues(text)
         total_chars = sum(len(c) for c in lines) or 1
@@ -140,9 +126,6 @@ async def tts_with_subs(text: str, mp3_path: Path, srt_path: Path, voice: str, r
             d = total_sec * len(c) / total_chars
             cues.append((int(t * 1e7), int((t + d) * 1e7), c))
             t += d
-
-    # 保險：把任何過長的 cue 再切短，確保畫面一次只顯示一短行（位置才會固定在下方、不擋臉）
-    cues = [c for cue in cues for c in _wrap_cue(*cue)]
 
     with open(srt_path, "w", encoding="utf-8") as f:
         for i, (st, en, txt) in enumerate(cues, 1):
