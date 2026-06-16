@@ -43,6 +43,7 @@ python video-pipeline\batch_make.py --src content\daily-qt\otqt --outdir video-o
 | 停頓標點 | `CLAUSE_BREAK = ，、；：,;` | 只有當行已偏長（≥ `SOFT_CHARS`）才在此斷 |
 | 軟門檻 | `SOFT_CHARS = 13` | 未達此長度的短句**保持完整**，不在逗號處硬斷 |
 | 硬上限 | `HARD_CHARS = 24` | 完全沒標點的長串，最後才在此硬斷（避免折成多行擋臉） |
+| 行首標點 | `NO_LEAD = ，。！？）」…` | 行首不可是標點（句末/停頓符號、收尾括號等自動併回上一行）；開引號/開括號不在此列，可作行首 |
 
 時間軸：edge-tts 中文回傳的是**整句時間戳**（SentenceBoundary），`tts_with_subs` 用每句的時間跨度
 配合 `_split_cues` 切小段、段內按字數比例分配，所以斷行依語意、時間又貼合該句。
