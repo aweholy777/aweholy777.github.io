@@ -1,0 +1,4 @@
+config,thresh,video_sec,elapsed_sec,elapsed_min,ratio
+base,0.0,150.9,2143.5,35.7,14.21
+teacache_015,0.15,150.9,2163.5,36.1,14.34
+teacache_025,0.25,150.9,2183.4,36.4,14.47
