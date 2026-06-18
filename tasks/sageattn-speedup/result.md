@@ -1,5 +1,34 @@
 # 加速測試結果（2026-06-15 測；2026-06-16 更正數字）
 
+## [2026-06-18] STEP 1 環境探查（SageAttention 2.x 試驗；未安裝任何東西、零 GPU、正式環境未動）
+
+**正式 ComfyUI 環境（系統 Python `…\Python313\python.exe`）：**
+- torch **2.12.0+cu130**（CUDA build 13.0）、cudnn 9.20.0、python **3.13.14**
+- GPU：RTX 5090，compute capability (12,0) = **sm_120（Blackwell）**，`cuda.is_available()=True`
+- triton：import 版本 **3.7.0**（但無 pip metadata，疑為手動/附帶安裝）
+
+**SageAttention 現況（決定性）：**
+- 已裝，但版本 = **1.0.6 ← 與 2026-06-15 那輪失敗的同一版**。
+- 只有 v1 符號（`sageattn`、`sageattn_varlen`、`attn_qk_int8_*`），**無 2.x API**（`hasattr(sageattn_qk_int8_pv_fp16_cuda)=False`）。
+- 故 KJNodes「Patch Sage Attention」節點若設後端 `sageattn_qk_int8_pv_fp16_cuda`，會與上輪一樣 `ImportError: Selected attention mode not available` → fallback sdpa（不加速）。
+
+**接線零件已就緒（缺的是 sage 2.x 本體）：**
+- KJNodes 有 `PathchSageAttentionKJ` 節點，`sageattn_modes` 含 `sageattn_qk_int8_pv_fp16_cuda`／`_triton`／…（3060 指定的接法可行）。
+- ComfyUI core `attention.py` 與 WanVideoWrapper 都能 `from sageattention import sageattn`。
+
+**風險判定（修正 3060 TODO 的假設）：**
+- 3060 TODO 假設的預編 wheel＝「SageAttention 2.2.0 + cu128 + PyTorch 2.11 nightly」，**與實機不符**（實機是 cu130 + torch 2.12 + py3.13 + sm120，比假設還新）。該 wheel 不能直接套。
+- 要拿到可用的 SageAttention 2.x，需：① 找 **cu130 / torch2.12 / py3.13 / sm120 的預編 wheel**（待查是否存在）；或 ② 源碼編譯（需對應 CUDA toolkit，高風險）；或 ③ 降 torch 去配舊 wheel（**會動到正式環境，違反「正式環境不動」，禁止**）。
+- 結論：**屬高風險路徑 → 必須走隔離環境（獨立 venv / ComfyUI 副本），正式那套完全不碰。** 與 3060 的隔離要求一致。
+
+**STEP 1 狀態：完成。下一步（STEP 2，待 GPU 空閒、8 片跑完後）：**
+- 開隔離 venv / ComfyUI 副本，尋找並安裝 SageAttention **2.x for cu130+sm120+py313** 預編 wheel（找不到才考慮源碼編，仍只在隔離環境）。
+- 用 KJNodes Patch 節點（後端 `sageattn_qk_int8_pv_fp16_cuda`）接上，**不要**用 `--use-sage-attention` 旗標。
+- 同一篇真實 QT 做 A/B：①口型/聲音同步（硬門檻）②加速%。口型完好且顯著才切正式。
+
+---
+
+
 ## 結論：BlockSwap 40→0 = **約 1.15 倍加速（快 ~15%）**，免費、畫質不變，已採用並保留
 
 > ⚠️ **更正**：初版 result 寫「1.81x」是**錯的**——測試腳本拿 13 分鐘的測試片(01-20)
