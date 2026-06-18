@@ -1,4 +1,4 @@
-# gen_5090.ps1 — 5090 手動生成影片（軍師下命令才跑；新架構 2026-06-18 起生成不再排程）
+﻿# gen_5090.ps1 — 5090 手動生成影片（軍師下命令才跑；新架構 2026-06-18 起生成不再排程）
 # 用法：  powershell -ExecutionPolicy Bypass -File tasks\5090-migration\gen_5090.ps1 -Count 3
 # 只生成，不上傳、不 push。生成的 mp4 留在 video-output\head\（gitignored），
 # 由每日 20:00 的 QT-Upload-5090（upload_5090.ps1）上傳上限 6 部並更新網頁。
