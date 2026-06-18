@@ -195,7 +195,8 @@ def main():
             return
         print(msg)
     elif a.auto:
-        vids = sorted((REPO / "video-output" / "head").glob("*.mp4"), reverse=True)
+        # 最舊日期先傳（檔名 <sub>_YYYY-MM-DD.mp4 升序），讓系列照進度順序在 YouTube 發布。
+        vids = sorted((REPO / "video-output" / "head").glob("*.mp4"))
         done = 0
         for v in vids:
             if done >= a.limit:
