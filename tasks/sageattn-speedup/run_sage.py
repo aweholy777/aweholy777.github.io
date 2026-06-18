@@ -28,10 +28,9 @@ WF = VP / "workflows" / "wanvideo_2_1_14B_I2V_InfiniteTalk_example_03.json"
 ART = VP.parent / "content" / "daily-qt" / "ntqt" / "2026-01-25.md"
 
 SERVER = "http://127.0.0.1:8189"          # 隔離 ComfyUI（sage 2.2 在這）
-SAMPLER = "WanVideoSampler"
-MODEL_INPUT = "model"                       # sampler 上接 MODEL 的輸入名
-SAGE_NODE = "PathchSageAttentionKJ"
-DEFAULT_BACKEND = "sageattn_qk_int8_pv_fp16_cuda"
+LOADER = "WanVideoModelLoader"             # 輸出 WANVIDEOMODEL；sage 透過它的 attention_mode 啟用
+ATTN_FIELD = "attention_mode"
+DEFAULT_BACKEND = "sageattn"               # WanVideoWrapper 的 sage 模式（非 KJNodes 通用 MODEL patch）
 
 
 def prep_input():
@@ -44,55 +43,44 @@ def prep_input():
     print("prepared test input, audio sec =", round(mv._audio_seconds(MP3), 1))
 
 
+def _attn_options(object_info):
+    spec = object_info[LOADER]["input"]
+    for sec in ("required", "optional"):
+        conf = (spec.get(sec) or {}).get(ATTN_FIELD)
+        if conf:
+            return conf[0]
+    raise RuntimeError(f"{LOADER} 找不到 {ATTN_FIELD} 輸入")
+
+
 def add_sage(w, backend, object_info):
-    """把 PathchSageAttentionKJ 夾在 sampler 的 model 輸入前：loader → sage → sampler。"""
-    nodes = w["nodes"]; links = w["links"]
-    if SAGE_NODE not in object_info:
-        raise RuntimeError(f"object_info 找不到 {SAGE_NODE}（KJNodes 未裝？）")
-    backends = object_info[SAGE_NODE]["input"]["required"]["sage_attention"][0]
-    if backend not in backends:
-        raise RuntimeError(f"後端 {backend} 不在可選清單 {backends}")
-
-    sampler = next(n for n in nodes if n.get("type") == SAMPLER)
-    min_ = next(i for i in sampler["inputs"] if i["name"] == MODEL_INPUT)
-    old_lid = min_["link"]                  # sampler.model 目前的 link（來自 loader/上游）
-    old_link = next(l for l in links if l[0] == old_lid)
-    src_node, src_slot = old_link[1], old_link[2]
-
-    new_nid = max(n["id"] for n in nodes) + 1
-    new_lid = max((l[0] for l in links), default=0) + 1
-
-    sage = {
-        "id": new_nid, "type": SAGE_NODE, "pos": [100, 100], "size": [320, 100],
-        "flags": {}, "order": 0, "mode": 0,
-        "inputs": [{"name": "model", "type": "MODEL", "link": old_lid}],
-        "outputs": [{"name": "MODEL", "type": "MODEL", "links": [new_lid]}],
-        "widgets_values": [backend],
-    }
-    nodes.append(sage)
-    # 1) 原本 loader→sampler 的 link 改為 loader→sage
-    old_link[3], old_link[4] = new_nid, 0
-    # 2) 新增 sage→sampler 的 link
-    dst_slot = sampler["inputs"].index(min_)
-    links.append([new_lid, new_nid, 0, sampler["id"], dst_slot, "MODEL"])
-    min_["link"] = new_lid
-    print(f"  插入 {SAGE_NODE} (node {new_nid}) backend={backend}: "
-          f"node{src_node}.{src_slot} → sage → {SAMPLER}.model")
-    return new_nid
+    """設 WanVideoModelLoader 的 attention_mode = backend（sage 模式）。回傳 loader 的 UI node id。"""
+    opts = _attn_options(object_info)
+    if backend not in opts:
+        raise RuntimeError(f"attention_mode {backend} 不在可選 {opts}")
+    loader = next((n for n in w["nodes"] if n.get("type") == LOADER), None)
+    if loader is None:
+        raise RuntimeError(f"workflow 找不到 {LOADER} 節點")
+    wv = loader.get("widgets_values")
+    if not isinstance(wv, list):
+        raise RuntimeError(f"{LOADER} 無 widgets_values（無法設 {ATTN_FIELD}）")
+    # 在 widgets_values 找目前是 attention_mode 選項值的那格（預設 sdpa）改成 backend
+    idx = next((i for i, val in enumerate(wv) if val in opts), None)
+    if idx is None:
+        raise RuntimeError(f"{LOADER}.widgets_values 找不到 attention_mode 欄（現值 {wv}）")
+    old = wv[idx]; wv[idx] = backend
+    print(f"  {LOADER}(node {loader['id']}).{ATTN_FIELD}: {old} → {backend}")
+    return loader["id"]
 
 
-def preflight(w, object_info, sage_nid):
+def preflight(w, object_info, loader_nid, backend):
     api = cth.ui_to_api(w, object_info)
-    if str(sage_nid) not in api:
-        raise RuntimeError(f"pre-flight 失敗：sage 節點 {sage_nid} 被修剪掉（未接上）")
-    samp = next(e for e in api.values() if e["class_type"] == SAMPLER)
-    ref = samp["inputs"].get(MODEL_INPUT)
-    if not (isinstance(ref, list) and ref[0] == str(sage_nid)):
-        raise RuntimeError(f"pre-flight 失敗：{SAMPLER}.model 未指向 sage（得到 {ref}）")
-    sref = api[str(sage_nid)]["inputs"].get("model")
-    if not isinstance(sref, list):
-        raise RuntimeError(f"pre-flight 失敗：sage.model 未接上游（得到 {sref}）")
-    print(f"  pre-flight OK：{SAMPLER}.model → sage{sage_nid} → node{sref[0]}")
+    le = next((e for e in api.values() if e["class_type"] == LOADER), None)
+    if le is None:
+        raise RuntimeError("pre-flight 失敗：ui_to_api 後找不到 loader")
+    got = le["inputs"].get(ATTN_FIELD)
+    if got != backend:
+        raise RuntimeError(f"pre-flight 失敗：{LOADER}.{ATTN_FIELD}={got}（期望 {backend}）")
+    print(f"  pre-flight OK：{LOADER}.{ATTN_FIELD} = {backend}")
 
 
 def parse_cfg(arg):
@@ -117,7 +105,7 @@ def main():
         object_info = cth._get(base, "/object_info", timeout=120)
         w = json.loads(WF.read_text(encoding="utf-8"))
         nid = add_sage(w, backend, object_info)
-        preflight(w, object_info, nid)
+        preflight(w, object_info, nid, backend)
         wf = WFDIR / f"{cfg}.json"
         wf.write_text(json.dumps(w, ensure_ascii=False, indent=2), encoding="utf-8")
 

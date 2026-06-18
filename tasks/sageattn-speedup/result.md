@@ -32,10 +32,26 @@
 - **GPU 煙霧測試通過**：sageattn 在 cuda 實跑，輸出 (1,8,256,64) fp16，vs sdpa 平均差 0.00288（int8 量化正常近似）。
 - → 對 torch 2.11 編的 wheel 在 2.12 可用，**不必降 torch**。triton「Failed to find CUDA」警告無害（cuda 後端用預編核心，非 triton JIT）。
 
-**下一步（STEP 2 續，A/B 實測，耗 GPU）**：
-- 用 venv python 跑**隔離 ComfyUI（port 8189）**，共用模型（extra_model_paths）。
-- 在 workflow 副本接 KJNodes「Patch Sage Attention」節點（後端 `sageattn_qk_int8_pv_fp16_cuda`），**不用** `--use-sage-attention` 旗標。
-- 同一篇真實 QT A/B：①口型/聲音同步（硬門檻）②加速%。口型完好且顯著才切正式。
+## [2026-06-19] STEP 2 A/B 結果：sage ≈ 1.75x 加速、畫面完整（口型待軍師看片定）
+
+**接法修正（重要）**：KJNodes「PathchSageAttentionKJ」**不適用 WanVideoWrapper**——它吃/吐通用 `MODEL`，但 `WanVideoSampler.model` 是 `WANVIDEOMODEL`，接上去 `/prompt` 報 HTTP 400 return_type_mismatch。
+- 正解：設 **`WanVideoModelLoader.attention_mode = sageattn`**（該 loader 的選項含 sdpa/flash_attn_2/3/**sageattn**/sageattn_3/radial_sage/…）。這正是 2026-06-15 那輪 1.0.6 失敗的同一條路，現在 sage 2.2 補上即生效。
+- harness `run_sage.py` 已改為設 loader attention_mode（非插節點），pre-flight 驗證 loader.attention_mode=sageattn。
+
+**A/B（隔離 8189、同一 3 分鐘片 150.9s、單一變因＝attention_mode）**：
+| 版本 | attention_mode | 耗時 | ratio |
+|---|---|---|---|
+| base | sdpa | **35.7 分** | 14.20 |
+| sage | sageattn | **20.4 分** | 8.09 |
+
+→ **加速 ≈ 1.75x（快約 43%）**，優於 3060 估的 30-40%。
+- 完整性：兩片時長皆 00:02:30.89（sage 未截斷）、皆有 aac 音訊；sage 版抽影格畫面乾淨（主播/背景正常，無黑屏/糊化/變形）。樣片在 `_out/base.mp4`、`_out/sage_sageattn.mp4`（gitignored）。
+- **口型同步＝硬門檻，待軍師看片判定**。口型完好才採用＝把正式 workflow 的 `WanVideoModelLoader.attention_mode` 由 sdpa 改 sageattn，並在正式 system python 補裝 sage 2.2（目前正式仍 1.0.6，未動）。
+
+**若採用，正式切換清單（尚未執行，等軍師拍板）**：
+1. 正式 system python `pip install` 同一顆 sage 2.2 wheel（取代 1.0.6）。
+2. 正式 workflow `wanvideo_2_1_14B_I2V_InfiniteTalk_example_03.json` 的 `WanVideoModelLoader.attention_mode`：sdpa → sageattn。
+3. 跑 1 篇真實全長 QT 驗證口型＋耗時，再開大量生成。
 
 ---
 
