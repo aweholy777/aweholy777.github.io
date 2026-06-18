@@ -21,10 +21,21 @@
 - 要拿到可用的 SageAttention 2.x，需：① 找 **cu130 / torch2.12 / py3.13 / sm120 的預編 wheel**（待查是否存在）；或 ② 源碼編譯（需對應 CUDA toolkit，高風險）；或 ③ 降 torch 去配舊 wheel（**會動到正式環境，違反「正式環境不動」，禁止**）。
 - 結論：**屬高風險路徑 → 必須走隔離環境（獨立 venv / ComfyUI 副本），正式那套完全不碰。** 與 3060 的隔離要求一致。
 
-**STEP 1 狀態：完成。下一步（STEP 2，待 GPU 空閒、8 片跑完後）：**
-- 開隔離 venv / ComfyUI 副本，尋找並安裝 SageAttention **2.x for cu130+sm120+py313** 預編 wheel（找不到才考慮源碼編，仍只在隔離環境）。
-- 用 KJNodes Patch 節點（後端 `sageattn_qk_int8_pv_fp16_cuda`）接上，**不要**用 `--use-sage-attention` 旗標。
-- 同一篇真實 QT 做 A/B：①口型/聲音同步（硬門檻）②加速%。口型完好且顯著才切正式。
+**STEP 1 狀態：完成。**
+
+## [2026-06-19] STEP 2 進度：隔離環境 + sage 2.2 已可用（gamble #1 成功，免降 torch）
+
+**隔離方式**：建 venv `C:\Users\user\sage-venv`（`--system-site-packages`：繼承系統的 ComfyUI 依賴，只在 venv 內覆蓋 sage/torch）。**system python 完全未動**（pip 明確 "Not uninstalling sageattention … outside environment"，正式仍 1.0.6）。
+**wheel**：3060 指的 ziggyxp release 有 `sageattention-2.2.0+cu130.torch2.11-cp313-cp313-win_amd64.whl`（6.4MB），下載至 `C:\Users\user\sage-wheels\`。`pip install --no-deps` 進 venv。
+**gamble #1（免降 torch）成功**：
+- 在**繼承的 torch 2.12.0+cu130** 下 `import sageattention`＝2.2.0，`sageattn_qk_int8_pv_fp16_cuda` 等 2.x API 都在。
+- **GPU 煙霧測試通過**：sageattn 在 cuda 實跑，輸出 (1,8,256,64) fp16，vs sdpa 平均差 0.00288（int8 量化正常近似）。
+- → 對 torch 2.11 編的 wheel 在 2.12 可用，**不必降 torch**。triton「Failed to find CUDA」警告無害（cuda 後端用預編核心，非 triton JIT）。
+
+**下一步（STEP 2 續，A/B 實測，耗 GPU）**：
+- 用 venv python 跑**隔離 ComfyUI（port 8189）**，共用模型（extra_model_paths）。
+- 在 workflow 副本接 KJNodes「Patch Sage Attention」節點（後端 `sageattn_qk_int8_pv_fp16_cuda`），**不用** `--use-sage-attention` 旗標。
+- 同一篇真實 QT A/B：①口型/聲音同步（硬門檻）②加速%。口型完好且顯著才切正式。
 
 ---
 
