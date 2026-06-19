@@ -32,3 +32,5 @@ video-pipeline/.upload_*
 AGENTS.md
 # SageAttention 測試殘檔（樣片/輸入/結果，約 26MB）：留本機、不進 repo
 tasks/sageattn-speedup/_*
+# Claude CLI 對話記錄本機備份（含路徑/權杖討論等私密內容）：絕不進公開 repo
+/_chat-logs/
