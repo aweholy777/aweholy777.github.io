@@ -28,3 +28,7 @@ __pycache__/
 *.pyc
 video-pipeline/.gen_*
 video-pipeline/.upload_*
+# AGENTS.md：CLAUDE.md 的本機相容複本（opencode/Codex 讀），易過期→不追蹤，各機自留本機版、以 CLAUDE.md 為唯一規範
+AGENTS.md
+# SageAttention 測試殘檔（樣片/輸入/結果，約 26MB）：留本機、不進 repo
+tasks/sageattn-speedup/_*
