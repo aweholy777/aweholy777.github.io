@@ -836,7 +836,7 @@
         true,
         400,
         25,
-        1,
+        0.8,
         1,
         "para"
       ],
@@ -955,7 +955,7 @@
         "fp16_fast",
         "fp8_e4m3fn",
         "offload_device",
-        "sdpa"
+        "sageattn"
       ],
       "color": "#223",
       "bgcolor": "#335"

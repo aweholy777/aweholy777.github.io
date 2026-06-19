@@ -53,6 +53,21 @@
 2. 正式 workflow `wanvideo_2_1_14B_I2V_InfiniteTalk_example_03.json` 的 `WanVideoModelLoader.attention_mode`：sdpa → sageattn。
 3. 跑 1 篇真實全長 QT 驗證口型＋耗時，再開大量生成。
 
+## [2026-06-19] STEP 3 定案：軍師看片 OK → **正式採用，已切換放量**
+
+軍師看 A/B sage 片判定**口型 OK → 採用**，並追加「主播頭部搖頭幅度有時過大，稍微減少」。正式切換三項全做：
+
+1. **正式 system python 補裝 sage 2.2**：`pip install --no-deps --force-reinstall` 同顆 ziggyxp wheel，取代 1.0.6 →
+   現 `pip show` = 2.2.0、`sageattn_qk_int8_pv_fp16_cuda` 在；torch 仍 2.12（未動）。
+2. **正式 workflow 改兩處**（`wanvideo_2_1_14B_I2V_InfiniteTalk_example_03.json`，`--server local` 走的就是這支）：
+   - `WanVideoModelLoader.attention_mode`：sdpa → **sageattn**。
+   - `MultiTalkWav2VecEmbeds.audio_scale`：1 → **0.8**（減頭部晃動；audio_scale 是 audio 驅動動作強度主旋鈕，0.8 仍保得住口型）。
+3. **全長驗證**（2026-02-14，下一篇進度、不重覆）：耗時 **43.4 分**（8196 frames＝5:27.84 影片、114 窗；按 A/B 1.75x 反推 sdpa 全長約 76 分，省 ~33 分）。
+   無 fallback 報錯＝sage 真生效；影片 1920x1080/25fps、aac 音訊在、畫面乾淨、字幕正常；連續影格頭部晃動明顯收斂。
+   **軍師看片判定口型 OK＋頭部晃動滿意 → 定案放量。**
+
+**現況：正式環境已全面切到 sage 2.2 + sageattn + audio_scale 0.8，往後生成都吃加速＋減晃動。** 02-14 那篇進待上傳池，由每日 20:00 排程上傳。
+
 ---
 
 
