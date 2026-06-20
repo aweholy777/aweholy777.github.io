@@ -66,4 +66,23 @@ if ($changed) {
 } else {
     Log "本次無新上傳（可能隊列無已生成待傳影片），未 push。"
 }
+
+# 4. 歸檔：把「已上傳(在 yt_uploaded.csv)」的 mp4 從 head\ 搬到 head\old\，騰出空間。
+#    搬到子目錄不影響生成/上傳：生成端 mp4 存在檢查是非遞迴直接路徑(nightly_head.py)，
+#    看不到 old\；且 csv + 內嵌 shortcode 本就會擋下重生/重傳。head\old\ 由軍師(用戶)自行清空備份。
+$head = "$repo\video-output\head"
+$old  = "$head\old"
+if (-not (Test-Path $old)) { New-Item -ItemType Directory -Path $old | Out-Null }
+$uploaded = @{}
+Get-Content "$repo\video-pipeline\yt_uploaded.csv" | Select-Object -Skip 1 | ForEach-Object {
+    $md = ($_ -split ',')[0]
+    if ($md -match 'daily-qt[\\/]([^\\/]+)[\\/]([^\\/.]+)\.md') { $uploaded["$($Matches[1])_$($Matches[2]).mp4"] = $true }
+}
+$moved = 0
+Get-ChildItem $head -Filter *.mp4 | Where-Object { $uploaded.ContainsKey($_.Name) } | ForEach-Object {
+    Move-Item $_.FullName (Join-Path $old $_.Name) -Force
+    $moved++
+}
+Log "歸檔已上傳 mp4 到 head\old\：$moved 部"
+
 Log "=== 完成 ==="
