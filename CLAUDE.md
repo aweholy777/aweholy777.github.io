@@ -96,3 +96,5 @@ opencode run "讀取 tasks/<任務名>/plan.md 並完整執行。完成後把結
 - `public/` 是建置產物，不要手動編輯
 - 日期格式：檔名 `YYYY-MM-DD.md`，標題 `YYYY – MM – DD QT 書卷 章：節~節`
 - 敏感／個人資料（見證、代禱事項）不派給雲端免費模型；若必須處理，改派本地模型（ollama）
+- 影片主播指派（`nightly_head.py` 的 `presenter_for()`）：第1卷=主播1、第2卷=主播2、**第3卷起一律主播1（不再奇偶輪替）**。即主播2 只出現在第2卷（馬可福音），其餘全主播1。主播圖＝`video-pipeline/assets/presenter.png`(主播1)、`presenter2.png`(主播2)。
+- 影片生成參數：採 SageAttention 加速（workflow `attention_mode=sageattn`，實測 ~1.75x、約 51 分/部）；InfiniteTalk `audio_scale=0.8`（減主播頭部晃動、仍保口型）；維持 25fps（降 fps 會破壞口型同步，勿改）。
