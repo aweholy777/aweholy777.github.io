@@ -6,8 +6,8 @@
 1. 依聖經書卷順序：新約（ntqt）→ 全部做完才換舊約。
 2. 同段經文多篇（不同年份）只做日期最新那篇。
 3. 已生成 / 已上傳(csv) / 已嵌入(shortcode) 的自動跳過。
-4. 主播按「書卷」輪替：第1卷=主播1(presenter.png)、第2卷=主播2(presenter2.png)、
-   第3卷=主播1…（presenter2.png 不存在時退回主播1）。
+4. 主播指派：第1卷=主播1(presenter.png)、第2卷=主播2(presenter2.png)，
+   第3卷起一律主播1（不再輪替；presenter2 缺時亦退回主播1）。
 
 --dry 列出接下來 10 篇（含書卷序與主播），不實際生成。
 --count N 本次生成 N 篇；--server local/lan/5090/完整URL。
@@ -31,8 +31,9 @@ P2 = HERE / "assets" / "presenter2.png"
 
 
 def presenter_for(book_seq):
-    """書卷序輪替主播：奇數卷→主播1，偶數卷→主播2（presenter2 缺則退回主播1）。"""
-    if book_seq % 2 == 0 and P2.exists():
+    """主播指派：第1卷→主播1、第2卷→主播2，第3卷起一律主播1（不再輪替）。
+    （2026-06-22 軍師改版：取消奇偶輪替，第二卷結束後固定用主播1。）"""
+    if book_seq == 2 and P2.exists():
         return P2
     return P1
 
