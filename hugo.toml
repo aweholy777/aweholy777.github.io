@@ -84,7 +84,7 @@ theme = "mainroad"
     parent = "daily-qt"
   [[menu.main]]
     name = "線上聖經"
-    url = "/bible/index.html"  # 直接指定連結
+    url = "http://bible.jbride.cc/"  # 直接指定連結
     weight = 31
     parent = "daily-qt"
   [[menu.main]]
