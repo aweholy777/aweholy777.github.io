@@ -195,8 +195,14 @@ def main():
             return
         print(msg)
     elif a.auto:
-        # 最舊日期先傳（檔名 <sub>_YYYY-MM-DD.mp4 升序），讓系列照進度順序在 YouTube 發布。
-        vids = sorted((REPO / "video-output" / "head").glob("*.mp4"))
+        # 依聖經卷序發布（與 nightly_head.build_queue 同一套順序），讓 YouTube/網站照
+        # 馬太→馬可→路加…嚴格呈現。不用純日期升序——各卷年份範圍重疊（如馬太 2021~2026、
+        # 馬可 2018~2025），日期排序會跨卷交錯。不在隊列中的（舊命名/例外）排最後、以檔名為次序。
+        import nightly_head  # 同目錄，HERE 已在 sys.path（line 40）
+        _order = {f"{sub}_{slug}": i
+                  for i, (sub, slug, seq) in enumerate(nightly_head.build_queue())}
+        vids = sorted((REPO / "video-output" / "head").glob("*.mp4"),
+                      key=lambda v: (_order.get(v.stem, len(_order)), v.stem))
         done = 0
         for v in vids:
             if done >= a.limit:
