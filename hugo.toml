@@ -114,9 +114,18 @@ theme = "mainroad"
     parent = "testimonies"
 
 [[menu.main]]
+  identifier = "one-on-one"
   name = "一對一門訓"
   pageRef = "one-on-one" # 假設連結到 content/one-on-one.md
   weight = 50
+
+  # 一對一門訓 子菜單
+  [[menu.main]]
+    name = "316佈道法"
+    url = "https://youtu.be/ieUFOJ3E8Rc?si=59ckMz3cyT7FcLQG"
+    params = { target = "_blank" }   # 開新分頁
+    weight = 51
+    parent = "one-on-one"
 
 [[menu.main]]
   name = "深淵響應"
