@@ -88,8 +88,8 @@ theme = "mainroad"
     weight = 31
     parent = "daily-qt"
   [[menu.main]]
-    name = "聖經進度記錄表"
-    url = "/daily-qt/bibletracker.html"  # 直接指定連結
+    name = "讀經進度記錄表"
+    url = "https://cmtc.tw/daily-qt/Biblereadingtracker.html"  # 直接指定連結
     weight = 32
     parent = "daily-qt"
 
