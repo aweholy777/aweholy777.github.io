@@ -85,11 +85,13 @@ theme = "mainroad"
   [[menu.main]]
     name = "線上聖經"
     url = "http://bible.jbride.cc/"  # 直接指定連結
+    params = { target = "_blank" }   # 開新分頁
     weight = 31
     parent = "daily-qt"
   [[menu.main]]
     name = "讀經進度記錄表"
     url = "https://cmtc.tw/daily-qt/Biblereadingtracker.html"  # 直接指定連結
+    params = { target = "_blank" }   # 開新分頁
     weight = 32
     parent = "daily-qt"
 

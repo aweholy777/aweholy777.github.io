@@ -18,7 +18,7 @@
                 <li class="menu__item{{ if or ($currentNode.IsMenuCurrent "main" .) ($currentNode.HasMenuCurrent "main" .) }} menu__item--active{{ end }}{{ if .HasChildren }} menu__item--has-children{{ end }}">
 
                     {{- /* 父菜單連結 a (包含 ARIA 和下拉指示符) */ -}}
-                    <a class="menu__link" href="{{ .URL | relLangURL }}" {{ if .HasChildren }}aria-haspopup="true" aria-expanded="false"{{ end }}>
+                    <a class="menu__link" href="{{ .URL | relLangURL }}"{{ with .Params.target }} target="{{ . }}" rel="noopener noreferrer"{{ end }} {{ if .HasChildren }}aria-haspopup="true" aria-expanded="false"{{ end }}>
                         {{ .Pre }}
                         <span class="menu__text">{{ .Name }}</span>
                         {{- if .HasChildren }} <span class="menu__dropdown-indicator"> ▾</span>{{ end -}}
@@ -32,7 +32,7 @@
                             {{- if .Name }}
                             {{/* 子菜單項 li (也加上 active 判斷) */}}
                             <li class="menu__item{{ if $currentNode.IsMenuCurrent "main" . }} menu__item--active{{ end }}">
-                                <a class="menu__link" href="{{ .URL | relLangURL }}">
+                                <a class="menu__link" href="{{ .URL | relLangURL }}"{{ with .Params.target }} target="{{ . }}" rel="noopener noreferrer"{{ end }}>
                                     {{ .Pre }}
                                     <span class="menu__text">{{ .Name }}</span>
                                     {{ .Post }}
