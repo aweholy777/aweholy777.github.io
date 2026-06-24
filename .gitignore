@@ -34,3 +34,7 @@ AGENTS.md
 tasks/sageattn-speedup/_*
 # Claude CLI 對話記錄本機備份（含路徑/權杖討論等私密內容）：絕不進公開 repo
 /_chat-logs/
+# 上傳/生成 log 檔（.txt 不被 *.log 規則涵蓋）：留本機、不進 repo
+video-pipeline/*_log.txt
+# 誤建的垃圾檔（redirect 失誤產生，與 verify_hugo.bat 重複，應刪）
+/hugo --buildFuture.bat
