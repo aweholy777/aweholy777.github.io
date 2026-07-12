@@ -43,8 +43,6 @@ const ALIASES = new Map(BOOKS.map((book) => [book, book]));
 ].forEach(([alias, book]) => ALIASES.set(alias, book));
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-// 本站 Goldmark 把單一 ~ 當刪除線符號，寫進 _index.md 前必須把標題的 ~ 跳脫成 \~
-const escapeTilde = (value) => value.replace(/(?<!\\)~/g, "\\~");
 const BOOK_PATTERN = [...ALIASES.keys()]
   .sort((a, b) => b.length - a.length)
   .map(escapeRegExp)
@@ -206,7 +204,7 @@ function buildRootIndex(rootIndexMarkdown, otCount, ntCount, unparsed) {
   if (unparsed.length) {
     output += "\n## 未辨識經文\n\n";
     for (const item of unparsed) {
-      output += `- [${escapeTilde(item.title || item.date)}](${item.date}/)\n`;
+      output += `- [${item.title || item.date}](${item.date}/)\n`;
     }
   }
 
@@ -223,7 +221,7 @@ function buildSectionIndex(existingMarkdown, title, description, items) {
       currentBook = item.ref.book;
       output += `## ${currentBook}\n\n`;
     }
-    output += `- [${escapeTilde(item.title)}](${item.date}/)\n`;
+    output += `- [${item.title}](${item.date}/)\n`;
   }
 
   return output;

@@ -20,8 +20,12 @@ theme = "mainroad"
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
+    # 關閉刪除線擴充：本站經文範圍大量用 ~（如 1~14），不要被當成 ~~刪除線~~。
+    # 關掉後單一/多個 ~ 一律顯示為字面波浪號，內文用純 ~ 即可，不需跳脫。
+    [markup.goldmark.extensions]
+      strikethrough = false
 
-      
+
 # 分頁設定
 [pagination]
   pagerSize = 10
