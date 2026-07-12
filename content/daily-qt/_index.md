@@ -9,5 +9,5 @@ draft: false
 
 每日 QT 已依聖經分為舊約 QT 與新約 QT。
 
-- [otqt 舊約QT](otqt/) (1982 篇)
+- [otqt 舊約QT](otqt/) (2013 篇)
 - [ntqt 新約QT](ntqt/) (1495 篇)
