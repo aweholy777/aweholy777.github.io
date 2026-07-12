@@ -43,6 +43,8 @@ const ALIASES = new Map(BOOKS.map((book) => [book, book]));
 ].forEach(([alias, book]) => ALIASES.set(alias, book));
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+// 本站單一 ~ 會被渲染器當刪除線符號；改用 HTML 實體 &#126; 顯示字面 ~（markdown 不會當它是符號）
+const escapeTilde = (value) => value.replace(/\\*~/g, "&#126;");
 const BOOK_PATTERN = [...ALIASES.keys()]
   .sort((a, b) => b.length - a.length)
   .map(escapeRegExp)
@@ -204,7 +206,7 @@ function buildRootIndex(rootIndexMarkdown, otCount, ntCount, unparsed) {
   if (unparsed.length) {
     output += "\n## 未辨識經文\n\n";
     for (const item of unparsed) {
-      output += `- [${item.title || item.date}](${item.date}/)\n`;
+      output += `- [${escapeTilde(item.title || item.date)}](${item.date}/)\n`;
     }
   }
 
@@ -221,7 +223,7 @@ function buildSectionIndex(existingMarkdown, title, description, items) {
       currentBook = item.ref.book;
       output += `## ${currentBook}\n\n`;
     }
-    output += `- [${item.title}](${item.date}/)\n`;
+    output += `- [${escapeTilde(item.title)}](${item.date}/)\n`;
   }
 
   return output;
