@@ -211,8 +211,9 @@ def main():
                 msg = publish_one(yt, v, a.privacy)
             except HttpError as e:
                 if _is_quota(e):
+                    print(f"QUOTA_LIMIT_HIT：{e}", flush=True)
                     print("YouTube 配額/上限已用盡，停止本次上傳（其餘留待下次）。", flush=True)
-                    break
+                    sys.exit(2)
                 print(f"上傳 {v.name} 失敗（HTTP {getattr(e.resp,'status','?')}），跳過。", flush=True)
                 continue
             print(msg)
