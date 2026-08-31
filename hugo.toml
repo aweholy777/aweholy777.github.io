@@ -70,9 +70,15 @@ theme = "mainroad"
 
   # 每日QT 子菜單 (根據圖片)
   [[menu.main]]
+    name = "生成當日QT"
+    url = "https://index-html-clean-copy.vercel.app/"
+    params = { target = "_blank" }   # 開新分頁
+    weight = 20
+    parent = "daily-qt"
+  [[menu.main]]
     name = "停更公告"
     pageRef = "daily-qt/announcement" # 連結到 content/daily-qt/announcement.md
-    weight = 20
+    weight = 99
     parent = "daily-qt"
   [[menu.main]]
     identifier = "otqt"
