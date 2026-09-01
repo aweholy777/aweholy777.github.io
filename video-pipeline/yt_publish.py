@@ -121,19 +121,13 @@ def upload(yt, video_path: Path, title: str, description: str, privacy: str) -> 
 
 
 def embed(md_path: Path, video_id: str) -> bool:
-    """在文章圖片行後插入 YouTube 影片（Hugo 內建 shortcode）"""
+    """在文章最下方插入 YouTube 影片（Hugo 內建 shortcode），影片前空兩行。
+    2026-08-30 軍師改版：原本插在開頭圖片行後，改成統一放文章最下方（629篇既有文章已批次遷移，
+    見 tasks/move-yt-shortcode-bottom/）。"""
     text = md_path.read_text(encoding="utf-8")
     if "{{< youtube" in text:
         return False  # 已嵌入過
-    shortcode = f"\n{{{{< youtube {video_id} >}}}}\n"
-    m = re.search(r"^!\[.*\]\(.*\)\s*$", text, re.M)
-    if m:
-        pos = m.end()
-        text = text[:pos] + "\n" + shortcode + text[pos:]
-    else:  # 沒有圖片行就插在 front matter 之後
-        fm = re.match(r"^---\s*\n.*?\n---\s*\n", text, re.S)
-        pos = fm.end() if fm else 0
-        text = text[:pos] + shortcode + text[pos:]
+    text = text.rstrip() + "\n\n\n" + f"{{{{< youtube {video_id} >}}}}" + "\n"
     md_path.write_text(text, encoding="utf-8")
     return True
 
