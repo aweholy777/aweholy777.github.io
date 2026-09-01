@@ -183,7 +183,7 @@ https://images.cmtc.tw/圖片檔名
 
 ```powershell
 # 進入您的 Hugo 專案根目錄
-cd C:\Users\aweholy\Desktop\clone\aweholy777.github.io
+cd D:\cmtctw\aweholy777.github.io
 
 # 執行上傳腳本（把 cmtc-images 換成您的 bucket 名稱）
 .\upload-images-to-r2.ps1 -BucketName "cmtc-images"

@@ -3,7 +3,7 @@
 # 之後可用：  qt-sync          # 同步並看 5090 最新回報
 #            qt-push "訊息"    # 清鎖→列出變更→你確認→commit→pull→push
 #            qt-status        # 看本機與遠端差距、有無未提交
-$script:QtRepo = "C:\Users\aweholy\Desktop\clone2026010\aweholy777.github.io"
+$script:QtRepo = "D:\cmtctw\aweholy777.github.io"
 
 function qt-sync {
     Set-Location $script:QtRepo

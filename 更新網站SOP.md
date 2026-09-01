@@ -7,6 +7,8 @@
 原始碼放在 **GitHub**（repo：`aweholy777/aweholy777.github.io`）→ **Cloudflare Pages** 盯著它 →
 **你一 push，Cloudflare 就自動建置，cmtc.tw 自動更新。** 你不用「上傳到 Cloudflare」，它自己會去 GitHub 抓。
 
+本機專案位置：`D:\cmtctw\aweholy777.github.io`
+
 ---
 
 ## 🔧 每次更新網站，就這 5 步
@@ -56,6 +58,7 @@
 ## 架構備忘（給未來的你/AI）
 
 - **GitHub repo `aweholy777/aweholy777.github.io`** = 網站原始碼，**必留**（Cloudflare 靠它建置）。
+- **本機 repo 路徑** = `D:\cmtctw\aweholy777.github.io`。
 - **Cloudflare Pages「cmtc」專案** = 服務 cmtc.tw，push 到 main 自動部署。網域 DNS 已搬到 Cloudflare（nameserver：phil/uma.ns.cloudflare.com）。
 - **GitHub Pages（deploy.yml）** = 舊的備份鏡像，可留可停，非必要。
 - **5090** = 每晚自動推影片到同一個 repo；跟你手動更新內容互不影響，都走同一條路（push → Cloudflare 自動部署）。
