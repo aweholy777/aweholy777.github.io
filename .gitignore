@@ -38,3 +38,6 @@ tasks/sageattn-speedup/_*
 video-pipeline/*_log.txt
 # 誤建的垃圾檔（redirect 失誤產生，與 verify_hugo.bat 重複，應刪）
 /hugo --buildFuture.bat
+# 自動備份檔（*.bak / *.bak-時間戳）：留本機、不進 repo
+*.bak
+*.bak-*
