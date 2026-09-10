@@ -110,7 +110,9 @@ draft: false
   - 也有全自動循環模式：`QT-GenLoop-5090` 排程每 15 分檢查一次，邏輯是「生 24 部→休息 1 小時→再 24 部」無限循環、重開機自動接續。要停用 `Disable-ScheduledTask -TaskName QT-GenLoop-5090`。
   - **長批次生成不要用一般背景任務（如 Claude Code 的 background bash）啟動**——那種背景任務被系統回收時會連帶砍掉 `nightly_head.py` 子行程，務必透過 Windows 排程任務（脫離終端 session）啟動，才能撐過數小時甚至數十小時的批次。
   - 排程 `QT-GenOnce-5090` 的 `ExecutionTimeLimit` 已從預設 `P1D`（24 小時，會腰斬長批次，實測約 28 部就被砍斷）改成 `PT72H`；派大批（>~28 部）前務必先確認這個設定，驗收時看 log 有沒有出現「生成結束」字樣，不要只看行程還在跑就當作沒問題。
-  - **生成 log 是 UTF-16 編碼**：要監看 `gen_5090.log` 內容，PowerShell 用 `Get-Content` / `Select-String` 才讀得對；用 bash 的 `grep` 對 UTF-16 檔案比對不到東西，不要因此誤判「沒有進度」。
+  - **生成 log 路徑是 `C:\Users\user\gen_5090.log`（注意：不是 `tasks\5090-migration\gen_5090.log`，那份是 2026-06 的舊殘檔，別看錯）**。
+  - **生成 log 是 UTF-16 編碼**：要監看它的內容，PowerShell 用 `Get-Content <path> -Encoding Unicode` / `Select-String` 才讀得對；用 bash 的 `grep` 對 UTF-16 檔案比對不到東西，不要因此誤判「沒有進度」。
+  - 生成循環的 log 則是 `C:\Users\user\gen_loop.log`（記錄每批 start/end、休息、續跑判斷）。
 - **上傳＋發布＝每小時排程滴傳**：任務名 `QT-Upload-5090`，跑 `tasks/5090-migration/upload_5090.ps1`。
   - 「佇列式滴傳」：每小時整點 05 分跑一次，**每次只傳 1 支**（`yt_publish.py --auto --limit 1`），從 `yt_uploaded.csv` 時間戳算「過去 24 小時已傳幾支」，達到 `DailyCap` 就跳過本次。
   - `DailyCap` 現值：**24**（2026-08-21 上線時從 20 開始，觀察穩定後已調升；若要再調，改排程 Action 參數即可，不用改程式碼）。**不要相信「YouTube 一天只能傳 6 支」這個舊估計**——那是舊排程遺留的保守假設，已被實測推翻，真正瓶頸是頻道自身風控而非 API 配額（每支約消耗 100 點配額、每天理論上可傳上百支）。
