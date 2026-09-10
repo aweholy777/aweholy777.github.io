@@ -139,7 +139,7 @@ draft: false
 
 - `.github/workflows/deploy.yml`：push 到 `main` 或手動 `workflow_dispatch` 時觸發，用 `hugo --minify --buildFuture` 建置（Hugo Extended 0.144.2，Ubuntu runner 上臨時安裝），輸出 `public/` 後部署到 GitHub Pages。**這是唯一的發布機制**，本機不需要另外手動部署。
 - **本地建置檢查指令**：`hugo --buildFuture`（跟 CI 一致，差在沒有 `--minify`）。這是驗收任何內容改動的標準指令，**建置 0 錯誤**才算過關。
-- **已知缺口（2026-09-10）**：這台機器上目前**找不到 `hugo` 執行檔**——不在 PATH，也不在常見安裝路徑（Program Files、LocalAppData、chocolatey、scoop）。`.gitignore` 裡有一行「忽略 hugo 執行檔」暗示歷史上 repo 根目錄曾放過一份 gitignored 的 `hugo.exe`，但現在不存在了。既然這台機器現在也要負責建置檢查，**應該儘快補裝**：`winget install Hugo.Hugo.Extended`，裝完跑 `hugo --buildFuture` 驗證。
+- **本機 Hugo 安裝（2026-09-10 已處理）**：repo 根目錄放了一份 **釘死版本 0.144.2（跟 CI 完全一致）的 `hugo.exe`**（`.gitignore` 已排除，不會進 git），跑 `.\hugo.exe --buildFuture` 驗證過 0 錯誤。**故意不裝到系統 PATH／不用 winget 裝最新版**——實測過 Hugo 0.166.0（winget 目前給的版本）對 `content/daily-qt/Biblereadingtracker.html` 這種直接放原始 HTML 的內容檔會觸發更嚴格的 `security.allowContent` 政策，直接建置失敗（`access denied: "text/html" is not whitelisted`），那是版本升級帶來的新限制，不代表內容真的壞了。**做建置檢查一律用 repo 根目錄這份 `.\hugo.exe`，不要另外裝或用 PATH 上別的版本**，除非之後特地升級並同步處理這個 security 設定。
 - `public/` 是建置產物，**不要手動編輯**，也不會進 git（看 `.gitignore`）。
 
 ---
@@ -199,7 +199,7 @@ qtproject/
 6. **舊約上傳目前是 0**，這不是異常，是因為新約還沒完全傳完（卷序優先），舊約要等新約全部上傳完才會開始傳。
 7. **「YouTube 一天只能傳 6 支」是過期資訊**，現行 `DailyCap=24`（滴傳＋自動退避機制），別照舊估計去規劃排程。
 8. **主播2 只出現在馬可福音那段**，其餘全部主播1，不是奇偶輪替——這是後來改過的規則，別誤用舊邏輯。
-9. **本機目前沒有 `hugo` 執行檔**，做任何建置驗收前先確認 `hugo --buildFuture` 真的能跑，跑不了要先裝（`winget install Hugo.Hugo.Extended`），不要跳過驗收就假設建置沒問題。
+9. **建置檢查只用 repo 根目錄的 `.\hugo.exe`（釘死 0.144.2，跟 CI 一致）**，不要裝/用 PATH 上更新版本的 hugo——0.15x 起對內容裡直接放 HTML 的檔案（如 `Biblereadingtracker.html`）會有更嚴格 security policy，會誤判成「建置壞了」。
 10. **不要被舊文件裡的「3060／雙機」字樣誤導**——那是 2026-09-10 之前的架構，現在只有這台機器，不需要等交接、不需要走信箱。
 
 ---
@@ -208,6 +208,6 @@ qtproject/
 
 1. `git status`、`git log --oneline -20`，了解目前 working tree 乾不乾淨、最近做了什麼。
 2. 讀 `tasks/progress/_summary.txt`，掌握新約/舊約目前的生成/上傳進度。
-3. 確認 `hugo --buildFuture` 能不能跑（見第 5 節「已知缺口」），不能就先補裝 Hugo。
+3. 確認 `.\hugo.exe --buildFuture`（repo 根目錄，見第 5 節）能不能跑；這份 exe 是 gitignored 的本機檔案，換一台機器或重新 clone 時要重新放一份（下載 CI 用的同版本 0.144.2，不要裝更新版）。
 4. 確認 ComfyUI 在跑（`Invoke-RestMethod http://127.0.0.1:8188/system_stats`），生成排程（`QT-GenLoop-5090` / `QT-GenOnce-5090`）與上傳排程（`QT-Upload-5090`）狀態是否正常（`Get-ScheduledTask` 查）。
 5. 有疑問或發現本檔跟實際狀況不符（例如進度數字、排程參數已經變了），**直接更新本檔**，讓下一個接手的人（人或 AI）看到的是最新狀態，不要留著過期資訊。

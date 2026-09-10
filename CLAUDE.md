@@ -68,7 +68,7 @@ opencode run "讀取 tasks/<任務名>/plan.md 並完整執行。完成後把結
 
 ## 驗收標準（每次派工必查）
 
-- `hugo --buildFuture` 建置無錯誤（這是本站的標準建置指令）
+- `hugo --buildFuture` 建置無錯誤（本站標準建置指令；本機請用 repo 根目錄那份釘死 CI 版本的 `.\hugo.exe`，見 `CLAUDE.local.md`——較新版 Hugo 對站內直接放 HTML 的內容檔有更嚴格 security policy 會誤判建置失敗）
 - front matter 完整：title、date、draft 三欄
 - QT 文章四段結構齊全
 - `git diff --stat` 的變更範圍與 plan.md 宣告的檔案清單一致——超出範圍的變更一律退回
