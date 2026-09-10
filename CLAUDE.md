@@ -27,39 +27,21 @@ QT 文章固定格式：front matter（title/date/draft）→ 圖片 → 經文�
 - 批次修正 front matter、圖片 URL、標點格式
 - 批次寫 HTML/程式碼產出
 
-## 雙機協作架構（影片生成）
+## 單機獨立作業（2026-09-10 起，已取消雙機協作）
 
-影片生成已分散到兩台機器，各跑自己的 Claude Code，靠這個 repo（git）當交接匯流排：
+**這個專案現在只由這一台機器（5090 執行節點，192.168.68.57，DESKTOP-BFSJ95H，RTX 5090）獨立負責到底**，
+不再有另一台「3060 軍師機」分攤內容/建置/發布。原本的雙機分工（3060 管內容與發布、5090 只管生成與上傳）
+已合併：**這台機器現在同時負責全部**——
 
-- **5090 執行節點**（192.168.68.57，DESKTOP-BFSJ95H）：影片生成 + YouTube 上傳，**生成與上傳已解耦**。
-  本機跑 ComfyUI（127.0.0.1:8188）：
-  - **生成＝手動觸發**：軍師每次指定數量，跑 `tasks/5090-migration/gen_5090.ps1 -Count N`
-    （等同 `nightly_head.py --server local --count N`）；只產 mp4 到 `video-output\head\`（gitignored），**不上傳、不 push**。
-  - **上傳＋更新網頁＝每日排程**：`QT-Upload-5090` 每日 **20:00** 跑 `tasks/5090-migration/upload_5090.ps1 -Limit 6`，
-    上傳「已生成未上傳」者（上限 6）、把 `{{< youtube ID >}}` 嵌進對應 QT、寫入 `video-pipeline/yt_uploaded.csv`，
-    只 push「那幾篇 + csv」到 main（觸發 Actions 部署）。`StartWhenAvailable=True`（錯過會補跑）。
-  - 舊排程 `QT-Nightly-5090`（12:00 gen+upload 合一）**已停用（Disabled）**，保留備查、勿重啟。
-  - 生成數量由軍師每次指定（手動），非固定每日排程；上傳維持每日 20:00 自動。
-  它的機器專屬指令在 5090 的 `CLAUDE.local.md`（gitignored，不在此 repo）。
-- **本機 3060（你，軍師）**：QT 內容、排程、`_index` 維護，**以及網站建置與發布**。
+1. QT 內容維護、各書卷 `_index.md` 排序
+2. 影片生成（ComfyUI + InfiniteTalk）與 YouTube 上傳
+3. `hugo --buildFuture` 本機建置檢查
+4. 網站發布（push 到 main 觸發 GitHub Actions 部署）
 
-**你（3060）在影片這條線上的職責**：
-1. `git pull --rebase --autostash`，取得 5090 推上來的 `yt_uploaded.csv` 與已嵌入 shortcode 的 QT 文章。
-2. （可選）`hugo --buildFuture` 本機建置檢查、看 5090 最新成果與信箱有無 BLOCKED。
-3. **發布是自動的**：任何 push 到 main 都會觸發 GitHub Actions（`.github/workflows/deploy.yml`）
-   以 `hugo --minify --buildFuture` 建置並部署到 GitHub Pages。5090 每日 20:00 上傳排程 push 後網站即自動更新，
-   你不需手動發布；只需做內容維護並把內容 push 到 main。晨間檢查可跑 `tasks/5090-migration/morning_3060.ps1`。
+本機專屬細節（路徑、常數、每日工作流、驗收標準）在同目錄的 `CLAUDE.local.md`（gitignored，不在此 repo）。
 
-**衝突避免**：`yt_uploaded.csv` 的唯一寫入者是 5090（你只讀不寫）。
-5090 只會動「它生成影片的那幾篇」content/*.md；你若要改 content，避開正在被生成的篇目。
-push 前都先 `git pull --rebase`。
-
-**雙機信箱（兩台共用同一帳號、但是獨立程序，靠 git 非同步溝通）**：
-- `tasks/handoff/3060-to-5090.md`：只有 3060 寫，5090 只讀。
-- `tasks/handoff/5090-to-3060.md`：只有 5090 寫，3060 只讀。
-- 單一寫入者 → 不衝突。每次 `git pull --rebase` 後先讀「給自己的那一份」；
-  寫完只 `git add` 自己那一個檔，commit → `git pull --rebase --autostash` → push。
-- 詳見 `tasks/handoff/README.md`。
+`tasks/handoff/` 底下的雙機信箱（`3060-to-5090.md` / `5090-to-3060.md`）是**舊雙機架構的遺留物**，
+保留備查即可，**不需要再寫新的往返訊息**——沒有另一台機器在讀了。
 
 ## 派工協定
 
