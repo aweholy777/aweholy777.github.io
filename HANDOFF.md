@@ -112,6 +112,7 @@ draft: false
   - 排程 `QT-GenOnce-5090` 的 `ExecutionTimeLimit` 已從預設 `P1D`（24 小時，會腰斬長批次，實測約 28 部就被砍斷）改成 `PT72H`；派大批（>~28 部）前務必先確認這個設定，驗收時看 log 有沒有出現「生成結束」字樣，不要只看行程還在跑就當作沒問題。
   - **生成 log 路徑是 `C:\Users\user\gen_5090.log`（注意：不是 `tasks\5090-migration\gen_5090.log`，那份是 2026-06 的舊殘檔，別看錯）**。
   - **生成 log 是 UTF-16 編碼**：要監看它的內容，PowerShell 用 `Get-Content <path> -Encoding Unicode` / `Select-String` 才讀得對；用 bash 的 `grep` 對 UTF-16 檔案比對不到東西，不要因此誤判「沒有進度」。
+  - **`生成 (N/24)` 語意＝「第 N 篇開始生成」，不是「已完成 N 篇」**：該行出現時第 N 篇才剛開始，要等同一篇後面出現 `生成完成，耗時 X 分鐘` 才算完成。所以最新一行若是 `(20/24)`，代表**已完成 19 篇、第 20 篇正在跑**，別誤讀成「20 篇跑完、正在跑第 21 篇」（2026-09-11 實際踩過這個 off-by-one）。
   - 生成循環的 log 則是 `C:\Users\user\gen_loop.log`（記錄每批 start/end、休息、續跑判斷）。
 - **上傳＋發布＝每小時排程滴傳**：任務名 `QT-Upload-5090`，跑 `tasks/5090-migration/upload_5090.ps1`。
   - 「佇列式滴傳」：每小時整點 05 分跑一次，**每次只傳 1 支**（`yt_publish.py --auto --limit 1`），從 `yt_uploaded.csv` 時間戳算「過去 24 小時已傳幾支」，達到 `DailyCap` 就跳過本次。
