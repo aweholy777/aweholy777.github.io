@@ -207,6 +207,8 @@ qtproject/
 8. **主播2 只出現在馬可福音那段**，其餘全部主播1，不是奇偶輪替——這是後來改過的規則，別誤用舊邏輯。
 9. **建置檢查只用 repo 根目錄的 `.\hugo.exe`（釘死 0.144.2，跟 CI 一致）**，不要裝/用 PATH 上更新版本的 hugo——0.15x 起對內容裡直接放 HTML 的檔案（如 `Biblereadingtracker.html`）會有更嚴格 security policy，會誤判成「建置壞了」。
 10. **不要被舊文件裡的「3060／雙機」字樣誤導**——那是 2026-09-10 之前的架構，現在只有這台機器，不需要等交接、不需要走信箱。
+11. **Windows Update 自動重開機曾打斷生成批次**（2026-09-15 14:31 實測：03:11 那批跑到 15/24 被重開機腰斬）。已設 AU 原則改為「手動重啟」：`HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU` 底下 `NoAutoRebootWithLoggedOnUsers=1`、`AUOptions=2`、`AUPowerManagement=0`、`AutoInstallMinorUpdates=0`（腳本為 `tasks/5090-migration/set-wu-manual.ps1`，需提權執行，log 在 `C:\Users\user\wu_manual_change.log`）。此後更新只會通知，重開機由人工決定。**若發現機器又在生成途中自行重開，先查這裡的機碼是否還在**（Windows 大版本更新有時會重設原則）。
+    - 註：中斷後 `gen_loop.ps1` 會自動偵測並續跑（reboot-safe），所以就算被打斷也不會卡死，只是損失當下那一篇的進度。
 
 ---
 
