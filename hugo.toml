@@ -73,7 +73,7 @@ theme = "mainroad"
     name = "生成當日QT"
     url = "https://index-html-clean-copy.vercel.app/"
     params = { target = "_blank" }   # 開新分頁
-    weight = 20
+    weight = 24
     parent = "daily-qt"
   [[menu.main]]
     name = "停更公告"
