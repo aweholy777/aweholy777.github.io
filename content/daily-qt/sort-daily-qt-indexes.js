@@ -126,7 +126,11 @@ function buildFallbackTitles() {
       if (!match) continue;
 
       const date = match.groups.href.match(/(\d{4}-\d{2}-\d{2})\//)?.[1];
-      if (date) fallbackTitles.set(`${date}.md`, match.groups.title);
+      if (date) {
+        // 索引連結文字已改為只顯示經文（去掉日期）；這裡補回「QT 」讓 parseReference 能解析。
+        const t = /QT/i.test(match.groups.title) ? match.groups.title : `QT ${match.groups.title}`;
+        fallbackTitles.set(`${date}.md`, t);
+      }
     }
   }
 
@@ -213,9 +217,18 @@ function buildRootIndex(rootIndexMarkdown, otCount, ntCount, unparsed) {
   return output;
 }
 
+// 索引頁連結文字只留聖經章節：去掉「YYYY – MM – DD QT 」前綴（以及可能殘留的「QT 」）。
+function passageOnly(title) {
+  return String(title)
+    .replace(/^\s*\d{4}\s*[–\-]\s*\d{1,2}\s*[–\-]\s*\d{1,2}\s*QT\s+/, "")
+    .replace(/^QT\s+/, "")
+    .trim();
+}
+
 function buildSectionIndex(existingMarkdown, title, description, items) {
   const fm = frontMatter(existingMarkdown || "", title);
-  let output = `${fm}\n\n# ${title}\n\n${description}\n\n`;
+  // 不再輸出「# 標題」：頁面上方已由 front matter 的 title 顯示標題，再輸出會重複一行。
+  let output = `${fm}\n\n${description}\n\n`;
 
   let currentBook = "";
   for (const item of items) {
@@ -223,7 +236,7 @@ function buildSectionIndex(existingMarkdown, title, description, items) {
       currentBook = item.ref.book;
       output += `## ${currentBook}\n\n`;
     }
-    output += `- [${escapeTilde(item.title)}](${item.date}/)\n`;
+    output += `- [${escapeTilde(passageOnly(item.title))}](${item.date}/)\n`;
   }
 
   return output;
