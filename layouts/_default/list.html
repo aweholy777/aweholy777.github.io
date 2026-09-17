@@ -1,7 +1,7 @@
 {{/* layouts/_default/list.html (修改後 - 只顯示 _index.md 內容) */}}
 
 {{ define "main" }}
-  <main class="main list" role="main">
+  <main class="main list{{ if hasPrefix .RelPermalink "/daily-qt" }} qt-index{{ end }}" role="main">
     {{/* 顯示區段標題 (來自 _index.md 的 front matter) */}}
     {{- with .Title }}
     <header class="main__header">
