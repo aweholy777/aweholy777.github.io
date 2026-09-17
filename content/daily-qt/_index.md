@@ -5,8 +5,6 @@ draft: false
 # original_url: https://cmtc.tw/qt
 ---
 
-# 每日QT
-
 每日 QT 已依聖經分為舊約 QT 與新約 QT。
 
 - [otqt 舊約QT](otqt/) (2013 篇)

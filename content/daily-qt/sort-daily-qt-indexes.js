@@ -202,7 +202,8 @@ function moveItems(items) {
 
 function buildRootIndex(rootIndexMarkdown, otCount, ntCount, unparsed) {
   const fm = frontMatter(rootIndexMarkdown, "每日QT");
-  let output = `${fm}\n\n# 每日QT\n\n`;
+  // 不再輸出「# 每日QT」：頁面上方已由 front matter 的 title 顯示標題，再輸出會重複一行。
+  let output = `${fm}\n\n`;
   output += "每日 QT 已依聖經分為舊約 QT 與新約 QT。\n\n";
   output += `- [otqt 舊約QT](${OT_SECTION}/) (${otCount} 篇)\n`;
   output += `- [ntqt 新約QT](${NT_SECTION}/) (${ntCount} 篇)\n`;
