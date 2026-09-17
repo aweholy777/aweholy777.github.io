@@ -1,0 +1,203 @@
+/* ===== QT 影音庫（/qt-video/）— YouTube 風格 ===== */
+
+.qtlib [hidden] { display: none !important; }
+
+.qtlib__header { margin-bottom: 1rem; }
+.qtlib__header .main__content { margin-bottom: .25rem; }
+
+.qtlib__layout {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+/* 左側：書卷目錄 */
+.qtlib__sidebar {
+  flex: 0 0 210px;
+  width: 210px;
+  position: sticky;
+  top: 1rem;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  padding-right: .75rem;
+  border-right: 1px solid #e5e5e5;
+}
+.qtlib__group { margin-bottom: 1rem; }
+.qtlib__group-hd {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: .82rem;
+  font-weight: 700;
+  color: #606060;
+  padding: .35rem .5rem;
+}
+.qtlib__gn { font-size: .72rem; font-weight: 400; color: #9a9a9a; }
+.qtlib__books { list-style: none; margin: 0; padding: 0; }
+
+.qtlib__book {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: .5rem;
+  margin: 0 0 1px;
+  padding: .34rem .55rem;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: #0f0f0f;
+  font: inherit;
+  font-size: .9rem;
+  text-align: left;
+  cursor: pointer;
+}
+.qtlib__book:hover { background: #f2f2f2; }
+.qtlib__book.is-active { background: #065fd4; color: #fff; }
+.qtlib__book.is-active .qtlib__n,
+.qtlib__book.is-active .qtlib__prog { color: #dbe9ff; }
+.qtlib__book--all { font-weight: 700; margin-bottom: .35rem; }
+.qtlib__n { font-size: .75rem; color: #909090; white-space: nowrap; }
+.qtlib__prog { color: #b5b5b5; }
+
+/* 右側：影片區 */
+.qtlib__content { flex: 1 1 auto; min-width: 0; }
+.qtlib__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.qtlib__current { margin: 0; font-size: 1.15rem; }
+.qtlib__search {
+  min-width: 220px;
+  flex: 0 1 320px;
+  padding: .5rem .9rem;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  font-size: .9rem;
+}
+.qtlib__search:focus { outline: 2px solid #065fd4; outline-offset: 1px; border-color: #065fd4; }
+
+.qtlib__section { margin-bottom: 1.75rem; }
+.qtlib__section-hd {
+  display: flex;
+  gap: .5rem;
+  align-items: baseline;
+  margin: 0 0 .65rem;
+  padding-bottom: .35rem;
+  border-bottom: 1px solid #ececec;
+  font-size: 1rem;
+}
+.qtlib__section-hd small { color: #909090; font-weight: 400; }
+
+.qtlib__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 1.1rem .85rem;
+}
+.qtlib__card { display: flex; flex-direction: column; min-width: 0; }
+.qtlib__thumb {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  aspect-ratio: 16 / 9;
+  cursor: pointer;
+}
+.qtlib__thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .25s ease;
+}
+.qtlib__thumb:hover img { transform: scale(1.05); }
+.qtlib__play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.1rem;
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, .7);
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+.qtlib__thumb:hover .qtlib__play,
+.qtlib__thumb:focus-visible .qtlib__play { opacity: 1; }
+
+.qtlib__info { padding: .5rem .15rem 0; }
+.qtlib__cardtitle {
+  display: block;
+  font-size: .92rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #0f0f0f;
+}
+.qtlib__carddate { display: block; margin-top: .15rem; font-size: .78rem; color: #606060; }
+
+.qtlib__empty { padding: 2.5rem 0; text-align: center; color: #909090; }
+
+/* 播放燈箱 */
+.qtlib__modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.qtlib__modal-backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, .78); }
+.qtlib__modal-body {
+  position: relative;
+  z-index: 1;
+  width: min(960px, 94vw);
+  background: #0f0f0f;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .5);
+}
+.qtlib__player { aspect-ratio: 16 / 9; width: 100%; background: #000; }
+.qtlib__player iframe { display: block; width: 100%; height: 100%; border: 0; }
+.qtlib__modal-title { padding: .7rem 1rem; color: #fff; font-size: .95rem; background: #0f0f0f; }
+.qtlib__modal-close {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+  z-index: 2;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, .55);
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.qtlib__modal-close:hover { background: rgba(0, 0, 0, .8); }
+
+@media (max-width: 900px) {
+  .qtlib__layout { flex-direction: column; }
+  .qtlib__sidebar {
+    position: static;
+    width: 100%;
+    flex: none;
+    max-height: none;
+    padding: 0 0 .6rem;
+    border-right: 0;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .qtlib__books { display: flex; flex-wrap: wrap; gap: .25rem; }
+  .qtlib__book { width: auto; }
+  .qtlib__cards { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+}

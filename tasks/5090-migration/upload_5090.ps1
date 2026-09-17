@@ -88,11 +88,14 @@ if ($upExit -eq 2) {
     Log "上傳腳本回報非零（exit=$upExit，非配額錯誤），本次無成果，留待下次重試。"
 }
 
-# 5. 只交 csv +「被嵌入 shortcode 的那幾篇」，push 回 main（push 即觸發 Actions 更新網頁）
-git add video-pipeline/yt_uploaded.csv 2>&1 | Tee-Object -FilePath $log -Append
+# 4b. 重新產生 QT 影音庫資料（data/qtvideos.json），隨本次上傳一起發布
+& $py video-pipeline\build_qt_library.py 2>&1 | Tee-Object -FilePath $log -Append
+
+# 5. 只交 csv + 影音庫資料 +「被嵌入 shortcode 的那幾篇」，push 回 main（push 即觸發 Actions 更新網頁）
+git add video-pipeline/yt_uploaded.csv data/qtvideos.json 2>&1 | Tee-Object -FilePath $log -Append
 $embedded = git diff --name-only HEAD -- content/daily-qt
 foreach ($f in $embedded) { if ($f) { git add -- "$f" 2>&1 | Tee-Object -FilePath $log -Append } }
-$changed = git status --porcelain -- video-pipeline/yt_uploaded.csv content/daily-qt
+$changed = git status --porcelain -- video-pipeline/yt_uploaded.csv data/qtvideos.json content/daily-qt
 if ($changed) {
     git commit -m "5090 upload: $(Get-Date -Format 'yyyy-MM-dd HH:mm')" 2>&1 | Tee-Object -FilePath $log -Append
     git pull --rebase --autostash 2>&1 | Tee-Object -FilePath $log -Append

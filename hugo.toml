@@ -38,7 +38,7 @@ theme = "mainroad"
   description = "城市宣培中心 | City Ministration Training Center" # 可選：添加描述
   # sidebar = true # 可選配置
   # widgets = ["search", "recent", "categories", "taglist"] # 可選配置
-  customCSS = ["css/custom.css", "css/custom-font.css"] # 載入自訂 CSS
+  customCSS = ["css/custom.css", "css/custom-font.css", "css/qt-library.css"] # 載入自訂 CSS
   customJS = ["js/custom.js"]
 
 
@@ -91,6 +91,11 @@ theme = "mainroad"
     name = "新約QT"
     pageRef = "daily-qt/ntqt"
     weight = 22
+    parent = "daily-qt"
+  [[menu.main]]
+    name = "QT影音庫"
+    pageRef = "qt-video"
+    weight = 23
     parent = "daily-qt"
   [[menu.main]]
     name = "線上聖經"

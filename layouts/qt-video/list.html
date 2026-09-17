@@ -1,0 +1,80 @@
+{{ define "main" }}
+{{ $lib := .Site.Data.qtvideos }}
+{{ $totalVideos := 0 }}{{ range $lib.testaments }}{{ $totalVideos = add $totalVideos .video_count }}{{ end }}
+<main class="main qtlib" role="main">
+  <header class="main__header qtlib__header">
+    <h1 class="main__title">{{ .Title }}</h1>
+    {{ with .Content }}<div class="content main__content clearfix">{{ . }}</div>{{ end }}
+  </header>
+
+  <div class="qtlib__layout">
+    <aside class="qtlib__sidebar" aria-label="聖經書卷目錄">
+      <button type="button" class="qtlib__book qtlib__book--all is-active" data-testament="" data-book="" data-name="全部影片">
+        全部影片<span class="qtlib__n">{{ $totalVideos }}</span>
+      </button>
+      {{ range $t := $lib.testaments }}
+      <div class="qtlib__group">
+        <div class="qtlib__group-hd">{{ $t.name }}<span class="qtlib__gn">{{ $t.video_count }} / {{ $t.passage_count }}</span></div>
+        <ul class="qtlib__books">
+          {{ range $b := $t.books }}
+          <li>
+            <button type="button" class="qtlib__book" data-testament="{{ $t.id }}" data-book="{{ $b.name }}" data-name="{{ $b.name }}">
+              {{ $b.name }}<span class="qtlib__n">{{ len $b.videos }}{{ if lt (len $b.videos) $b.passages }}<span class="qtlib__prog">/{{ $b.passages }}</span>{{ end }}</span>
+            </button>
+          </li>
+          {{ end }}
+        </ul>
+      </div>
+      {{ end }}
+    </aside>
+
+    <section class="qtlib__content">
+      <div class="qtlib__toolbar">
+        <h2 class="qtlib__current" data-qtlib-current>全部影片</h2>
+        <input type="search" class="qtlib__search" placeholder="搜尋經文或日期…" aria-label="搜尋影片" data-qtlib-search>
+      </div>
+
+      <div class="qtlib__grid" data-qtlib-grid>
+        {{ range $t := $lib.testaments }}
+        {{ range $b := $t.books }}
+        {{ if $b.videos }}
+        <section class="qtlib__section" data-testament="{{ $t.id }}" data-book="{{ $b.name }}">
+          <h3 class="qtlib__section-hd">{{ $t.name }} · {{ $b.name }}<small>{{ len $b.videos }} 支</small></h3>
+          <div class="qtlib__cards">
+            {{ range $v := $b.videos }}
+            <article class="qtlib__card" data-testament="{{ $t.id }}" data-book="{{ $b.name }}" data-text="{{ $v.passage }} {{ $v.date }}">
+              <button type="button" class="qtlib__thumb" data-yt="{{ $v.yt }}" data-title="{{ $v.passage }}" aria-label="播放 {{ $v.passage }}">
+                <img loading="lazy" width="320" height="180" src="https://i.ytimg.com/vi/{{ $v.yt }}/mqdefault.jpg" alt="{{ $v.passage }}">
+                <span class="qtlib__play" aria-hidden="true">▶</span>
+              </button>
+              <div class="qtlib__info">
+                <span class="qtlib__cardtitle">{{ $v.passage }}</span>
+                <span class="qtlib__carddate">{{ $v.date }}</span>
+              </div>
+            </article>
+            {{ end }}
+          </div>
+        </section>
+        {{ end }}
+        {{ end }}
+        {{ end }}
+      </div>
+
+      <div class="qtlib__empty" data-qtlib-empty hidden>沒有符合的影片</div>
+    </section>
+  </div>
+</main>
+
+<div class="qtlib__modal" data-qtlib-modal hidden>
+  <div class="qtlib__modal-backdrop" data-qtlib-close></div>
+  <div class="qtlib__modal-body" role="dialog" aria-modal="true" aria-label="影片播放">
+    <button type="button" class="qtlib__modal-close" data-qtlib-close aria-label="關閉">✕</button>
+    <div class="qtlib__player" data-qtlib-player></div>
+    <div class="qtlib__modal-title" data-qtlib-modal-title></div>
+  </div>
+</div>
+
+<script defer src="{{ "js/qt-library.js" | relURL }}"></script>
+{{ end }}
+
+{{ define "sidebar" }}{{ end }}
