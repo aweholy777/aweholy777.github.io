@@ -85,7 +85,8 @@
     document.documentElement.style.overflow = "";
   }
 
-  root.addEventListener("click", function (e) {
+  // 掛在 document：燈箱在 .qtlib 容器外，掛在 root 會收不到燈箱內的點擊
+  document.addEventListener("click", function (e) {
     var thumb = e.target.closest && e.target.closest(".qtlib__thumb");
     if (thumb) {
       e.preventDefault();
