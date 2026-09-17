@@ -160,6 +160,8 @@ qtproject/
 │   ├── _index.md            # daily-qt 首頁
 │   ├── sort-daily-qt-indexes.js  # 維護 ntqt/_index.md、otqt/_index.md 的書卷排序
 │   └── announcement.md, Biblereadingtracker.html 等雜項頁面
+├── content/qt-video/        # QT影音庫頁面（/qt-video/，見下方說明）
+├── data/qtvideos.json       # 影音庫資料（build_qt_library.py 產生；Hugo data file）
 ├── video-pipeline/          # 影片生成/上傳程式
 ├── video-output/            # 生成的 mp4（gitignored，本機資產）
 ├── tasks/
@@ -178,6 +180,16 @@ qtproject/
 ├── 遷移到Cloudflare指南.md   # 圖片遷移到 R2 的說明
 └── HANDOFF.md                # 本檔
 ```
+
+### QT影音庫（/qt-video/，2026-09-17 新增）
+
+- 網址 `/qt-video/`，在「每日QT」下拉選單、**新約QT 下方**（`hugo.toml` 的 `[[menu.main]]`，weight 23）。
+- 左側是新舊約 66 卷目錄（舊約 39 + 新約 27），右側是 YouTube 風格影片卡片（點縮圖開燈箱播放、可按書卷篩選／搜尋）。
+- 樣式/行為：`layouts/qt-video/list.html`、`static/css/qt-library.css`、`static/js/qt-library.js`；頁面內容 `content/qt-video/_index.md`。
+- **資料來源與更新**：`video-pipeline/build_qt_library.py` 讀 `content/daily-qt/{otqt,ntqt}/_index.md`（書卷順序）＋ `video-pipeline/yt_uploaded.csv`（YouTube ID），輸出 `data/qtvideos.json`。
+  - 此產生器已**內建進 `tasks/5090-migration/upload_5090.ps1`**：每次上傳成功後會重跑，並把 `data/qtvideos.json` 一起 commit/push，所以影音庫會隨上傳自動更新。
+  - 手動重生：`python video-pipeline\build_qt_library.py`。
+  - 故意不在資料裡放時間戳，內容沒變就不會產生 diff（避免每小時多餘 commit）。
 
 ---
 
