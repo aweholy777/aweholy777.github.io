@@ -121,16 +121,10 @@ def upload(yt, video_path: Path, title: str, description: str, privacy: str) -> 
 
 
 def embed(md_path: Path, video_id: str) -> bool:
-    """在文章最下方插入 YouTube 影片（Hugo 內建 shortcode），影片前空三行。
-    2026-08-30 軍師改版：原本插在開頭圖片行後，改成統一放文章最下方（629篇既有文章已批次遷移，
-    見 tasks/move-yt-shortcode-bottom/）。2026-09-01 再改版：空行數 2→3
-    （見 tasks/move-yt-shortcode-3blank/）。"""
-    text = md_path.read_text(encoding="utf-8")
-    if "{{< youtube" in text:
-        return False  # 已嵌入過
-    text = text.rstrip() + "\n\n\n\n" + f"{{{{< youtube {video_id} >}}}}" + "\n"
-    md_path.write_text(text, encoding="utf-8")
-    return True
+    """2026-09-17 改版：影片連結統一集中到 /qt-video/ 影音庫，文章頁不再嵌入 shortcode
+    （既有 994 篇已用 video-pipeline/remove_yt_shortcodes.py 批次撤除）。
+    保留函式簽名以維持相容；一律不修改文章、回傳 False。"""
+    return False
 
 
 def publish_one(yt, video_path: Path, privacy: str) -> str:
@@ -160,7 +154,7 @@ def publish_one(yt, video_path: Path, privacy: str) -> str:
         f.flush()
         os.fsync(f.fileno())   # 影片已上傳成功，務必把 csv 落地，避免下次重傳
     return (f"OK {video_path.name} → https://youtu.be/{vid}"
-            + ("（已嵌入文章）" if did_embed else "（文章已有嵌入，未重複）"))
+            + "（影片已上架影音庫 /qt-video/，文章不嵌入）")
 
 
 def main():

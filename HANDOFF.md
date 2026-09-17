@@ -53,8 +53,6 @@ draft: false
 
 **4. 今天的回應**
 （回應禱告/行動）
-
-{{< youtube VIDEO_ID >}}
 ```
 
 要點：
@@ -63,7 +61,7 @@ draft: false
 - front matter 三欄必備：`title`、`date`、`draft`。
 - 正文固定四段結構，標題文字是**中文數字＋句號**、粗體：經文誦讀／今天默想經文／分享默想經文／今天的回應。
 - 經文範圍常用 `~`，但 `hugo.toml` 已關閉 Markdown 刪除線擴充（`strikethrough = false`），所以**可以直接打 `~`**，不會被誤判成刪除線；歷史檔案中很多用 HTML 實體 `&#126;` 代替 `~`，兩種都會正確顯示，新寫不必刻意用實體。
-- `{{< youtube ID >}}` shortcode 只在該篇已生成影片並上傳後才會出現，位置固定在**文章最下方、前面空三行**（2026-09-01 統一調整過，`yt_publish.py` 的 `embed()` 函式已固定這個位置，不要手動改回文章開頭）。
+- **文章不再內嵌影片 shortcode（2026-09-17 起）**：影片連結統一集中到 **`/qt-video/` 影音庫**頁面，文章頁不再出現 `{{< youtube ID >}}`。既有 994 篇已用 `video-pipeline/remove_yt_shortcodes.py` 批次撤除；`yt_publish.py` 的 `embed()` 已改為 no-op（上傳後只寫 `yt_uploaded.csv`，不修改文章）。所以文章尾端就是「今天的回應」最後一行。
 
 ---
 
@@ -74,7 +72,7 @@ draft: false
 1. QT 內容維護、front matter／格式修正
 2. 各書卷 `_index.md` 排序維護（`content/daily-qt/sort-daily-qt-indexes.js`）
 3. 影片生成（ComfyUI + InfiniteTalk，見第 3 節）
-4. YouTube 上傳、嵌入 `{{< youtube ID >}}` shortcode
+4. YouTube 上傳（寫 `yt_uploaded.csv`；文章不嵌入，影片集中於 `/qt-video/` 影音庫）
 5. `hugo --buildFuture` 本機建置檢查
 6. 網站發布（push 到 `main` 觸發 GitHub Actions 自動部署，見第 5 節）
 
@@ -91,7 +89,7 @@ draft: false
 程式碼都在 `video-pipeline/`：
 
 - `nightly_head.py` — 生成主程式（呼叫本機 ComfyUI，`127.0.0.1:8188`，`--server local`）
-- `yt_publish.py` — YouTube 上傳＋嵌入 shortcode＋寫 `yt_uploaded.csv`；單機架構下**不需要再加 `--no-push`**，上傳完直接讓它 push 完成發布即可
+- `yt_publish.py` — YouTube 上傳＋寫 `yt_uploaded.csv`（2026-09-17 起不再嵌入文章 shortcode）；單機架構下**不需要再加 `--no-push`**，上傳完直接讓它 push 完成發布即可
 - `workflows/infinitetalk_lan.json` — ComfyUI workflow 定義（InfiniteTalk 對嘴生成）
 - `yt_uploaded.csv` — 已上傳清單
 - `client_secret.json` / `yt_token.json` — YouTube OAuth 憑證，**gitignored，絕不可進 repo**
@@ -213,7 +211,7 @@ qtproject/
 2. **降 fps 加速生成 = 破壞口型同步**，已測試過淘汰，不要因為想加速又去改 fps。
 3. **長時間生成任務不要用一般背景 shell 任務跑**，系統回收背景任務時會把 `nightly_head.py` 一起殺掉；要用 Windows 排程任務（脫離終端）啟動。
 4. **排程的 `ExecutionTimeLimit` 預設可能腰斬長批次**——`QT-GenOnce-5090` 原本 24 小時上限，已改 72 小時；派新批次前先確認這個設定夠不夠長。
-5. **`{{< youtube ID >}}` 位置固定在文章最下方、空三行**，2026-09-01 統一調整過，不要改回文章開頭。
+5. **文章不再內嵌 `{{< youtube ID >}}`**（2026-09-17 起）：影片統一在 `/qt-video/` 影音庫，`yt_publish.py` 不再植入 shortcode；新增/修改文章時不要把 shortcode 加回去。
 6. **舊約上傳目前是 0**，這不是異常，是因為新約還沒完全傳完（卷序優先），舊約要等新約全部上傳完才會開始傳。
 7. **「YouTube 一天只能傳 6 支」是過期資訊**，現行 `DailyCap=24`（滴傳＋自動退避機制），別照舊估計去規劃排程。
 8. **主播2 只出現在馬可福音那段**，其餘全部主播1，不是奇偶輪替——這是後來改過的規則，別誤用舊邏輯。
