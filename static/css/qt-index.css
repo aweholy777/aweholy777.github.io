@@ -1,12 +1,13 @@
 /* ===== 每日QT 索引頁（/daily-qt/、/daily-qt/otqt/、/daily-qt/ntqt/）=====
-   項目符號改用「打開的書本」Emoji U+1F4D6（📖）。
-   加上 U+FE0E（文字呈現）＋ font-variant-emoji:text，讓它吃 color 變成暖棕色。
-   若瀏覽器仍以彩色 Emoji 呈現，屬正常（部分平台不支援文字呈現）。
-   換色只要改下面這個變數（暖棕 #8B5A2B ／ 暗紅 #9B2C2C ／ 琥珀金 #B7791F ／ 石墨灰 #4A5568）。
+   項目符號：雙開書本圖標（book-open），顏色為暖橄欖綠 #6B8E23。
+   經節連結文字維持原本的橙紅色（由 custom.css 的 .main__content a 控制，不在此改動）。
+   換色只要改下面的變數：
+     暖橄欖綠 #6B8E23 ／ 暖棕 #8B5A2B ／ 暗紅 #9B2C2C ／ 石墨灰 #4A5568
+   用 SVG + mask 讓圖標吃 background-color，顏色精準、不受 Emoji 平台差異影響。
 */
 
 .qt-index {
-  --qt-icon-color: #8B5A2B;
+  --qt-icon-color: #6B8E23;
 }
 
 .qt-index .main__content ul {
@@ -19,10 +20,13 @@
 }
 
 .qt-index .main__content ul > li::before {
-  content: "\1F4D6\FE0E";          /* 📖 打開的書本（文字呈現） */
-  font-variant-emoji: text;
-  color: var(--qt-icon-color);
+  content: "";
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
   margin-right: 0.4em;
-  font-size: 0.95em;
-  line-height: 1;
+  vertical-align: -0.1em;
+  background-color: var(--qt-icon-color);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z'/%3E%3Cpath d='M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z'/%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z'/%3E%3Cpath d='M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z'/%3E%3C/svg%3E") no-repeat center / contain;
 }
