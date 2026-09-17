@@ -156,6 +156,8 @@
   justify-content: center;
   padding: 1rem;
 }
+/* modal 在 .qtlib 容器外，必須自己處理 [hidden]，否則 display:flex 會蓋掉它 */
+.qtlib__modal[hidden] { display: none !important; }
 .qtlib__modal-backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, .78); }
 .qtlib__modal-body {
   position: relative;
