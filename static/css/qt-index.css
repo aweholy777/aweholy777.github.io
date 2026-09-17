@@ -1,8 +1,8 @@
 /* ===== 每日QT 索引頁（/daily-qt/、/daily-qt/otqt/、/daily-qt/ntqt/）=====
-   1) 項目符號：實心（填滿）雙開書本圖標，Base64 編碼 SVG，顏色暖綠 #6B8E23。
-   2) 經節連結文字維持原本橙紅色（custom.css 的 .main__content a 控制，不在此改）。
-   3) 內容欄限寬並置中（內部仍左對齊）。custom.css 原本把 .main__content 設 800px 置中，
-      這裡覆寫成較窄的欄寬，讓連結更靠中間。
+   列表圖標改用 Font Awesome CDN 的 fa-book-open（實心，Unicode \f518），顏色暖綠 #6B8E23。
+   （FA 只在這些索引頁載入，見 layouts/_default/baseof.html）
+   經節連結文字維持原本橙紅色（custom.css 的 .main__content a 控制，不在此改）。
+   選擇器限定 .qt-index，不會影響站上其他清單。
    換色 / 換欄寬只要改下面兩個變數。
 */
 
@@ -15,7 +15,7 @@
   margin-right: auto;
 }
 
-/* 讓內容欄跟著 main 的寬度（覆寫 custom.css 的 800px），標題與連結左緣才能對齊 */
+/* 內容欄跟著 main 寬度（覆寫 custom.css 的 800px），標題與連結左緣對齊 */
 .qt-index .main__content {
   max-width: none;
   padding-left: 0;
@@ -31,15 +31,16 @@
   margin-bottom: 0.35em;
 }
 
-/* 實心書本：Base64 SVG 當遮罩，吃 background-color 呈現實心橄欖綠 */
+/* 清掉舊的背景/mask 圖標，改用 Font Awesome fa-book-open（solid, \f518） */
 .qt-index .main__content ul > li::before {
-  content: "";
+  content: "\f518";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;              /* solid 樣式 */
+  color: var(--qt-icon-color);
+  margin-right: 0.5em;
   display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-right: 0.4em;
-  vertical-align: -0.15em;
-  background-color: var(--qt-icon-color);
-  -webkit-mask: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCcgZmlsbD0nd2hpdGUnPjxwYXRoIGQ9J00yIDNoNmE0IDQgMCAwIDEgNCA0djE0YTMgMyAwIDAgMC0zLTNIMnonLz48cGF0aCBkPSdNMjIgM2gtNmE0IDQgMCAwIDAtNCA0djE0YTMgMyAwIDAgMSAzLTNoN3onLz48L3N2Zz4=") no-repeat center / contain;
-  mask: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCcgZmlsbD0nd2hpdGUnPjxwYXRoIGQ9J00yIDNoNmE0IDQgMCAwIDEgNCA0djE0YTMgMyAwIDAgMC0zLTNIMnonLz48cGF0aCBkPSdNMjIgM2gtNmE0IDQgMCAwIDAtNCA0djE0YTMgMyAwIDAgMSAzLTNoN3onLz48L3N2Zz4=") no-repeat center / contain;
+  vertical-align: middle;
+  background: none;
+  -webkit-mask: none;
+  mask: none;
 }
