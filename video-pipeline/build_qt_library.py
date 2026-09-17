@@ -21,7 +21,8 @@ INDEX = REPO / "content" / "daily-qt"
 OUT = REPO / "data" / "qtvideos.json"
 CSV = REPO / "video-pipeline" / "yt_uploaded.csv"
 
-ENTRY = re.compile(r"^\s*-\s*\[(.+?)\s*QT\s*(.+?)\]\((\d{4}-\d{2}-\d{2})/?\)")
+# 相容新舊索引格式：group1=日期(可空)、group2=經文、group3=slug。
+ENTRY = re.compile(r"^\s*-\s*\[(?:(.+?)\s*QT\s*)?(.+?)\]\((\d{4}-\d{2}-\d{2})/?\)")
 BOOK = re.compile(r"^\s*##\s+(.+?)\s*$")
 CSVMD = re.compile(r"daily-qt[\\/](ntqt|otqt)[\\/](\d{4}-\d{2}-\d{2})\.md")
 

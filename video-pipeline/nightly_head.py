@@ -23,7 +23,9 @@ REPO = HERE.parent
 sys.path.insert(0, str(HERE))
 
 OUTDIR = REPO / "video-output" / "head"
-ENTRY = re.compile(r"^\s*-\s*\[(.+?)\s*QT\s*(.+?)\]\((\d{4}-\d{2}-\d{2})/?\)")
+# 索引連結文字 2026-09-17 起改為只顯示經文（去掉「YYYY – MM – DD QT」前綴）。
+# 此正則同時相容舊格式（有日期+QT）與新格式（純經文）：group1=日期(可空)、group2=經文、group3=slug。
+ENTRY = re.compile(r"^\s*-\s*\[(?:(.+?)\s*QT\s*)?(.+?)\]\((\d{4}-\d{2}-\d{2})/?\)")
 BOOK = re.compile(r"^\s*##\s+(.+?)\s*$")
 
 P1 = HERE / "assets" / "presenter.png"
