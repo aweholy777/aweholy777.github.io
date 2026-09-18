@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 172,
+   "video_count": 173,
    "passage_count": 1861,
    "books": [
     {
@@ -1044,6 +1044,12 @@
        "passage": "出埃及記 24：12~18",
        "date": "2021-05-31",
        "yt": "vUGcoBoGRbQ"
+      },
+      {
+       "slug": "2021-06-13",
+       "passage": "出埃及記 25：1~22",
+       "date": "2021-06-13",
+       "yt": "kGLEznpVMU4"
       }
      ]
     },
