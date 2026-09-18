@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 177,
+   "video_count": 178,
    "passage_count": 1861,
    "books": [
     {
@@ -1074,6 +1074,12 @@
        "passage": "出埃及記 27：1~21",
        "date": "2021-06-17",
        "yt": "iVWMIPXf7sY"
+      },
+      {
+       "slug": "2021-06-18",
+       "passage": "出埃及記 28：1~14",
+       "date": "2021-06-18",
+       "yt": "GVTfcXAKi_w"
       }
      ]
     },
