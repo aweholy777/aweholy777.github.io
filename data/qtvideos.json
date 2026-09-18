@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 156,
+   "video_count": 157,
    "passage_count": 1861,
    "books": [
     {
@@ -948,6 +948,12 @@
        "passage": "出埃及記 17：1~7",
        "date": "2021-05-15",
        "yt": "HxudCv5_T68"
+      },
+      {
+       "slug": "2021-05-16",
+       "passage": "出埃及記 17：8~16",
+       "date": "2021-05-16",
+       "yt": "TbhEp5zOozM"
       }
      ]
     },
