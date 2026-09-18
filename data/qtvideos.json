@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 160,
+   "video_count": 161,
    "passage_count": 1861,
    "books": [
     {
@@ -972,6 +972,12 @@
        "passage": "出埃及記 19：1~15",
        "date": "2021-05-19",
        "yt": "f8t6GepFclc"
+      },
+      {
+       "slug": "2021-05-20",
+       "passage": "出埃及記 19：16~25",
+       "date": "2021-05-20",
+       "yt": "b3JBCfkFnf8"
       }
      ]
     },
