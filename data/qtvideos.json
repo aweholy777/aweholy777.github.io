@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 201,
+   "video_count": 202,
    "passage_count": 1861,
    "books": [
     {
@@ -1218,6 +1218,12 @@
        "passage": "出埃及記 37：19~29",
        "date": "2021-07-11",
        "yt": "cdrW-DfN1KQ"
+      },
+      {
+       "slug": "2021-07-12",
+       "passage": "出埃及記 38：1~20",
+       "date": "2021-07-12",
+       "yt": "TomhMfeKO68"
       }
      ]
     },
