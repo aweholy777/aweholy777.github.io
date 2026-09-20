@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 206,
+   "video_count": 207,
    "passage_count": 1861,
    "books": [
     {
@@ -1248,6 +1248,12 @@
        "passage": "出埃及記 39：32~43",
        "date": "2021-07-16",
        "yt": "cIS-xdO5Jig"
+      },
+      {
+       "slug": "2021-07-17",
+       "passage": "出埃及記 40：1~16",
+       "date": "2021-07-17",
+       "yt": "0s8M9UibvkY"
       }
      ]
     },
