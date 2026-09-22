@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 261,
+   "video_count": 262,
    "passage_count": 1861,
    "books": [
     {
@@ -1585,6 +1585,12 @@
        "passage": "利未記 24：10~23",
        "date": "2019-10-20",
        "yt": "a7cOzQvyzOE"
+      },
+      {
+       "slug": "2019-10-21",
+       "passage": "利未記 25：1~12",
+       "date": "2019-10-21",
+       "yt": "YYARE56ePU0"
       }
      ]
     },
