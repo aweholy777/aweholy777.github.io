@@ -130,7 +130,10 @@
 /* ===== 右下方「回到最上面」按鈕（獨立上箭頭，無圓框） ===== */
 .qt-top {
   position: fixed;
-  right: 1.3rem;
+  /* 定位＝「文章框（.container，max-width 1080px）」的右下角，而不是視窗右下角。
+     實際位置由 list.html 的 JS 依量測值設定（任何寬度都準）；這裡的算法是
+     沒有 JS 時的後備值：視窗較寬時扣掉 (100% - 1080px) / 2，較窄時退回 1.3rem。 */
+  right: max(1.3rem, calc((100% - 1080px) / 2 + 1.3rem));
   bottom: 1.4rem;
   z-index: 500;
   width: 2.3rem;

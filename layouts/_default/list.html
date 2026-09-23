@@ -54,21 +54,34 @@
   {{/* {{ partial "pagination.html" . }} */}}
   {{/* --- 分頁結束 --- */}}
 
-  {{/* 舊約/新約 QT 索引頁：右下角「回到最上面」按鈕 */}}
+  {{/* 舊約/新約 QT 索引頁：右下角「回到最上面」按鈕（貼齊文章框右下角） */}}
   {{ if or (hasPrefix .RelPermalink "/daily-qt/otqt") (hasPrefix .RelPermalink "/daily-qt/ntqt") }}
   <button type="button" class="qt-top" data-qt-top aria-label="回到最上面" title="回到最上面"></button>
   <script>
   (function () {
     var b = document.querySelector('[data-qt-top]');
     if (!b) return;
+    var card = b.closest('.container') || document.querySelector('.container');
+    var INSET = 16; // 與文章框右緣的距離（px）
+    // 按鈕貼齊「文章框（.container）的右下角」，不是視窗右下角。
+    // 用實際量測的文章框位置計算，任何視窗寬度都準（純 CSS 算不出
+    // 1000–1130px 之間 .container--outer 的 25px 外邊距）。
+    var place = function () {
+      if (!card) return;
+      var r = card.getBoundingClientRect();
+      var w = document.documentElement.clientWidth; // 不含捲軸寬度，與 rect 同一座標系
+      b.style.right = Math.max(INSET, w - r.right + INSET) + 'px';
+    };
     var upd = function () {
       var y = window.scrollY || document.documentElement.scrollTop;
       if (y > 300) b.classList.add('is-visible'); else b.classList.remove('is-visible');
     };
     window.addEventListener('scroll', upd, { passive: true });
+    window.addEventListener('resize', place);
     b.addEventListener('click', function () {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+    place();
     upd();
   })();
   </script>
