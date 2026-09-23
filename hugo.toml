@@ -38,7 +38,7 @@ theme = "mainroad"
   description = "城市宣培中心 | City Ministration Training Center" # 可選：添加描述
   # sidebar = true # 可選配置
   # widgets = ["search", "recent", "categories", "taglist"] # 可選配置
-  customCSS = ["css/custom.css", "css/custom-font.css", "css/qt-library.css", "css/qt-index.css"] # 載入自訂 CSS
+  customCSS = ["css/custom.css", "css/custom-font.css", "css/qt-library.css", "css/qt-index.css", "css/qt-article.css"] # 載入自訂 CSS
   customJS = ["js/custom.js"]
 
 

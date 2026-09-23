@@ -1,0 +1,26 @@
+/* ===== 每日QT 文章內頁（單篇）：版面 70% 置中，不要全版面 =====
+   只套用在 /daily-qt/otqt/ 與 /daily-qt/ntqt/ 的單篇文章
+   （由 baseof 依 body class「daily-qt-article」控制）。 */
+
+.daily-qt-article .primary {
+  max-width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 內文跟著 70% 欄寬，不再另限 800px，讓標題與內文左右對齊 */
+.daily-qt-article .post__content,
+.daily-qt-article .main__content {
+  max-width: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* 小螢幕還原全寬，避免 70% 太窄 */
+@media (max-width: 860px) {
+  .daily-qt-article .primary {
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}

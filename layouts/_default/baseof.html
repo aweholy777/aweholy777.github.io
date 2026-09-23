@@ -58,7 +58,7 @@
     {{- end }}
     <meta name="google-site-verification" content="c517b71dd612249d6"/> 
 </head>
-<body class="body">
+<body class="body{{ if and .IsPage (or (hasPrefix .RelPermalink "/daily-qt/otqt/") (hasPrefix .RelPermalink "/daily-qt/ntqt/")) }} daily-qt-article{{ end }}">
     <div class="container container--outer">
         {{ block "header" . }}{{ partial "header.html" . }}{{ end }}
         <div class="wrapper flex">
