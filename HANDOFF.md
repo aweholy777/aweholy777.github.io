@@ -25,6 +25,7 @@
   - `content/daily-qt/ntqt/` — 新約 QT，檔名 `YYYY-MM-DD.md`，約 849 篇（**已全數寫完，不再新增**）
   - `content/daily-qt/otqt/` — 舊約 QT，約 1862 篇（**已全數寫完，不再新增**）
   - 兩個目錄各有一個 `_index.md`，是**按聖經書卷順序**排列的索引頁（不是按檔名的日期序），由 `content/daily-qt/sort-daily-qt-indexes.js` 維護排序。
+  - **同一段經文只列最新日期（2026-09-24 起）**：`sort-daily-qt-indexes.js` 的 `dedupeLatest()` 會把「正規化後完全相同」的經文只保留**日期最新**那一筆，日期較舊的重複條目**不在索引頁列出**；但**對應的文章 .md 檔仍然保留、不刪除**（仍可用網址直接開啟）。此規則與影片生成一致（`nightly_head` 同經文本來就只做最新那篇）。
 - 每篇 QT 文章近年會再搭配一支**朗讀/講解影片**，生成後以 YouTube 短代碼嵌入文章底部（見下方「影片管線」）。
 - 圖片已從本機遷移到 **Cloudflare R2**（`upload-images-to-r2.ps1`、`遷移到Cloudflare指南.md` 有細節，一般不需要再碰）。
 
