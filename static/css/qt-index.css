@@ -46,60 +46,80 @@
 }
 
 /* ===== 頁面最上方的「書卷目錄」（分類表格：第一欄分類、第二欄聖經簡稱） ===== */
-/* 突破 600px 內容欄寬，用滿較寬的寬度讓每個分類盡量排成一行（窄螢幕時自動收回） */
 .qt-index .qt-toc {
   width: calc(100% + 280px);
-  margin: 0 -140px 1.5rem;
-  padding: .8rem .9rem .95rem;
-  background: #f6f9f4;
-  border: 1px solid #e2e8dd;
-  border-radius: 10px;
+  margin: 0 -140px 1.6rem;
+  padding: 1rem 1.15rem 1.1rem;
+  background: linear-gradient(180deg, #f7faf3, #f1f6ea);
+  border: 1px solid #e2e8db;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(80, 110, 30, .06);
 }
 .qt-index .qt-toc__title {
-  margin-bottom: .5rem;
+  margin-bottom: .7rem;
   font-size: .85rem;
   font-weight: 700;
-  color: #4a5568;
+  letter-spacing: .03em;
+  color: #4b5b3a;
 }
+/* 覆寫全站表格樣式（外框、格線、灰底），改成乾淨的分類表 */
 .qt-index .qt-toc__table {
   width: 100%;
+  margin: 0;
+  border: 0;
   border-collapse: collapse;
+  border-spacing: 0;
+  font-size: 1rem;
 }
-.qt-index .qt-toc__table tr + tr { border-top: 1px solid #e4eadd; }
-.qt-index .qt-toc__cat {
-  width: 1%;
-  padding: .32rem .8rem .32rem 0;
+.qt-index .qt-toc__table th,
+.qt-index .qt-toc__table td {
+  border: 0;
   text-align: left;
+  line-height: 1.5;
+}
+.qt-index .qt-toc__table tbody tr + tr th,
+.qt-index .qt-toc__table tbody tr + tr td {
+  border-top: 1px solid #e7edde;
+}
+/* 第一欄：分類標題（不管幾個字都強制同一行，不斷行） */
+.qt-index .qt-toc__cat {
+  width: 1px;
+  padding: .5rem 1.1rem .5rem 0;
   vertical-align: middle;
   white-space: nowrap;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  background: none;
   font-size: .82rem;
   font-weight: 700;
-  color: #3f5a14;
+  color: #46621a;
 }
+/* 第二欄：書卷簡稱 */
 .qt-index .qt-toc__books {
-  padding: .32rem 0;
-  line-height: 2;
+  padding: .45rem 0;
+  line-height: 2.1;
 }
 .qt-index .qt-toc__books a {
   display: inline-block;
-  min-width: 1.7em;
-  margin: 0 .22rem .28rem 0;
-  padding: .1rem .34rem;
-  border: 1px solid #d9e3d3;
-  border-radius: 6px;
+  min-width: 1.75em;
+  margin: 0 .2rem .25rem 0;
+  padding: .12rem .38rem;
+  border: 1px solid #dbe5d0;
+  border-radius: 7px;
   background: #fff;
   color: #4d6b1f;
   font-size: .82rem;
   line-height: 1.5;
   text-align: center;
   text-decoration: none;
-  transition: background .12s, color .12s, border-color .12s;
+  transition: background .12s, color .12s, border-color .12s, transform .1s;
 }
 .qt-index .qt-toc__books a:hover,
 .qt-index .qt-toc__books a:focus {
   background: #6B8E23;
   border-color: #6B8E23;
   color: #fff;
+  transform: translateY(-1px);
 }
 @media (max-width: 960px) {
   .qt-index .qt-toc { width: 100%; margin-left: 0; margin-right: 0; }
