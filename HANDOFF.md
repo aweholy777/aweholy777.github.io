@@ -14,6 +14,12 @@
 > （`192.168.68.57`，機名 `DESKTOP-BFSJ95H`，RTX 5090）在跑，**一台包辦全部**。
 > 如果你看到 repo 裡有些檔案還在講「3060」「雙機」「軍師/士兵跨機」，那是舊架構的
 > 歷史文件，**只供參考背景，不要照著去等一台不存在的協作對象**。
+>
+> **2026-09-24 重要變更**：專案已從舊機 5090（`DESKTOP-BFSJ95H`、`C:\Users\user\qtproject`）
+> **移交到新機 `GJH731`**（使用者 `aweholy`，專案路徑 **`D:\qtproject`**）。影片已全部生成
+> 完畢，新機**不需要 ComfyUI／GPU／torch**，只剩下「YouTube 滴傳 ＋ 內容維護 ＋ 建置發布」。
+> **Python 改為 uv 管理**（本機 **conda 已退役**、也不再使用系統 Python）：專案 venv＝
+> `D:\qtproject\.venv`，所有 Python 指令一律用 `D:\qtproject\.venv\Scripts\python.exe`。
 
 ---
 
@@ -68,16 +74,19 @@ draft: false
 
 ## 2. 現行架構：單機獨立作業（2026-09-10 起）
 
-**只有一台機器**在管這整個專案：RTX 5090（`192.168.68.57`，`DESKTOP-BFSJ95H`）。這台機器**一手包辦**：
+**只有一台機器**在管這整個專案。**2026-09-24 起是 `GJH731`**（使用者 `aweholy`，專案在 `D:\qtproject`）；
+原本的 RTX 5090（`192.168.68.57`，`DESKTOP-BFSJ95H`）已完成階段任務、不再使用。這台機器**一手包辦**：
 
 1. QT 內容維護、front matter／格式修正
 2. 各書卷 `_index.md` 排序維護（`content/daily-qt/sort-daily-qt-indexes.js`）
-3. 影片生成（ComfyUI + InfiniteTalk，見第 3 節）
+3. ~~影片生成（ComfyUI + InfiniteTalk）~~ — **已在舊機全部生成完畢，新機無需 GPU／ComfyUI**（見第 3 節）
 4. YouTube 上傳（寫 `yt_uploaded.csv`；文章不嵌入，影片集中於 `/qt-video/` 影音庫）
 5. `hugo --buildFuture` 本機建置檢查
 6. 網站發布（push 到 `main` 觸發 GitHub Actions 自動部署，見第 5 節）
 
-判斷方式：`$env:COMPUTERNAME` 應該回傳 `DESKTOP-BFSJ95H`，且 `C:\Users\user\ComfyUI\ComfyUI\main.py` 存在。
+判斷方式：`$env:COMPUTERNAME` 應該回傳 `GJH731`，專案在 `D:\qtproject`，且
+`D:\qtproject\.venv\Scripts\python.exe` 存在（uv 建立的 venv）。本機 **conda 已退役**，
+Python 一律走 uv —— 不要用系統 Python、不要 `pip install` 到全域、不要用 conda。
 
 **舊的「3060 軍師機」角色已不存在**——不需要等另一台機器 pull/push 交接，也不需要維持雙機衝突避免規則（例如「只碰自己生成影片的那幾篇」這條限制已經沒有意義，因為現在同一台機器什麼都能碰，只要自己注意別互相干擾正在跑的批次工作）。
 
@@ -105,7 +114,7 @@ draft: false
 
 ### 排程（Windows 工作排程器）
 
-- **生成＝手動觸發**：每次指定數量，跑 `tasks/5090-migration/gen_5090.ps1 -Count N`。只產生 mp4 到 `video-output\head\`（gitignored，不進 git）。
+- **生成＝手動觸發**（⚠️ 舊機腳本，內含舊機路徑 `C:\Users\user\...`；**新機未建置生成環境**，目前不需生成）：每次指定數量，跑 `tasks/5090-migration/gen_5090.ps1 -Count N`。只產生 mp4 到 `video-output\head\`（gitignored，不進 git）。
   - **現況（2026-09-24）：全部影片已生成完畢，`QT-GenLoop-5090` 已停用（Disabled）**，不再需要生成；除非日後新增 QT 文章才需重新啟用。
   - 全自動循環模式：`QT-GenLoop-5090` 排程每 15 分檢查一次，邏輯是「生 24 部→休息 1 小時→再 24 部」無限循環、重開機自動接續。停用 `Disable-ScheduledTask -TaskName QT-GenLoop-5090`；恢復 `Enable-ScheduledTask -TaskName QT-GenLoop-5090`。
   - **長批次生成不要用一般背景任務（如 Claude Code 的 background bash）啟動**——那種背景任務被系統回收時會連帶砍掉 `nightly_head.py` 子行程，務必透過 Windows 排程任務（脫離終端 session）啟動，才能撐過數小時甚至數十小時的批次。
@@ -114,7 +123,9 @@ draft: false
   - **生成 log 是 UTF-16 編碼**：要監看它的內容，PowerShell 用 `Get-Content <path> -Encoding Unicode` / `Select-String` 才讀得對；用 bash 的 `grep` 對 UTF-16 檔案比對不到東西，不要因此誤判「沒有進度」。
   - **`生成 (N/24)` 語意＝「第 N 篇開始生成」，不是「已完成 N 篇」**：該行出現時第 N 篇才剛開始，要等同一篇後面出現 `生成完成，耗時 X 分鐘` 才算完成。所以最新一行若是 `(20/24)`，代表**已完成 19 篇、第 20 篇正在跑**，別誤讀成「20 篇跑完、正在跑第 21 篇」（2026-09-11 實際踩過這個 off-by-one）。
   - 生成循環的 log 則是 `C:\Users\user\gen_loop.log`（記錄每批 start/end、休息、續跑判斷）。
-- **上傳＋發布＝每小時排程滴傳**：任務名 `QT-Upload-5090`，跑 `tasks/5090-migration/upload_5090.ps1`。
+- **上傳＋發布＝每小時排程滴傳**：任務名 `QT-Upload-5090`，跑 `D:\qtproject\tasks\5090-migration\upload_5090.ps1`
+  （2026-09-24 已把腳本內寫死的舊機路徑改為本機值；腳本內 `$py` 指向 `D:\qtproject\.venv\Scripts\python.exe`）。
+  ⚠️ **同一時間只能有一台機器跑上傳**，否則會重複上傳同一支。
   - 「佇列式滴傳」：每小時整點 05 分跑一次，**每次只傳 1 支**（`yt_publish.py --auto --limit 1`），從 `yt_uploaded.csv` 時間戳算「過去 24 小時已傳幾支」，達到 `DailyCap` 就跳過本次。
   - `DailyCap` 現值：**24**（2026-08-21 上線時從 20 開始，觀察穩定後已調升；若要再調，改排程 Action 參數即可，不用改程式碼）。**不要相信「YouTube 一天只能傳 6 支」這個舊估計**——那是舊排程遺留的保守假設，已被實測推翻，真正瓶頸是頻道自身風控而非 API 配額（每支約消耗 100 點配額、每天理論上可傳上百支）。
   - **退避機制**：`yt_publish.py --auto` 遇到 HTTP 403 配額/上限錯誤時，會印 `QUOTA_LIMIT_HIT` 並 `exit 2`；`upload_5090.ps1` 偵測到後寫暫停旗標檔（暫停 24 小時），之後每小時的跑會直接跳過，24 小時後旗標過期自動恢復。
@@ -230,5 +241,5 @@ qtproject/
 1. `git status`、`git log --oneline -20`，了解目前 working tree 乾不乾淨、最近做了什麼。
 2. 讀 `tasks/progress/_summary.txt`，掌握新約/舊約目前的生成/上傳進度。
 3. 確認 `.\hugo.exe --buildFuture`（repo 根目錄，見第 5 節）能不能跑；這份 exe 是 gitignored 的本機檔案，換一台機器或重新 clone 時要重新放一份（下載 CI 用的同版本 0.144.2，不要裝更新版）。
-4. 確認 ComfyUI 在跑（`Invoke-RestMethod http://127.0.0.1:8188/system_stats`），生成排程（`QT-GenLoop-5090` / `QT-GenOnce-5090`）與上傳排程（`QT-Upload-5090`）狀態是否正常（`Get-ScheduledTask` 查）。
+4. 確認環境：`D:\qtproject\.venv\Scripts\python.exe` 存在（uv venv；**本機不用 conda／系統 Python**）、YouTube 憑證在、`video-output\head\*.mp4` 有影片；再看上傳排程 `QT-Upload-5090` 狀態（`Get-ScheduledTask` 查）。生成排程與 ComfyUI **新機不需要**（影片已生成完畢）。
 5. 有疑問或發現本檔跟實際狀況不符（例如進度數字、排程參數已經變了），**直接更新本檔**，讓下一個接手的人（人或 AI）看到的是最新狀態，不要留著過期資訊。

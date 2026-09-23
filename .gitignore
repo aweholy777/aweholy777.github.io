@@ -26,6 +26,8 @@ CLAUDE.local.md
 # Python bytecode 與生成/上傳的暫存落地檔（不進 repo）
 __pycache__/
 *.pyc
+# uv 管理的專案虛擬環境（2026-09-24 新機改用 uv，取代舊機的系統 Python 3.13）
+.venv/
 video-pipeline/.gen_*
 video-pipeline/.upload_*
 # AGENTS.md：CLAUDE.md 的本機相容複本（opencode/Codex 讀），易過期→不追蹤，各機自留本機版、以 CLAUDE.md 為唯一規範

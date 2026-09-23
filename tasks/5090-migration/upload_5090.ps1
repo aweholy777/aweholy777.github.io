@@ -9,12 +9,12 @@
 param([int]$DailyCap = 20)
 
 $ErrorActionPreference = "Continue"
-$repo   = "C:\Users\user\qtproject"
-$py     = "C:\Users\user\AppData\Local\Programs\Python\Python313\python.exe"
-$log    = "C:\Users\user\upload_5090.log"
+$repo   = "D:\qtproject"
+$py     = "D:\qtproject\.venv\Scripts\python.exe"
+$log    = "C:\Users\aweholy\upload_5090.log"
 $inbox  = "$repo\tasks\handoff\5090-to-3060.md"
 $csvPath = "$repo\video-pipeline\yt_uploaded.csv"
-$pauseFlag = "C:\Users\user\upload_pause.flag"
+$pauseFlag = "C:\Users\aweholy\upload_pause.flag"
 
 function Log($m) { "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')  $m" | Tee-Object -FilePath $log -Append }
 
