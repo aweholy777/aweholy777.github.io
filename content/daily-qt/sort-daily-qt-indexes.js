@@ -243,9 +243,34 @@ function buildSectionIndex(existingMarkdown, title, description, items) {
   return output;
 }
 
+// 經文正規化（與 nightly_head.norm_key 一致）：去空白、統一波浪號（含 HTML 實體）。
+function normKey(passage) {
+  return String(passage)
+    .replace(/\s+/g, "")
+    .replace(/&#126;/g, "~")
+    .replace(/[～〜]/g, "~");
+}
+
+// 同一段經文（正規化後完全相同）只保留「日期最新」的一筆；
+// 日期較舊的重複文章檔案仍保留在 repo，只是不在索引頁列出（與影片生成規則一致）。
+function dedupeLatest(items) {
+  const byKey = new Map();
+  const order = [];
+  for (const item of items) {
+    const k = normKey(passageOnly(item.title));
+    if (!byKey.has(k)) {
+      byKey.set(k, item);
+      order.push(k);
+    } else if (item.date > byKey.get(k).date) {
+      byKey.set(k, item);
+    }
+  }
+  return order.map((k) => byKey.get(k));
+}
+
 function writeIndexes(items, unparsed) {
-  const otItems = items.filter((item) => item.section === OT_SECTION).sort(sortItems);
-  const ntItems = items.filter((item) => item.section === NT_SECTION).sort(sortItems);
+  const otItems = dedupeLatest(items.filter((item) => item.section === OT_SECTION).sort(sortItems));
+  const ntItems = dedupeLatest(items.filter((item) => item.section === NT_SECTION).sort(sortItems));
 
   const rootIndexPath = path.join(ROOT, "_index.md");
   const rootIndexMarkdown = fs.existsSync(rootIndexPath) ? fs.readFileSync(rootIndexPath, "utf8") : "";

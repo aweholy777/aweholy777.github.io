@@ -1656,7 +1656,7 @@
     },
     {
      "name": "民數記",
-     "total": 164,
+     "total": 92,
      "passages": 92,
      "videos": [
       {
@@ -1807,7 +1807,7 @@
     },
     {
      "name": "路得記",
-     "total": 18,
+     "total": 12,
      "passages": 12,
      "videos": []
     },
@@ -1873,7 +1873,7 @@
     },
     {
      "name": "詩篇",
-     "total": 328,
+     "total": 258,
      "passages": 258,
      "videos": [
       {
@@ -1904,13 +1904,13 @@
     },
     {
      "name": "以賽亞書",
-     "total": 124,
+     "total": 121,
      "passages": 121,
      "videos": []
     },
     {
      "name": "耶利米書",
-     "total": 120,
+     "total": 119,
      "passages": 119,
      "videos": []
     },
@@ -2010,12 +2010,12 @@
    "id": "ntqt",
    "name": "新約",
    "book_count": 27,
-   "video_count": 849,
+   "video_count": 848,
    "passage_count": 848,
    "books": [
     {
      "name": "馬太福音",
-     "total": 184,
+     "total": 96,
      "passages": 96,
      "videos": [
       {
@@ -2029,12 +2029,6 @@
        "passage": "馬太福音 1：18~25",
        "date": "2026-01-13",
        "yt": "VKKojt1UNUk"
-      },
-      {
-       "slug": "2016-12-25",
-       "passage": "馬太福音 2：1～12",
-       "date": "2016-12-25",
-       "yt": "OupxZAavVW4"
       },
       {
        "slug": "2026-01-14",
@@ -2604,7 +2598,7 @@
     },
     {
      "name": "馬可福音",
-     "total": 120,
+     "total": 61,
      "passages": 61,
      "videos": [
       {
@@ -2977,7 +2971,7 @@
     },
     {
      "name": "路加福音",
-     "total": 206,
+     "total": 120,
      "passages": 120,
      "videos": [
       {
@@ -3704,7 +3698,7 @@
     },
     {
      "name": "約翰福音",
-     "total": 167,
+     "total": 104,
      "passages": 104,
      "videos": [
       {
@@ -4335,7 +4329,7 @@
     },
     {
      "name": "使徒行傳",
-     "total": 157,
+     "total": 91,
      "passages": 91,
      "videos": [
       {
@@ -4888,7 +4882,7 @@
     },
     {
      "name": "羅馬書",
-     "total": 89,
+     "total": 52,
      "passages": 52,
      "videos": [
       {
@@ -5207,7 +5201,7 @@
     },
     {
      "name": "哥林多前書",
-     "total": 103,
+     "total": 45,
      "passages": 45,
      "videos": [
       {
@@ -5484,7 +5478,7 @@
     },
     {
      "name": "哥林多後書",
-     "total": 50,
+     "total": 25,
      "passages": 25,
      "videos": [
       {
@@ -5641,7 +5635,7 @@
     },
     {
      "name": "加拉太書",
-     "total": 28,
+     "total": 14,
      "passages": 14,
      "videos": [
       {
@@ -5732,7 +5726,7 @@
     },
     {
      "name": "以弗所書",
-     "total": 34,
+     "total": 20,
      "passages": 20,
      "videos": [
       {
@@ -5859,7 +5853,7 @@
     },
     {
      "name": "腓立比書",
-     "total": 23,
+     "total": 14,
      "passages": 14,
      "videos": [
       {
@@ -5950,7 +5944,7 @@
     },
     {
      "name": "歌羅西書",
-     "total": 20,
+     "total": 17,
      "passages": 17,
      "videos": [
       {
@@ -6059,7 +6053,7 @@
     },
     {
      "name": "帖撒羅尼迦前書",
-     "total": 17,
+     "total": 14,
      "passages": 14,
      "videos": [
       {
@@ -6150,7 +6144,7 @@
     },
     {
      "name": "帖撒羅尼迦後書",
-     "total": 8,
+     "total": 4,
      "passages": 4,
      "videos": [
       {
@@ -6181,7 +6175,7 @@
     },
     {
      "name": "提摩太前書",
-     "total": 30,
+     "total": 11,
      "passages": 11,
      "videos": [
       {
@@ -6254,7 +6248,7 @@
     },
     {
      "name": "提摩太後書",
-     "total": 25,
+     "total": 12,
      "passages": 12,
      "videos": [
       {
@@ -6333,7 +6327,7 @@
     },
     {
      "name": "提多書",
-     "total": 8,
+     "total": 7,
      "passages": 7,
      "videos": [
       {
@@ -6382,7 +6376,7 @@
     },
     {
      "name": "腓利門書",
-     "total": 4,
+     "total": 2,
      "passages": 2,
      "videos": [
       {
@@ -6401,7 +6395,7 @@
     },
     {
      "name": "希伯來書",
-     "total": 61,
+     "total": 33,
      "passages": 33,
      "videos": [
       {
@@ -6606,7 +6600,7 @@
     },
     {
      "name": "雅各書",
-     "total": 18,
+     "total": 11,
      "passages": 11,
      "videos": [
       {
@@ -6679,7 +6673,7 @@
     },
     {
      "name": "彼得前書",
-     "total": 20,
+     "total": 13,
      "passages": 13,
      "videos": [
       {
@@ -6764,7 +6758,7 @@
     },
     {
      "name": "彼得後書",
-     "total": 12,
+     "total": 6,
      "passages": 6,
      "videos": [
       {
@@ -6807,7 +6801,7 @@
     },
     {
      "name": "約翰壹書",
-     "total": 21,
+     "total": 13,
      "passages": 13,
      "videos": [
       {
@@ -6892,7 +6886,7 @@
     },
     {
      "name": "約翰貳書",
-     "total": 2,
+     "total": 1,
      "passages": 1,
      "videos": [
       {
@@ -6905,7 +6899,7 @@
     },
     {
      "name": "約翰參書",
-     "total": 2,
+     "total": 1,
      "passages": 1,
      "videos": [
       {
@@ -6918,7 +6912,7 @@
     },
     {
      "name": "猶大書",
-     "total": 5,
+     "total": 4,
      "passages": 4,
      "videos": [
       {
@@ -6949,7 +6943,7 @@
     },
     {
      "name": "啟示錄",
-     "total": 81,
+     "total": 57,
      "passages": 57,
      "videos": [
       {
