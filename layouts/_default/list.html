@@ -9,6 +9,14 @@
     </header>
     {{- end }}
 
+    {{/* 每日QT 索引頁：最上方加「書卷目錄」，點一下跳到該卷（用 Hugo 產生的標題錨點） */}}
+    {{ if and (hasPrefix .RelPermalink "/daily-qt") .TableOfContents }}
+    <div class="qt-toc" aria-label="書卷目錄">
+      <div class="qt-toc__title">書卷目錄（點一下跳到該卷）</div>
+      {{ .TableOfContents }}
+    </div>
+    {{ end }}
+
     {{/* 只顯示 _index.md 文件本身的內容 */}}
     {{- with .Content }}
     <div class="content main__content clearfix">

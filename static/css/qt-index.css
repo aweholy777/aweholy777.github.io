@@ -44,3 +44,47 @@
   -webkit-mask: none;
   mask: none;
 }
+
+/* ===== 頁面最上方的「書卷目錄」（可點擊跳卷） ===== */
+.qt-index .qt-toc {
+  margin: 0 0 1.5rem;
+  padding: .85rem 1rem 1rem;
+  background: #f6f9f4;
+  border: 1px solid #e2e8dd;
+  border-radius: 10px;
+}
+.qt-index .qt-toc__title {
+  margin-bottom: .6rem;
+  font-size: .9rem;
+  font-weight: 700;
+  color: #4a5568;
+}
+.qt-index .qt-toc #TableOfContents ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem .45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.qt-index .qt-toc #TableOfContents li { margin: 0; }
+.qt-index .qt-toc #TableOfContents a {
+  display: inline-block;
+  padding: .18rem .6rem;
+  border: 1px solid #d9e3d3;
+  border-radius: 999px;
+  background: #fff;
+  color: #4d6b1f;
+  font-size: .85rem;
+  line-height: 1.5;
+  text-decoration: none;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.qt-index .qt-toc #TableOfContents a:hover,
+.qt-index .qt-toc #TableOfContents a:focus {
+  background: #6B8E23;
+  border-color: #6B8E23;
+  color: #fff;
+}
+/* 點目錄跳過去時，標題不要太貼上方 */
+.qt-index .main__content h2 { scroll-margin-top: 1rem; }
