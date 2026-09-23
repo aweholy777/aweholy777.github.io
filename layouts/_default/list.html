@@ -9,11 +9,18 @@
     </header>
     {{- end }}
 
-    {{/* 每日QT 索引頁：最上方加「書卷目錄」，點一下跳到該卷（用 Hugo 產生的標題錨點） */}}
-    {{ if and (hasPrefix .RelPermalink "/daily-qt") .TableOfContents }}
+    {{/* 每日QT 索引頁：最上方加「書卷目錄」（書卷簡稱、可點擊跳卷）。
+         書卷清單取自 data/books.json（全名=錨點，簡稱=顯示） */}}
+    {{ $sub := "" }}
+    {{ if hasPrefix .RelPermalink "/daily-qt/otqt" }}{{ $sub = "otqt" }}{{ else if hasPrefix .RelPermalink "/daily-qt/ntqt" }}{{ $sub = "ntqt" }}{{ end }}
+    {{ with index site.Data.books $sub }}
     <div class="qt-toc" aria-label="書卷目錄">
       <div class="qt-toc__title">書卷目錄（點一下跳到該卷）</div>
-      {{ .TableOfContents }}
+      <ul class="qt-toc__list">
+        {{- range . }}
+        <li><a href="#{{ .name }}" title="{{ .name }}">{{ .abbr }}</a></li>
+        {{- end }}
+      </ul>
     </div>
     {{ end }}
 

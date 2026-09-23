@@ -45,46 +45,53 @@
   mask: none;
 }
 
-/* ===== 頁面最上方的「書卷目錄」（可點擊跳卷） ===== */
+/* ===== 頁面最上方的「書卷目錄」（簡稱、可點擊跳卷） ===== */
+/* 突破 600px 內容欄寬，盡量用滿寬度以減少列數（窄螢幕時自動收回） */
 .qt-index .qt-toc {
-  margin: 0 0 1.5rem;
-  padding: .85rem 1rem 1rem;
+  width: calc(100% + 280px);
+  margin: 0 -140px 1.5rem;
+  padding: .8rem .9rem .95rem;
   background: #f6f9f4;
   border: 1px solid #e2e8dd;
   border-radius: 10px;
 }
 .qt-index .qt-toc__title {
-  margin-bottom: .6rem;
-  font-size: .9rem;
+  margin-bottom: .5rem;
+  font-size: .85rem;
   font-weight: 700;
   color: #4a5568;
 }
-.qt-index .qt-toc #TableOfContents ul {
+.qt-index .qt-toc__list {
   display: flex;
   flex-wrap: wrap;
-  gap: .35rem .45rem;
+  gap: .3rem .28rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.qt-index .qt-toc #TableOfContents li { margin: 0; }
-.qt-index .qt-toc #TableOfContents a {
+.qt-index .qt-toc__list li { margin: 0; }
+.qt-index .qt-toc__list a {
   display: inline-block;
-  padding: .18rem .6rem;
+  min-width: 1.7em;
+  padding: .1rem .32rem;
   border: 1px solid #d9e3d3;
-  border-radius: 999px;
+  border-radius: 6px;
   background: #fff;
   color: #4d6b1f;
-  font-size: .85rem;
+  font-size: .82rem;
   line-height: 1.5;
+  text-align: center;
   text-decoration: none;
-  transition: background .15s, color .15s, border-color .15s;
+  transition: background .12s, color .12s, border-color .12s;
 }
-.qt-index .qt-toc #TableOfContents a:hover,
-.qt-index .qt-toc #TableOfContents a:focus {
+.qt-index .qt-toc__list a:hover,
+.qt-index .qt-toc__list a:focus {
   background: #6B8E23;
   border-color: #6B8E23;
   color: #fff;
+}
+@media (max-width: 960px) {
+  .qt-index .qt-toc { width: 100%; margin-left: 0; margin-right: 0; }
 }
 /* 點目錄跳過去時，標題不要太貼上方 */
 .qt-index .main__content h2 { scroll-margin-top: 1rem; }
