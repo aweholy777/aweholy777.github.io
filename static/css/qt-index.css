@@ -95,3 +95,28 @@
 }
 /* 點目錄跳過去時，標題不要太貼上方 */
 .qt-index .main__content h2 { scroll-margin-top: 1rem; }
+
+/* ===== 右下方「回到最上面」按鈕 ===== */
+.qt-top {
+  position: fixed;
+  right: 1.1rem;
+  bottom: 1.2rem;
+  z-index: 500;
+  width: 2.7rem;
+  height: 2.7rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #6B8E23;
+  color: #fff;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .28);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity .2s, transform .2s, visibility .2s, background .15s;
+}
+.qt-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
+.qt-top:hover { background: #587a1c; }
