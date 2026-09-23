@@ -45,8 +45,8 @@
   mask: none;
 }
 
-/* ===== 頁面最上方的「書卷目錄」（簡稱、可點擊跳卷） ===== */
-/* 突破 600px 內容欄寬，盡量用滿寬度以減少列數（窄螢幕時自動收回） */
+/* ===== 頁面最上方的「書卷目錄」（分類表格：第一欄分類、第二欄聖經簡稱） ===== */
+/* 突破 600px 內容欄寬，用滿較寬的寬度讓每個分類盡量排成一行（窄螢幕時自動收回） */
 .qt-index .qt-toc {
   width: calc(100% + 280px);
   margin: 0 -140px 1.5rem;
@@ -61,19 +61,30 @@
   font-weight: 700;
   color: #4a5568;
 }
-.qt-index .qt-toc__list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .3rem .28rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.qt-index .qt-toc__table {
+  width: 100%;
+  border-collapse: collapse;
 }
-.qt-index .qt-toc__list li { margin: 0; }
-.qt-index .qt-toc__list a {
+.qt-index .qt-toc__table tr + tr { border-top: 1px solid #e4eadd; }
+.qt-index .qt-toc__cat {
+  width: 1%;
+  padding: .32rem .8rem .32rem 0;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+  font-size: .82rem;
+  font-weight: 700;
+  color: #3f5a14;
+}
+.qt-index .qt-toc__books {
+  padding: .32rem 0;
+  line-height: 2;
+}
+.qt-index .qt-toc__books a {
   display: inline-block;
   min-width: 1.7em;
-  padding: .1rem .32rem;
+  margin: 0 .22rem .28rem 0;
+  padding: .1rem .34rem;
   border: 1px solid #d9e3d3;
   border-radius: 6px;
   background: #fff;
@@ -84,8 +95,8 @@
   text-decoration: none;
   transition: background .12s, color .12s, border-color .12s;
 }
-.qt-index .qt-toc__list a:hover,
-.qt-index .qt-toc__list a:focus {
+.qt-index .qt-toc__books a:hover,
+.qt-index .qt-toc__books a:focus {
   background: #6B8E23;
   border-color: #6B8E23;
   color: #fff;

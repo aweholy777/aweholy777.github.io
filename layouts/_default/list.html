@@ -16,11 +16,20 @@
     {{ with index site.Data.books $sub }}
     <div class="qt-toc" aria-label="書卷目錄">
       <div class="qt-toc__title">書卷目錄（點一下跳到該卷）</div>
-      <ul class="qt-toc__list">
-        {{- range . }}
-        <li><a href="#{{ .name }}" title="{{ .name }}">{{ .abbr }}</a></li>
-        {{- end }}
-      </ul>
+      <table class="qt-toc__table">
+        <tbody>
+          {{- range . }}
+          <tr>
+            <th scope="row" class="qt-toc__cat">{{ .category }}</th>
+            <td class="qt-toc__books">
+              {{- range .books }}
+              <a href="#{{ .name }}" title="{{ .name }}">{{ .abbr }}</a>
+              {{- end }}
+            </td>
+          </tr>
+          {{- end }}
+        </tbody>
+      </table>
     </div>
     {{ end }}
 
