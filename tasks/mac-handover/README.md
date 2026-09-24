@@ -1,6 +1,7 @@
 # Mac 接手每日上傳（YouTube 滴傳）— 交接包
 
-> 這包是給**在 Mac 上操作的 Codex / 助理**看的。專案在 Mac 的位置：`/Users/haoguozi/Desktop/qtproject`
+> 這包是給**在 Mac 上操作的 Codex / 助理**看的。專案在 Mac 的位置：`/Users/haoguozi/qtproject`
+> ⚠️ **不要放在 `~/Desktop`／`~/Documents`／`~/Downloads`**：macOS 隱私保護（TCC）會讓 launchd 背景排程讀不到那裡的腳本，症狀是 `Input/output error` 或 `Operation not permitted`；放家目錄下的 `~/qtproject` 就沒事。
 > （Windows 那台原本在 `D:\qtproject`，同一個 GitHub repo。）
 
 ---
@@ -23,7 +24,7 @@ Mac 上那份是**複製來的快照**，會落後。它顯示「2,876 個已修
 和 git 索引裡的 LF 不一致，**不是真的改到內容**。照下面清乾淨再 pull：
 
 ```bash
-cd ~/Desktop/qtproject
+cd ~/qtproject
 
 # 1-0 先留紀錄（不改變任何東西），並確認沒有卡在半路的合併
 git status --short > ~/mac-status-before.txt
@@ -216,7 +217,8 @@ launchctl list | grep qtupload        # 看到 com.cmtc.qtupload 即成功
 | `git pull --rebase 失敗` | 多半是工作樹又被 CRLF 弄髒：`git config core.autocrlf false && git checkout -- .` 再重跑 |
 | 忘了哪台在跑 | `tail -3 video-pipeline/yt_uploaded.csv`：`uploaded_at` 時間＋commit 訊息（`mac upload:` / `5090 upload:`）可看出是哪台傳的 |
 | 重跑 `install_mac.sh` 失敗 `A virtual environment already exists` | 已修：腳本現在偵測到既有 `.venv` 就沿用、不重建；真要重建請先 `rm -rf .venv`（會重新裝套件，約 1 分鐘） |
-| `Launchctl load failed: 5: Input/output error` | macOS 13+ 的舊 `launchctl load` 在 GUI domain 已失效：改用 `launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.cmtc.qtupload.plist`（新版 `install_mac.sh --load` 已自動走 bootstrap） |
+| `Launchctl load failed: 5: Input/output error` | macOS 13+ 的舊 `launchctl load` 在 GUI domain 已失效：改用 `launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.cmtc.qtupload.plist`（新版 `install_mac.sh --load` 已自動走 bootstrap）。若換成 Terminal.app 仍失敗，多半是在 Claude/Codex 的沙盒外殼裡執行——launchctl 需要連 launchd 的 gui domain，沙盒會擋掉（症狀就是這個 I/O error） |
+| 專案搬移後 `.venv/bin/python` 失效 | `uv` 的 `.venv/bin/python` 是指向 `.uv-python` 的**絕對**符號連結，搬移後會斷。新版 `install_mac.sh` 會就地重指連結並改寫 `.venv` 內舊路徑（不刪檔）；真的修不好才 `rm -rf .venv` 重建 |
 
 ---
 
@@ -273,7 +275,7 @@ schtasks /change /tn "\QT-Upload-5090" /enable
 ## 附：可直接貼給 Mac 的 Codex 的指令
 
 ```
-我在這台 Mac（/Users/haoguozi/Desktop/qtproject）要接手每日 YouTube 上傳任務（原本在 Windows 跑）。
+我在這台 Mac（/Users/haoguozi/qtproject）要接手每日 YouTube 上傳任務（原本在 Windows 跑）。
 
 請讀 tasks/mac-handover/README.md，照第 1～4 步執行：
 1) 把工作樹的行尾差異清乾淨並 git pull 到最新（清乾淨前先確認 git diff --stat 沒有實質內容差異）
