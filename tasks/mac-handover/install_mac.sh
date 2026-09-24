@@ -72,6 +72,30 @@ echo "== uv python : $UV_PYTHON_INSTALL_DIR"
 # 已有 .venv 就沿用，不要重建（uv venv 對既有目錄會直接報錯；--load 重跑時更不該重建）
 if [ -x "$REPO/.venv/bin/python" ]; then
   echo "== 已有 .venv，沿用（不重建）"
+elif [ -L "$REPO/.venv/bin/python" ]; then
+  # 專案被搬移過：.venv 的 Python 是指向舊路徑的絕對連結，已失效。
+  # 就地修好（只改連結與檔案內的路徑字串，不刪除任何東西）。
+  echo "== .venv 的 Python 連結失效（專案被搬移過），就地修復路徑"
+  REAL_PY="$(find "$UV_PYTHON_INSTALL_DIR" -name 'python3.12' -type f 2>/dev/null | head -1)"
+  if [ -z "$REAL_PY" ]; then
+    echo "✗ 在 $UV_PYTHON_INSTALL_DIR 找不到 python3.12，無法就地修復。"
+    echo "  請改用重建：rm -rf \"$REPO/.venv\" 再跑一次本腳本（會重新安裝套件）"
+    exit 1
+  fi
+  "$REAL_PY" -V >/dev/null 2>&1 || { echo "✗ $REAL_PY 無法執行"; exit 1; }
+  ln -sfn "$REAL_PY" "$REPO/.venv/bin/python"
+  ln -sfn "$REAL_PY" "$REPO/.venv/bin/python3" 2>/dev/null || true
+  ln -sfn "$REAL_PY" "$REPO/.venv/bin/python3.12" 2>/dev/null || true
+  echo "   Python 連結 → $REAL_PY"
+  # .venv 內殘留的舊路徑（pyvenv.cfg、activate、console script 的 shebang）一併改寫
+  OLD_PREFIX="$(sed -n 's|^home = \(.*\)/.uv-python/.*|\1|p' "$REPO/.venv/pyvenv.cfg" 2>/dev/null | head -1)"
+  if [ -n "$OLD_PREFIX" ] && [ "$OLD_PREFIX" != "$REPO" ]; then
+    echo "   舊路徑前綴 $OLD_PREFIX → $REPO"
+    grep -rl -- "$OLD_PREFIX" "$REPO/.venv" 2>/dev/null | while IFS= read -r f; do
+      perl -i -pe "s|\Q$OLD_PREFIX\E|$REPO|g" "$f" 2>/dev/null && echo "     已改：${f#$REPO/}"
+    done
+  fi
+  "$REPO/.venv/bin/python" -V || { echo "✗ 修復後仍無法執行 Python，請改用重建（rm -rf .venv）"; exit 1; }
 else
   echo "== 建立 .venv（Python 3.12）"
   uv venv .venv --python 3.12 || {
