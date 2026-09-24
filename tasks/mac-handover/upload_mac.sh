@@ -80,9 +80,39 @@ if [ "$CHECK_ONLY" = "1" ]; then
   exit 0
 fi
 
-# 同一台機器不重入
-if ! mkdir "$LOCK" 2>/dev/null; then log "上一趟還在跑，本次跳過。"; exit 0; fi
-trap 'rmdir "$LOCK" 2>/dev/null' EXIT
+# 同一台機器不重入。鎖內記錄 PID；程序意外中止時，下一次排程會自動
+# 回收無主鎖，避免空資料夾讓每小時上傳永久停擺。
+acquire_lock() {
+  if mkdir "$LOCK" 2>/dev/null; then
+    printf '%s\n' "$$" > "$LOCK/pid"
+    return 0
+  fi
+
+  lock_pid="$(cat "$LOCK/pid" 2>/dev/null || true)"
+  if [ -n "$lock_pid" ] && kill -0 "$lock_pid" 2>/dev/null; then
+    log "上一趟還在跑（pid=${lock_pid}），本次跳過。"
+    return 1
+  fi
+
+  rm -f "$LOCK/pid"
+  if rmdir "$LOCK" 2>/dev/null && mkdir "$LOCK" 2>/dev/null; then
+    printf '%s\n' "$$" > "$LOCK/pid"
+    log "已回收無主上傳鎖，繼續執行。"
+    return 0
+  fi
+
+  log "上傳鎖無法安全回收，本次跳過。"
+  return 1
+}
+
+release_lock() {
+  [ "$(cat "$LOCK/pid" 2>/dev/null || true)" = "$$" ] || return 0
+  rm -f "$LOCK/pid"
+  rmdir "$LOCK" 2>/dev/null || true
+}
+
+acquire_lock || exit 0
+trap release_lock EXIT
 
 cd "$REPO" || { log "找不到 repo：$REPO"; exit 1; }
 log "=== 滴傳開始（macOS, DailyCap=${DAILY_CAP}）==="

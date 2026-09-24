@@ -1,82 +1,60 @@
-# CLAUDE.md — 派工規範（軍師／士兵架構）
+# Repository Operating Rules
 
-## 專案概況
+This repository powers cmtc.tw, a Hugo site with a YouTube QT video library.
+The live owner is the Mac at `/Users/haoguozi/qtproject`. Read
+`AI_HANDOVER.md` first for the current operating state; it takes precedence
+over historical handoff documents and any Windows-specific instructions.
 
-Hugo 靜態網站（城市宣培中心，cmtc.tw），theme: mainroad，部署到 GitHub Pages。
-核心內容是每日 QT 靈修文章：
+## Current Production Flow
 
-- `content/daily-qt/ntqt/` — 新約 QT（約 1500 篇 .md）
-- `content/daily-qt/otqt/` — 舊約 QT（約 2000 篇 .md）
-- 各目錄的 `_index.md` 是按聖經書卷排序的索引頁（由 `sort-daily-qt-indexes.js` 維護）
-- 圖片已遷移至 Cloudflare R2（見 `遷移到Cloudflare指南.md`、`update-image-urls.py`）
+- GitHub Pages deploys automatically after a push to `main`.
+- `com.cmtc.qtupload` runs on this Mac at minute `05` each hour and uploads at
+  most one video per run, with a rolling 24-hour cap of 24.
+- `video-pipeline/yt_uploaded.csv` is the sole upload authority. Never
+  casually edit it or run another machine's uploader at the same time.
+- The video catalog has already been rendered. `video-output/head/` is the
+  upload queue; do not regenerate or delete it without an explicit request.
 
-QT 文章固定格式：front matter（title/date/draft）→ 圖片 → 經文引用區塊 → 四段結構（經文誦讀／今天默想經文／分享默想經文／今天的回應）。
+## Safety Rules
 
-## 角色分工
+- Never read, print, commit, transmit, or replace
+  `video-pipeline/client_secret.json` or `video-pipeline/yt_token.json`.
+- Preserve `video-output/`, `.venv/`, `.uv-python/`, and `.claude/` unless the
+  user explicitly requests their removal. `public/` and `.uv-cache/` are
+  generated cache and may be rebuilt.
+- Before edits or a manual upload, run `git pull --rebase --autostash` unless
+  a current uploader run owns the repository.
+- Do not use `git add -A` for uploader maintenance. Commit only intended
+  files, normally `video-pipeline/yt_uploaded.csv`, `data/qtvideos.json`, and
+  regenerated progress tables.
+- Do not enable a Windows uploader while the Mac launchd job is enabled.
 
-**你（Claude Code）是軍師，不是士兵。** 你的工作只有三種：
+## Content Rules
 
-1. **規劃**：把任務寫成計畫書（`tasks/<任務名>/plan.md`），規格寫到任何模型照做都不會錯的程度
-2. **派工**：用 `opencode run` 把計畫書派給模型執行（智譜 GLM-5-Turbo `zhipu/glm-5-turbo`，付費；一般出工與圖片/影片理解皆用此模型。確切 model ID 以 `opencode models` 實際輸出為準）
-3. **驗收**：只讀 `result.md` 和 `git diff --stat`，有疑慮才打開個別檔案
+- QT source: `content/daily-qt/ntqt/` and `content/daily-qt/otqt/`.
+- Every QT article needs `title`, `date`, and `draft` front matter, followed
+  by the established four-section QT structure.
+- Book-order indexes retain only the newest article for duplicate normalized
+  passages; old article files remain available and must not be batch-deleted.
+- Articles do not embed YouTube shortcodes. The central library is
+  `/qt-video/`, generated from `data/qtvideos.json`.
+- Preserve established production video settings: 25 fps, `audio_scale=0.8`,
+  and SageAttention. Test isolated changes before altering them.
 
-**禁止親自做的事**（這些派給士兵）：
+## Validation
 
-- 批次生成或改寫 QT markdown（任何 >5 個檔案的重複性編輯）
-- 重建各書卷 `_index.md` 索引
-- 批次修正 front matter、圖片 URL、標點格式
-- 批次寫 HTML/程式碼產出
+- Run `bash tasks/mac-handover/upload_mac.sh --check` for uploader health;
+  it does not upload a video.
+- Run `bash -n tasks/mac-handover/upload_mac.sh` after changing the macOS
+  uploader script.
+- Build the Hugo site before publishing content or template changes when the
+  local Hugo toolchain is available. Never hand-edit `public/`.
+- Treat credentials, personal testimony, and prayer requests as sensitive;
+  keep them out of logs, commits, and external prompts.
 
-## 單機獨立作業（2026-09-10 起，已取消雙機協作）
+## Historical Files
 
-**這個專案現在只由這一台機器（5090 執行節點，192.168.68.57，DESKTOP-BFSJ95H，RTX 5090）獨立負責到底**，
-不再有另一台「3060 軍師機」分攤內容/建置/發布。原本的雙機分工（3060 管內容與發布、5090 只管生成與上傳）
-已合併：**這台機器現在同時負責全部**——
-
-1. QT 內容維護、各書卷 `_index.md` 排序
-2. 影片生成（ComfyUI + InfiniteTalk）與 YouTube 上傳
-3. `hugo --buildFuture` 本機建置檢查
-4. 網站發布（push 到 main 觸發 GitHub Actions 部署）
-
-本機專屬細節（路徑、常數、每日工作流、驗收標準）在同目錄的 `CLAUDE.local.md`（gitignored，不在此 repo）。
-
-`tasks/handoff/` 底下的雙機信箱（`3060-to-5090.md` / `5090-to-3060.md`）是**舊雙機架構的遺留物**，
-保留備查即可，**不需要再寫新的往返訊息**——沒有另一台機器在讀了。
-
-## 派工協定
-
-```
-tasks/<任務名>/
-├── plan.md      # 軍師寫：目標、規格、檔案清單、驗收標準
-├── result.md    # 士兵寫：完成清單、異常、摘要（<50 行）
-└── log.txt      # 士兵的完整輸出落地（軍師不讀）
-```
-
-派工指令範例（模型 ID 以 `opencode models` 實際輸出為準）：
-
-```bash
-opencode run "讀取 tasks/<任務名>/plan.md 並完整執行。完成後把結果摘要寫入 tasks/<任務名>/result.md（50 行以內：完成的檔案清單、跳過或異常的項目、一句話總結）。不要詢問確認，直接執行。" -m zhipu/glm-5-turbo > tasks/<任務名>/log.txt 2>&1
-```
-
-## Token 經濟學（嚴格遵守）
-
-1. **result.md 落地**：士兵的中間過程一律寫進 log.txt，你只讀 result.md。絕不把士兵的完整輸出灌進自己的上下文。
-2. **git diff 驗收**：驗收程式碼/內容改動時先看 `git diff --stat`，再抽查可疑檔案的 diff，不讀檔案全文。
-3. **上下文控管**：自己的 context 超過 50% 就該警覺——把已確認的結論寫進 plan.md 或 result.md 落地，然後壓縮。
-4. **平行出工**：大批量任務（如整批書卷索引重建）拆成獨立子任務，各自一個 tasks/ 子目錄，最多 7 個 opencode 程序平行跑。彼此不能寫同一個檔案。
-5. **修正也走派工**：驗收發現整批要改時，不要自己改——把修正要求 append 到 plan.md，重派給士兵。只有單檔小修才自己動手。
-
-## 驗收標準（每次派工必查）
-
-- `hugo --buildFuture` 建置無錯誤（本站標準建置指令；本機請用 repo 根目錄那份釘死 CI 版本的 `.\hugo.exe`，見 `CLAUDE.local.md`——較新版 Hugo 對站內直接放 HTML 的內容檔有更嚴格 security policy 會誤判建置失敗）
-- front matter 完整：title、date、draft 三欄
-- QT 文章四段結構齊全
-- `git diff --stat` 的變更範圍與 plan.md 宣告的檔案清單一致——超出範圍的變更一律退回
-
-## 其他慣例
-
-- `public/` 是建置產物，不要手動編輯
-- 日期格式：檔名 `YYYY-MM-DD.md`，標題 `YYYY – MM – DD QT 書卷 章：節~節`
-- 敏感／個人資料（見證、代禱事項）不派給雲端免費模型；若必須處理，改派本地模型（ollama）
-- 影片主播指派（`nightly_head.py` 的 `presenter_for()`）：第1卷=主播1、第2卷=主播2、**第3卷起一律主播1（不再奇偶輪替）**。即主播2 只出現在第2卷（馬可福音），其餘全主播1。主播圖＝`video-pipeline/assets/presenter.png`(主播1)、`presenter2.png`(主播2)。
-- 影片生成參數：採 SageAttention 加速（workflow `attention_mode=sageattn`，實測 ~1.75x、約 51 分/部）；InfiniteTalk `audio_scale=0.8`（減主播頭部晃動、仍保口型）；維持 25fps（降 fps 會破壞口型同步，勿改）。
+`HANDOFF.md`, `新機接手說明.md`, and old Windows scripts under `tasks/` are
+background material. They can describe retired 5090, 3060, or Windows flows.
+For live operations, follow `AI_HANDOVER.md` and
+`tasks/mac-handover/README.md` instead.

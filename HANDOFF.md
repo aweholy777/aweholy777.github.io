@@ -1,5 +1,10 @@
 # HANDOFF.md — 專案交接說明（給接手的 AI 助理）
 
+> **歷史背景文件。** 目前的正式操作規範在 `AI_HANDOVER.md` 與
+> `tasks/mac-handover/README.md`：專案已由 `/Users/haoguozi/qtproject` 的
+> Mac 單機接手 YouTube 上傳。本文後續內容含已退役的 Windows、5090、3060
+> 路徑與雙機流程，只能作為背景參考，不可直接執行。
+
 > 這份文件是寫給**任何**接手管理這個目錄的 AI 助理看的（不限 Claude Code——
 > Codex、Cursor、opencode 等都適用）。目的是讓你一進來就搞懂：這是什麼專案、
 > 現在跑到哪、誰在做什麼、有哪些雷區不要踩。

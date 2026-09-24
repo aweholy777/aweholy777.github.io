@@ -23,6 +23,8 @@ video-pipeline/nightly_head_log.txt
 5090-每日備忘.md
 # 機器專屬 Claude Code 指令（5090 執行者版放這裡，不進 repo、不覆蓋 CLAUDE.md）
 CLAUDE.local.md
+# 本機 AI 工具設定，可能含帳號或工作階段資料，不進版控
+.claude/
 # Python bytecode 與生成/上傳的暫存落地檔（不進 repo）
 __pycache__/
 *.pyc
