@@ -90,9 +90,13 @@ bash tasks/mac-handover/install_mac.sh          # 建 .venv + 裝套件 + 寫入
 
 `install_mac.sh` 會：清掉腳本的 CRLF → 檢查 git/uv → `uv venv .venv --python 3.12` →
 裝 `google-api-python-client google-auth google-auth-oauthlib` → 產生
-`~/Library/LaunchAgents/com.cmtc.qtupload.plist` → `launchctl load`。
+`~/Library/LaunchAgents/com.cmtc.qtupload.plist`。
 
-> 想先不要啟用排程：`launchctl unload ~/Library/LaunchAgents/com.cmtc.qtupload.plist`
+**排程預設不會被啟用**（避免交接期間兩台同時上傳）。要啟用時才加 `--load`：
+
+```bash
+bash tasks/mac-handover/install_mac.sh --load   # 交接完成、Windows 已停掉才用
+```
 
 ---
 
@@ -133,10 +137,11 @@ Disable-ScheduledTask -TaskName QT-Upload-5090     # 或：schtasks /change /tn 
 
 ## 6. 啟動 Mac 的每小時排程
 
-`install_mac.sh` 已經 load 好了；也可手動：
+`install_mac.sh` 預設**不會**啟用排程；要啟用有兩種方式：
 
 ```bash
 launchctl load ~/Library/LaunchAgents/com.cmtc.qtupload.plist
+# 或重跑： bash tasks/mac-handover/install_mac.sh --load
 launchctl list | grep qtupload        # 看到 com.cmtc.qtupload 即成功
 ```
 

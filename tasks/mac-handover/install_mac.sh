@@ -1,12 +1,21 @@
 #!/bin/bash
-# install_mac.sh — 一次性安裝：Python 環境（uv）+ launchd 每小時排程
+# install_mac.sh — 一次性安裝：Python 環境（uv）+ 產生 launchd 排程檔（每小時 :05）
 #
-# 用法：bash tasks/mac-handover/install_mac.sh
+# 用法：
+#   bash tasks/mac-handover/install_mac.sh          # 只建立環境 + 寫入排程檔（**預設不啟用排程**）
+#   bash tasks/mac-handover/install_mac.sh --load   # 額外啟用 launchd 排程（交接完成、Windows 已停掉才用）
+#
+# 為什麼預設不啟用：同一時間只能有一台機器在上傳。要等 Windows 那台的排程停掉之後才可以啟用。
+# 前置：必須先完成 README 第 1 步（git pull），本檔案才會存在於工作目錄。
 #
 # 做完之後：先手動測試 `bash tasks/mac-handover/upload_mac.sh --check` 與 `... upload_mac.sh`，
-#          確認成功後才 load launchd 排程（本腳本最後會 load；不想立刻啟用就先註解掉）。
+#          確認成功、且 Windows 那台已停掉，才用 --load 啟用排程。
 
 set -uo pipefail
+
+DO_LOAD=0
+for a in "$@"; do [ "$a" = "--load" ] && DO_LOAD=1; done
+[ "${LOAD_LAUNCHD:-0}" = "1" ] && DO_LOAD=1
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "$HERE/../.." && pwd)"
@@ -46,17 +55,26 @@ for f in client_secret.json yt_token.json; do
   fi
 done
 
-# 4) 安裝 launchd 排程（每小時 :05；Mac 睡著時喚醒後補跑）
+# 4) 產生 launchd 排程檔（每小時 :05；Mac 睡著時喚醒後補跑）——預設只寫入，不啟用
 mkdir -p "$HOME_DIR/Library/LaunchAgents"
 sed -e "s|__REPO__|$REPO|g" -e "s|__HOME__|$HOME_DIR|g" "$HERE/com.cmtc.qtupload.plist" > "$PLIST"
-launchctl unload "$PLIST" 2>/dev/null
-launchctl load "$PLIST"
-echo "== launchd 已載入：$PLIST"
-launchctl list | grep -i qtupload || true
+echo "== 已寫入排程檔：$PLIST"
+
+if [ "$DO_LOAD" = "1" ]; then
+  launchctl unload "$PLIST" 2>/dev/null
+  launchctl load "$PLIST"
+  echo "== launchd 已啟用：每小時 :05 自動滴傳"
+  launchctl list | grep -i qtupload || true
+else
+  echo "== 安全預設：排程**尚未啟用**（不會有任何自動上傳）。"
+  echo "   確認 Mac 手動測試成功、且 Windows 那台排程已停掉後，再執行："
+  echo "     launchctl load \"$PLIST\""
+fi
 
 echo
 echo "下一步："
 echo "  1) bash $HERE/upload_mac.sh --check     # 看環境、待傳數、憑證"
 echo "  2) bash $HERE/upload_mac.sh             # 手動傳 1 支確認 OK"
 echo "  3) 確認 Windows 那台已停掉排程（schtasks /change /tn \"QT-Upload-5090\" /disable）"
-echo "  4) 之後每小時 :05 會自動跑；log 在 ~/upload_mac.log"
+echo "  4) 啟用排程：launchctl load \"$PLIST\"（或重跑本腳本加 --load）"
+echo "     之後每小時 :05 自動跑；log 在 ~/upload_mac.log"
