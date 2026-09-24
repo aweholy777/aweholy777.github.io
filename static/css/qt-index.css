@@ -3,16 +3,18 @@
    （FA 只在這些索引頁載入，見 layouts/_default/baseof.html）
    經節連結文字維持原本橙紅色（custom.css 的 .main__content a 控制，不在此改）。
    選擇器限定 .qt-index，不會影響站上其他清單。
-   換色 / 換欄寬只要改下面兩個變數。
+   內容（標題、書卷目錄、經文連結清單）一律靠「文章框（.container）左緣」對齊，
+   不置中——先前 600px 置中會讓清單縮在框中央、與標題左緣對不齊。
+   換色只要改下面的 --qt-icon-color。
 */
 
 .qt-index {
   --qt-icon-color: #6B8E23;
-  --qt-block-width: 600px;
 
-  max-width: var(--qt-block-width);
-  margin-left: auto;
-  margin-right: auto;
+  /* 不再限制 600px、也不再 auto 置中：撐滿文章框內容寬度＝左緣對齊 */
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 /* 內容欄跟著 main 寬度（覆寫 custom.css 的 800px），標題與連結左緣對齊 */
@@ -25,6 +27,9 @@
 .qt-index .main__content ul {
   list-style: none;
   padding-left: 0;
+  /* 清掉 custom.css 給 ul 的 40px 左縮排，讓經文連結左緣與標題／書卷目錄齊平 */
+  margin-left: 0;
+  margin-inline-start: 0;
 }
 
 .qt-index .main__content ul > li {
@@ -47,8 +52,9 @@
 
 /* ===== 頁面最上方的「書卷目錄」（分類表格：第一欄分類、第二欄聖經簡稱） ===== */
 .qt-index .qt-toc {
-  width: calc(100% + 280px);
-  margin: 0 -140px 1.6rem;
+  /* 隨文章框內容寬度（先前是比 600px 內容欄寬 140px，才需要負 margin 撐開） */
+  width: 100%;
+  margin: 0 0 1.6rem;
   padding: 1rem 1.15rem 1.1rem;
   background: linear-gradient(180deg, #f7faf3, #f1f6ea);
   border: 1px solid #e2e8db;
@@ -120,9 +126,6 @@
   border-color: #6B8E23;
   color: #fff;
   transform: translateY(-1px);
-}
-@media (max-width: 960px) {
-  .qt-index .qt-toc { width: 100%; margin-left: 0; margin-right: 0; }
 }
 /* 點目錄跳過去時，標題不要太貼上方 */
 .qt-index .main__content h2 { scroll-margin-top: 1rem; }
