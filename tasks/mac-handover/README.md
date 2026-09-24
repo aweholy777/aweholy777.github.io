@@ -24,17 +24,33 @@ Mac 上那份是**複製來的快照**，會落後。它顯示「2,876 個已修
 
 ```bash
 cd ~/Desktop/qtproject
-git status --short | wc -l          # 目前約 2876（都是行尾差異）
+
+# 1-0 先留紀錄（不改變任何東西），並確認沒有卡在半路的合併
+git status --short > ~/mac-status-before.txt
+git diff --stat > ~/mac-diff-stat.txt
+[ -f .git/MERGE_HEAD ] && git merge --abort
+
+# 1-1 重要關卡：確認 2,876 筆真的只是行尾差異（忽略行尾後應為 0 insertions / 0 deletions）
+git diff --ignore-space-at-eol --stat | tail -3
+
+# 1-2 行尾正規化
 git config core.autocrlf false
 git config core.fileMode false
-git diff --stat | tail -2           # 確認 0 insertions / 0 deletions ← 重要關卡
-git checkout -- .                   # 用索引覆蓋工作檔（把 CRLF 還原成 LF）
-git status --short | wc -l          # 應該變成 0
-git pull --ff-only                  # 拿到最新 yt_uploaded.csv 與文章
+git checkout -- .                   # 用 git 索引覆蓋工作檔：CRLF 還原成 LF（沒有實質內容會遺失）
+git status --porcelain | grep -v '^??' | wc -l    # 應為 0；不是 0 就停手回報
+
+# 1-3 清掉「與遠端同名」的未追蹤檔（**移開備份，不要刪**）
+mv 新機接手說明.md 新機接手說明.md.mac-old-backup 2>/dev/null || true
+#     .claude/settings.local.json 為本機設定，保留不動（未追蹤不影響 pull）
+
+# 1-4 拉取（只做快進，不產生合併提交）
+git pull --ff-only
+git log --oneline -3
 ```
 
-> ⚠️ 若 `git diff --stat` 顯示**有實質內容差異**（insertions/deletions 不是 0），**停手回報**，
-> 不要執行 `git checkout -- .`。
+> 為什麼 `git checkout -- .` 是安全的：前一步已經證明「忽略行尾」後差異為 0，
+> 也就是說工作檔和索引的內容完全相同、只差 CRLF/LF；覆蓋後不會遺失任何實質內容。
+> **若 1-1 出現非 0 的 insertions/deletions，就不要做 1-2，停手回報。**
 
 驗證追上進度了：
 
