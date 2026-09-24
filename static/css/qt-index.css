@@ -3,18 +3,28 @@
    （FA 只在這些索引頁載入，見 layouts/_default/baseof.html）
    經節連結文字維持原本橙紅色（custom.css 的 .main__content a 控制，不在此改）。
    選擇器限定 .qt-index，不會影響站上其他清單。
-   內容（標題、書卷目錄、經文連結清單）一律靠「文章框（.container）左緣」對齊，
-   不置中——先前 600px 置中會讓清單縮在框中央、與標題左緣對不齊。
+   內容（標題、書卷目錄、經文連結清單）一律靠「文字框左緣」對齊，不縮排。
+   文字框寬度＝全欄寬（文章框內容寬度）的 70%、置中——與文章內頁
+   static/css/qt-article.css 的 .primary 同一套做法（70% 置中），全站視覺一致。
    換色只要改下面的 --qt-icon-color。
 */
 
 .qt-index {
   --qt-icon-color: #6B8E23;
 
-  /* 不再限制 600px、也不再 auto 置中：撐滿文章框內容寬度＝左緣對齊 */
-  max-width: none;
-  margin-left: 0;
-  margin-right: 0;
+  /* 文字框＝全欄寬的 70%（文章框內寬 1030px → 約 721px），置中 */
+  max-width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 小螢幕還原全寬，避免 70% 太窄（同 qt-article.css 的作法） */
+@media (max-width: 860px) {
+  .qt-index {
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
 }
 
 /* 內容欄跟著 main 寬度（覆寫 custom.css 的 800px），標題與連結左緣對齊 */
