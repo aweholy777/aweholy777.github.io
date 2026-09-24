@@ -285,7 +285,7 @@ function writeIndexes(items, unparsed) {
 
   fs.writeFileSync(
     otIndexPath,
-    buildSectionIndex(otMarkdown, "舊約QT", "以下清單依舊約聖經書卷順序排列；相同經文會排在一起。", otItems),
+    buildSectionIndex(otMarkdown, "舊約QT", "", otItems),
     "utf8"
   );
   fs.writeFileSync(
