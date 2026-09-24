@@ -216,6 +216,7 @@ launchctl list | grep qtupload        # 看到 com.cmtc.qtupload 即成功
 | `git pull --rebase 失敗` | 多半是工作樹又被 CRLF 弄髒：`git config core.autocrlf false && git checkout -- .` 再重跑 |
 | 忘了哪台在跑 | `tail -3 video-pipeline/yt_uploaded.csv`：`uploaded_at` 時間＋commit 訊息（`mac upload:` / `5090 upload:`）可看出是哪台傳的 |
 | 重跑 `install_mac.sh` 失敗 `A virtual environment already exists` | 已修：腳本現在偵測到既有 `.venv` 就沿用、不重建；真要重建請先 `rm -rf .venv`（會重新裝套件，約 1 分鐘） |
+| `Launchctl load failed: 5: Input/output error` | macOS 13+ 的舊 `launchctl load` 在 GUI domain 已失效：改用 `launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.cmtc.qtupload.plist`（新版 `install_mac.sh --load` 已自動走 bootstrap） |
 
 ---
 
@@ -223,7 +224,7 @@ launchctl list | grep qtupload        # 看到 com.cmtc.qtupload 即成功
 
 ```bash
 # 1) Mac：停掉排程
-launchctl unload ~/Library/LaunchAgents/com.cmtc.qtupload.plist
+launchctl bootout gui/$(id -u)/com.cmtc.qtupload     # 舊寫法：launchctl unload ~/Library/LaunchAgents/com.cmtc.qtupload.plist
 launchctl list | grep qtupload        # 應無輸出
 
 # 2) Windows：重新啟用排程

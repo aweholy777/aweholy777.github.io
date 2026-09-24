@@ -6,9 +6,9 @@
   複製到 ~/Library/LaunchAgents/ 並 launchctl load。
 
   管理指令：
-    launchctl load   ~/Library/LaunchAgents/com.cmtc.qtupload.plist   # 啟用
-    launchctl unload ~/Library/LaunchAgents/com.cmtc.qtupload.plist   # 停用（交接回 Windows 時用這個）
-    launchctl list | grep qtupload                                    # 看狀態
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.cmtc.qtupload.plist   # 啟用（macOS 13+；舊寫法 launchctl load 會回 I/O error）
+    launchctl bootout gui/$(id -u)/com.cmtc.qtupload                                  # 停用（交接回 Windows 時用這個）
+    launchctl list | grep qtupload                                                    # 看狀態
     tail -f ~/upload_mac.log                                          # 看執行紀錄
 -->
 <plist version="1.0">

@@ -100,10 +100,22 @@ sed -e "s|__REPO__|$REPO|g" -e "s|__HOME__|$HOME_DIR|g" "$HERE/com.cmtc.qtupload
 echo "== 已寫入排程檔：$PLIST"
 
 if [ "$DO_LOAD" = "1" ]; then
+  DOMAIN="gui/$(id -u)"
+  launchctl bootout "$DOMAIN/com.cmtc.qtupload" 2>/dev/null
   launchctl unload "$PLIST" 2>/dev/null
-  launchctl load "$PLIST"
-  echo "== launchd 已啟用：每小時 :05 自動滴傳"
-  launchctl list | grep -i qtupload || true
+  # macOS 13+ 請用 bootstrap；舊的 load 會回 "Load failed: 5: Input/output error"
+  if launchctl bootstrap "$DOMAIN" "$PLIST" 2>&1; then
+    echo "== launchd 已啟用（bootstrap）：每小時 :05 自動滴傳"
+  elif launchctl load "$PLIST" 2>&1; then
+    echo "== launchd 已啟用（load）：每小時 :05 自動滴傳"
+  else
+    echo "✗ 啟用失敗。請依序回報以下輸出："
+    echo "   plutil -lint \"$PLIST\""
+    echo "   ls -l@ \"$PLIST\""
+    echo "   launchctl print \"$DOMAIN\" | head -5"
+    exit 1
+  fi
+  launchctl list | grep -i qtupload || echo "   （launchctl list 還沒顯示，可能是 domain 問題，回報上面輸出）"
 else
   echo "== 安全預設：排程**尚未啟用**（不會有任何自動上傳）。"
   echo "   確認 Mac 手動測試成功、且 Windows 那台排程已停掉後，再執行："
