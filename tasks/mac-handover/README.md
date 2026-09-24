@@ -92,19 +92,24 @@ Mac 若沒有 GitHub 憑證，push 會失敗（`upload_mac.sh --check` 的「pus
 git config user.name "haoguozi"
 git config user.email "aweholy@gmail.com"
 
-# b) 憑證：推薦 gh 裝置碼流程（不需 sudo、不必在任何地方輸入密碼）
-brew install gh                      # 沒有 brew 就告訴我，改用 SSH 金鑰方案
-gh auth login --hostname github.com --git-protocol https --web
-gh auth setup-git                    # 讓 git 使用 gh 的憑證
-#    --web 會顯示一組 8 位數代碼 → 用瀏覽器開 https://github.com/login/device 輸入即可
+# b) 憑證：用 SSH 金鑰（macOS 內建、不需 Homebrew／sudo，排程非互動也最穩）
+#    2026-09-25 實測：這台 Mac 沒有 brew 也沒有 gh，所以走這條。
+mkdir -p ~/.ssh && chmod 700 ~/.ssh
+[ -f ~/.ssh/id_ed25519 ] || ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519 -C "mac-mini-qt"
+cat ~/.ssh/id_ed25519.pub
+#    → 把上面那行（公鑰，不是機密）貼到 GitHub → Settings → SSH and GPG keys → New SSH key
+#      ⚠️ 一定要確認是貼到 aweholy777（不是另一個帳號 galilee7989），貼錯就等於沒用
+ssh-keyscan -t rsa,ecdsa,ed25519 github.com >> ~/.ssh/known_hosts 2>/dev/null   # 排程非互動執行必須先做
+ssh -T git@github.com          # 應顯示 Hi aweholy777!（exit code 1 是正常的）
+git remote set-url origin git@github.com:aweholy777/aweholy777.github.io.git
 
-# c) 驗證（沒有錯誤訊息就是 OK）
+# c) 驗證（顯示 up to date、沒有錯誤訊息就是 OK）
 GIT_TERMINAL_PROMPT=0 git push --dry-run origin HEAD:main
+git pull --ff-only
 ```
 
-> 替代方案：**SSH 金鑰**（不裝 brew、不用 gh）——`ssh-keygen -t ed25519` 產生後，
-> 把 `~/.ssh/id_ed25519.pub`（**公鑰，不是機密**）貼到 GitHub → Settings → SSH and GPG keys，
-> 再把 remote 改成 `git@github.com:aweholy777/aweholy777.github.io.git`。
+> 替代方案：**gh 裝置碼流程**（要先 `brew install gh`）——
+> `gh auth login --hostname github.com --git-protocol https --web` 後 `gh auth setup-git`；
 
 ---
 
@@ -153,10 +158,11 @@ git push                                                  # 若已自動 push �
 Windows 上的排程 `QT-Upload-5090` 必須停用，否則兩台會搶著傳同一支：
 
 ```powershell
-Disable-ScheduledTask -TaskName QT-Upload-5090     # 或：schtasks /change /tn "QT-Upload-5090" /disable
+schtasks /change /tn "\QT-Upload-5090" /disable     # 或 PowerShell：Disable-ScheduledTask -TaskName QT-Upload-5090
 ```
 
-（要交回 Windows 時再 `Enable-ScheduledTask -TaskName QT-Upload-5090`。）
+**2026-09-25 02:45 已停用**（停用前確認下次執行 03:05、狀態由「就緒」變「已停用」）。
+要交回 Windows 時：`schtasks /change /tn "\QT-Upload-5090" /enable`
 
 > 保險：Mac 版腳本另外有「最近 5 分鐘內 csv 有上傳紀錄就跳過」的防重複機制，
 > 就算一時忘了停 Windows，也不會同時傳出兩支。
@@ -188,11 +194,14 @@ launchctl list | grep qtupload        # 看到 com.cmtc.qtupload 即成功
 | 待傳影片 | `ls video-output/head/*.mp4 \| wc -l` |
 | 這一趟發生什麼事 | `~/upload_mac.log` |
 
-### 進度基準（2026-09-25 交接時）
+### 進度基準（2026-09-25 交接完成時）
 - 影片**全部已生成完畢**（新約 849 ＋ 舊約 1862 ＝ 2711 支）→ **沒有新影片要生成**，只有「還沒上傳的」要傳。
 - 新約：**848 / 848 全數上傳完成** ✅
-- 舊約：已上傳 294、**待傳約 1567 支**；每小時 1 支、每日上限 24 支 → 約 65 天（11 月底左右）
-- 也就是說：Mac 只要拿到最新 `yt_uploaded.csv`，就會自動從「下一支還沒傳的」接著傳，不必手動指定。
+- 舊約：已上傳 **315 / 1862**、待傳約 **1,547 支**；每小時 1 支、每日上限 24 支 → 約 65 天
+- csv 已上傳總計：**1,163 筆**
+- **Mac 第一支上傳（交接驗收）**：`otqt_2025-04-28.mp4` → https://youtu.be/W6gettP1_UM
+  （2026-09-25 02:50，commit `624b7934`；已確認頻道公開 RSS 只出現一次、無重複）
+- 也就是說：腳本會自動從「下一支還沒傳的」接著傳，不必手動指定。
 
 ---
 
@@ -206,6 +215,23 @@ launchctl list | grep qtupload        # 看到 com.cmtc.qtupload 即成功
 | `exit=2`（配額/上限） | 腳本自動寫 `~/upload_pause.flag` 暫停 24h，過期自動恢復 |
 | `git pull --rebase 失敗` | 多半是工作樹又被 CRLF 弄髒：`git config core.autocrlf false && git checkout -- .` 再重跑 |
 | 忘了哪台在跑 | `tail -3 video-pipeline/yt_uploaded.csv`：`uploaded_at` 時間＋commit 訊息（`mac upload:` / `5090 upload:`）可看出是哪台傳的 |
+
+---
+
+## 9. 回滾（Mac 出事時，把上傳交回 Windows）
+
+```bash
+# 1) Mac：停掉排程
+launchctl unload ~/Library/LaunchAgents/com.cmtc.qtupload.plist
+launchctl list | grep qtupload        # 應無輸出
+
+# 2) Windows：重新啟用排程
+schtasks /change /tn "\QT-Upload-5090" /enable
+```
+
+兩台共用同一個 repo 與同一份 `yt_uploaded.csv`；dedup key 是 `<子目錄>/<日期>`
+（`video-pipeline/yt_publish.py` 與 `nightly_head.py` 都刻意只取路徑後兩段、不比對絕對路徑），
+所以不管哪一台傳過，另一台都會正確跳過、不會重傳。
 
 ---
 

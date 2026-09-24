@@ -128,15 +128,16 @@ if [ "$up_exit" != "0" ]; then
   log "上傳腳本回報非零（exit=${up_exit}，非配額錯誤），本次無成果，留待下次重試。"
 fi
 
-# 6. 重新產生 QT 影音庫資料（data/qtvideos.json），隨本次上傳一起發布
+# 6. 重新產生 QT 影音庫資料（data/qtvideos.json）與進度表（tasks/progress/），隨本次上傳一起發布
 "$PY" video-pipeline/build_qt_library.py 2>&1 | tee -a "$LOG" | tail -2
+"$PY3" tasks/progress/gen_progress.py >>"$LOG" 2>&1 && log "已更新 tasks/progress/ 進度表" || log "進度表更新失敗（不影響上傳）"
 
-# 7. 只交 csv + 影音庫資料 push 回 main（push 即觸發 Actions 更新網頁）
-git add video-pipeline/yt_uploaded.csv data/qtvideos.json >>"$LOG" 2>&1
+# 7. 只交 csv + 影音庫資料 + 進度表 push 回 main（push 即觸發 Actions 更新網頁）
+git add video-pipeline/yt_uploaded.csv data/qtvideos.json tasks/progress >>"$LOG" 2>&1
 git diff --name-only HEAD -- content/daily-qt | while IFS= read -r f; do
   [ -n "$f" ] && git add -- "$f"
 done
-if [ -n "$(git status --porcelain -- video-pipeline/yt_uploaded.csv data/qtvideos.json content/daily-qt)" ]; then
+if [ -n "$(git status --porcelain -- video-pipeline/yt_uploaded.csv data/qtvideos.json content/daily-qt tasks/progress)" ]; then
   git commit -m "mac upload: $(date '+%Y-%m-%d %H:%M')" >>"$LOG" 2>&1
 else
   log "本次無新上傳（隊列沒有待傳影片，或本次失敗）。"
@@ -182,8 +183,5 @@ print(n)
 PYEOF
 )"
 log "歸檔已上傳 mp4 到 head/old/：${moved} 部"
-
-# 9. 順手更新進度表（tasks/progress/_summary.txt 等）
-"$PY3" tasks/progress/gen_progress.py >>"$LOG" 2>&1 && log "已更新 tasks/progress/ 進度表" || log "進度表更新失敗（不影響上傳）"
 
 log "=== 完成 ==="
