@@ -70,6 +70,13 @@ if [ "$CHECK_ONLY" = "1" ]; then
   log "csv 已上傳  : $(( $(wc -l < "$CSV" 2>/dev/null || echo 1) - 1 )) 支"
   log "憑證        : client_secret=$([ -f "$REPO/video-pipeline/client_secret.json" ] && echo 有 || echo 缺) / yt_token=$([ -f "$REPO/video-pipeline/yt_token.json" ] && echo 有 || echo 缺)"
   log "過去24小時  : ${last24} 支（上限 ${DAILY_CAP}）／最近一次 ${lastmin} 分鐘前"
+  log "git 身分    : $(git config user.name 2>/dev/null || echo '未設定') <$(git config user.email 2>/dev/null || echo '未設定')>"
+  log "git 遠端    : $(git remote get-url origin 2>&1)"
+  if GIT_TERMINAL_PROMPT=0 git push --dry-run origin HEAD:main >/dev/null 2>&1; then
+    log "push 測試   : 可以（憑證與網路正常，上傳成果推得回 main）"
+  else
+    log "push 測試   : ⚠️ 不行 → 需要設定 GitHub 憑證，見 README 第 2.5 步"
+  fi
   exit 0
 fi
 
@@ -131,18 +138,23 @@ git diff --name-only HEAD -- content/daily-qt | while IFS= read -r f; do
 done
 if [ -n "$(git status --porcelain -- video-pipeline/yt_uploaded.csv data/qtvideos.json content/daily-qt)" ]; then
   git commit -m "mac upload: $(date '+%Y-%m-%d %H:%M')" >>"$LOG" 2>&1
+else
+  log "本次無新上傳（隊列沒有待傳影片，或本次失敗）。"
+fi
+
+# 只要本機有還沒推上去的提交（例如上一班 push 失敗），這一班就補推（自我修復）
+ahead="$(git rev-list --count origin/main..HEAD 2>/dev/null || echo 0)"
+if [ "$ahead" -gt 0 ]; then
   if git pull --rebase --autostash >>"$LOG" 2>&1; then
     if git push >>"$LOG" 2>&1; then
-      log "已 push 本次上傳成果（已觸發 Actions 部署網頁）"
+      log "已 push ${ahead} 筆本機提交回 main（已觸發 Actions 部署網頁）"
     else
-      log "⚠️ git push 失敗，成果未上 main、網頁未更新，詳見 $LOG"
+      log "⚠️ git push 失敗（${ahead} 筆提交未上 main、網站未更新）→ 檢查 GitHub 憑證（README 第 2.5 步）；下一班會自動重試"
     fi
   else
     git rebase --abort >>"$LOG" 2>&1
     log "⚠️ git pull --rebase 失敗，已中止 push 以免推半套，詳見 $LOG"
   fi
-else
-  log "本次無新上傳（隊列沒有待傳影片，或本次失敗），未 push。"
 fi
 
 # 8. 歸檔：把「已上傳（在 csv 裡）」的 mp4 從 head/ 搬到 head/old/，騰出空間

@@ -80,6 +80,34 @@ git status --short video-pipeline/
 
 ---
 
+## 2.5 讓 Mac 能 push（GitHub 憑證）— 上傳成果靠這個才會上網站
+
+上傳成功後腳本會 `commit` 並 `push` 回 `main`，**push 才會觸發 GitHub Actions 更新網頁**。
+Mac 若沒有 GitHub 憑證，push 會失敗（`upload_mac.sh --check` 的「push 測試」那行會顯示 ⚠️）。
+
+先用 `--check` 看是否已經可以；不行才需要設定：
+
+```bash
+# a) git 身分（Mac 上通常是空的，沒有它 commit 會失敗）
+git config user.name "haoguozi"
+git config user.email "aweholy@gmail.com"
+
+# b) 憑證：推薦 gh 裝置碼流程（不需 sudo、不必在任何地方輸入密碼）
+brew install gh                      # 沒有 brew 就告訴我，改用 SSH 金鑰方案
+gh auth login --hostname github.com --git-protocol https --web
+gh auth setup-git                    # 讓 git 使用 gh 的憑證
+#    --web 會顯示一組 8 位數代碼 → 用瀏覽器開 https://github.com/login/device 輸入即可
+
+# c) 驗證（沒有錯誤訊息就是 OK）
+GIT_TERMINAL_PROMPT=0 git push --dry-run origin HEAD:main
+```
+
+> 替代方案：**SSH 金鑰**（不裝 brew、不用 gh）——`ssh-keygen -t ed25519` 產生後，
+> 把 `~/.ssh/id_ed25519.pub`（**公鑰，不是機密**）貼到 GitHub → Settings → SSH and GPG keys，
+> 再把 remote 改成 `git@github.com:aweholy777/aweholy777.github.io.git`。
+
+---
+
 ## 3. 建立環境（uv + venv）
 
 ```bash
