@@ -69,7 +69,7 @@ if [ "$CHECK_ONLY" = "1" ]; then
   log "已歸檔 mp4  : $(ls "$REPO/video-output/head/old"/*.mp4 2>/dev/null | wc -l | tr -d ' ') 支（head/old/）"
   log "csv 已上傳  : $(( $(wc -l < "$CSV" 2>/dev/null || echo 1) - 1 )) 支"
   log "憑證        : client_secret=$([ -f "$REPO/video-pipeline/client_secret.json" ] && echo 有 || echo 缺) / yt_token=$([ -f "$REPO/video-pipeline/yt_token.json" ] && echo 有 || echo 缺)"
-  log "過去24小時  : $last24 支（上限 $DAILY_CAP）／最近一次 $lastmin 分鐘前"
+  log "過去24小時  : ${last24} 支（上限 ${DAILY_CAP}）／最近一次 ${lastmin} 分鐘前"
   exit 0
 fi
 
@@ -78,7 +78,7 @@ if ! mkdir "$LOCK" 2>/dev/null; then log "上一趟還在跑，本次跳過。";
 trap 'rmdir "$LOCK" 2>/dev/null' EXIT
 
 cd "$REPO" || { log "找不到 repo：$REPO"; exit 1; }
-log "=== 滴傳開始（macOS, DailyCap=$DAILY_CAP）==="
+log "=== 滴傳開始（macOS, DailyCap=${DAILY_CAP}）==="
 
 # 1. 同步（拿到最新 csv 與文章，跨機共用同一份權威清單）
 git pull --rebase --autostash 2>&1 | tee -a "$LOG" | tail -2
@@ -102,10 +102,10 @@ fi
 
 # 4. 每日上限（滾動 24 小時）
 if [ "$last24" -ge "$DAILY_CAP" ]; then
-  log "過去24小時已傳 $last24 支，已達 DailyCap=$DAILY_CAP，本次跳過。"
+  log "過去24小時已傳 ${last24} 支，已達 DailyCap=${DAILY_CAP}，本次跳過。"
   exit 0
 fi
-log "過去24小時已傳 $last24 ／ DailyCap=$DAILY_CAP，繼續。"
+log "過去24小時已傳 ${last24} ／ DailyCap=${DAILY_CAP}，繼續。"
 
 # 5. 上傳 1 支（--no-push：發布由本腳本下面的 push 觸發 Actions）
 log "上傳 YouTube（本次 1 支）..."
@@ -118,7 +118,7 @@ if [ "$up_exit" = "2" ]; then
   exit 0
 fi
 if [ "$up_exit" != "0" ]; then
-  log "上傳腳本回報非零（exit=$up_exit，非配額錯誤），本次無成果，留待下次重試。"
+  log "上傳腳本回報非零（exit=${up_exit}，非配額錯誤），本次無成果，留待下次重試。"
 fi
 
 # 6. 重新產生 QT 影音庫資料（data/qtvideos.json），隨本次上傳一起發布

@@ -85,7 +85,7 @@ for f in client_secret.json yt_token.json; do
   if [ -f "$REPO/video-pipeline/$f" ]; then
     echo "   ✓ video-pipeline/$f"
   else
-    echo "   ✗ 缺 video-pipeline/$f（見 README.md 第 2 步：從 Windows 用 AirDrop/隨身碟複製）"
+    echo "   ✗ 缺 video-pipeline/${f}（見 README.md 第 2 步：從 Windows 用 AirDrop/隨身碟複製）"
   fi
 done
 

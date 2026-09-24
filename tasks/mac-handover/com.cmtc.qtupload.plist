@@ -46,6 +46,8 @@
         <string>/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/homebrew/bin:__HOME__/.local/bin</string>
         <key>LANG</key>
         <string>zh_TW.UTF-8</string>
+        <key>LC_ALL</key>
+        <string>zh_TW.UTF-8</string>
     </dict>
 </dict>
 </plist>

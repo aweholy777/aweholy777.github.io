@@ -181,6 +181,28 @@ launchctl list | grep qtupload        # 看到 com.cmtc.qtupload 即成功
 
 ---
 
+## 附：修改這些腳本時的注意事項
+
+- **macOS 內建 `/bin/bash` 是 3.2（2007 年版）**，變數後面若緊接中文字（例如 `$DAILY_CAP）`），
+  它會把中文字的第一個位元組吃進變數名 → 噴 `unbound variable`。
+  **所有變數一律寫成 `${VAR}`**，不要寫 `$VAR` 緊接非 ASCII 字元。
+  修改後可用這行自我檢查（把路徑換成你的 repo）：
+  ```bash
+  python3 - <<'EOF'
+  import re; from pathlib import Path
+  for f in ["tasks/mac-handover/upload_mac.sh", "tasks/mac-handover/install_mac.sh"]:
+      for i, l in enumerate(Path(f).read_text(encoding="utf-8").splitlines(), 1):
+          for m in re.finditer(r"\$[A-Za-z_][A-Za-z0-9_]*", l):
+              n = l[m.end():m.end()+1]
+              if n and ord(n) > 127: print(f"✗ {f}:{i} {m.group(0)} → '{n}'")
+  EOF
+  ```
+- 腳本一律用 `bash script.sh` 執行（不要 `./script.sh`）：從 Windows 複製過來時可能帶 CRLF，
+  shebang 會失效；`install_mac.sh` 開頭會自動把 CR 清掉。
+- 影片參數（25fps、`audio_scale=0.8`、`sageattn`）不可亂改。
+
+---
+
 ## 附：這個交接包的檔案
 
 | 檔案 | 用途 |
