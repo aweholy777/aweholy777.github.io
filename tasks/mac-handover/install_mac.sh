@@ -69,13 +69,18 @@ export UV_PYTHON_INSTALL_DIR
 echo "== uv cache  : $UV_CACHE_DIR"
 echo "== uv python : $UV_PYTHON_INSTALL_DIR"
 
-echo "== 建立 .venv（Python 3.12）"
-uv venv .venv --python 3.12 || {
-  echo "⚠️ 取不到 Python 3.12，改用系統 python3 建立 venv"
-  uv venv .venv --python "$(command -v python3)" || exit 1
-}
+# 已有 .venv 就沿用，不要重建（uv venv 對既有目錄會直接報錯；--load 重跑時更不該重建）
+if [ -x "$REPO/.venv/bin/python" ]; then
+  echo "== 已有 .venv，沿用（不重建）"
+else
+  echo "== 建立 .venv（Python 3.12）"
+  uv venv .venv --python 3.12 || {
+    echo "⚠️ 取不到 Python 3.12，改用系統 python3 建立 venv"
+    uv venv .venv --python "$(command -v python3)" || exit 1
+  }
+fi
 
-echo "== 安裝上傳套件"
+echo "== 安裝／確認上傳套件"
 uv pip install --python "$REPO/.venv/bin/python" \
   google-api-python-client google-auth google-auth-oauthlib || exit 1
 "$REPO/.venv/bin/python" -c "import googleapiclient, google.oauth2; print('   ✓ 套件可用：', googleapiclient.__name__)" || exit 1

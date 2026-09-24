@@ -215,6 +215,7 @@ launchctl list | grep qtupload        # 看到 com.cmtc.qtupload 即成功
 | `exit=2`（配額/上限） | 腳本自動寫 `~/upload_pause.flag` 暫停 24h，過期自動恢復 |
 | `git pull --rebase 失敗` | 多半是工作樹又被 CRLF 弄髒：`git config core.autocrlf false && git checkout -- .` 再重跑 |
 | 忘了哪台在跑 | `tail -3 video-pipeline/yt_uploaded.csv`：`uploaded_at` 時間＋commit 訊息（`mac upload:` / `5090 upload:`）可看出是哪台傳的 |
+| 重跑 `install_mac.sh` 失敗 `A virtual environment already exists` | 已修：腳本現在偵測到既有 `.venv` 就沿用、不重建；真要重建請先 `rm -rf .venv`（會重新裝套件，約 1 分鐘） |
 
 ---
 
