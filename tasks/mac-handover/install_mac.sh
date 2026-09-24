@@ -40,11 +40,45 @@ fi
 
 # 2) venv + 上傳所需套件（uv 會自己準備 Python 3.12）
 cd "$REPO" || exit 1
+
+# uv 的快取與 Python 下載目錄：優先用系統預設；不可寫（權限/沙盒）就改到 repo 內
+pick_dir() { mkdir -p "$1" 2>/dev/null && [ -w "$1" ]; }
+
+UV_CACHE_DIR="${UV_CACHE_DIR:-$HOME_DIR/Library/Caches/uv}"
+if ! pick_dir "$UV_CACHE_DIR"; then
+  echo "⚠️ uv 快取目錄不可寫：$UV_CACHE_DIR"
+  ls -ldO "$HOME_DIR/.cache" "$HOME_DIR/.cache/uv" 2>&1 | sed 's/^/    /'
+  UV_CACHE_DIR="$REPO/.uv-cache"
+  if ! pick_dir "$UV_CACHE_DIR"; then
+    echo "✗ $UV_CACHE_DIR 也不可寫。請先修權限再重跑："
+    echo "    sudo chown -R \"$(id -un)\" \"$HOME_DIR/.cache\""
+    echo "    sudo chflags -R nouchg \"$HOME_DIR/.cache\"      # 若 ls -lO 顯示 uchg"
+    exit 1
+  fi
+  echo "   → 改用 repo 內的快取：$UV_CACHE_DIR"
+fi
+export UV_CACHE_DIR
+
+UV_PYTHON_INSTALL_DIR="${UV_PYTHON_INSTALL_DIR:-$HOME_DIR/.local/share/uv/python}"
+if ! pick_dir "$UV_PYTHON_INSTALL_DIR"; then
+  UV_PYTHON_INSTALL_DIR="$REPO/.uv-python"
+  pick_dir "$UV_PYTHON_INSTALL_DIR" || { echo "✗ $UV_PYTHON_INSTALL_DIR 不可寫"; exit 1; }
+  echo "   → 改用 repo 內的 Python 安裝目錄：$UV_PYTHON_INSTALL_DIR"
+fi
+export UV_PYTHON_INSTALL_DIR
+echo "== uv cache  : $UV_CACHE_DIR"
+echo "== uv python : $UV_PYTHON_INSTALL_DIR"
+
 echo "== 建立 .venv（Python 3.12）"
-uv venv .venv --python 3.12 || exit 1
+uv venv .venv --python 3.12 || {
+  echo "⚠️ 取不到 Python 3.12，改用系統 python3 建立 venv"
+  uv venv .venv --python "$(command -v python3)" || exit 1
+}
+
 echo "== 安裝上傳套件"
 uv pip install --python "$REPO/.venv/bin/python" \
   google-api-python-client google-auth google-auth-oauthlib || exit 1
+"$REPO/.venv/bin/python" -c "import googleapiclient, google.oauth2; print('   ✓ 套件可用：', googleapiclient.__name__)" || exit 1
 
 # 3) 憑證檢查（不進 git，需手動複製，見 README 第 2 步）
 for f in client_secret.json yt_token.json; do
