@@ -6,11 +6,12 @@
 import sys
 from pathlib import Path
 
-PIPE = Path(r"C:\Users\user\qtproject\video-pipeline")
+# 路徑一律由本檔位置推導（跨機可用：Windows D:\qtproject、Mac ~/Desktop/qtproject）
+PIPE = Path(__file__).resolve().parents[2] / "video-pipeline"
 sys.path.insert(0, str(PIPE))
 import nightly_head as n  # noqa: E402
 
-REPO = Path(r"C:\Users\user\qtproject")
+REPO = PIPE.parent
 HEAD = REPO / "video-output" / "head"
 OLD = HEAD / "old"
 OUT = REPO / "tasks" / "progress"

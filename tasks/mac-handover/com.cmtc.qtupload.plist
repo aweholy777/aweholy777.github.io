@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  com.cmtc.qtupload.plist — QT 影片滴傳排程（每小時 :05 跑一趟）
+  由 tasks/mac-handover/install_mac.sh 自動把 __REPO__ / __HOME__ 換成實際路徑後，
+  複製到 ~/Library/LaunchAgents/ 並 launchctl load。
+
+  管理指令：
+    launchctl load   ~/Library/LaunchAgents/com.cmtc.qtupload.plist   # 啟用
+    launchctl unload ~/Library/LaunchAgents/com.cmtc.qtupload.plist   # 停用（交接回 Windows 時用這個）
+    launchctl list | grep qtupload                                    # 看狀態
+    tail -f ~/upload_mac.log                                          # 看執行紀錄
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.cmtc.qtupload</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>__REPO__/tasks/mac-handover/upload_mac.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>__REPO__</string>
+
+    <!-- 每小時的第 5 分鐘（等於 Windows 排程的 :05）。Mac 在睡眠時錯過的班，喚醒後會補跑一次。 -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Minute</key>
+        <integer>5</integer>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <false/>
+
+    <key>StandardOutPath</key>
+    <string>__HOME__/upload_mac.launchd.log</string>
+    <key>StandardErrorPath</key>
+    <string>__HOME__/upload_mac.launchd.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/homebrew/bin:__HOME__/.local/bin</string>
+        <key>LANG</key>
+        <string>zh_TW.UTF-8</string>
+    </dict>
+</dict>
+</plist>
