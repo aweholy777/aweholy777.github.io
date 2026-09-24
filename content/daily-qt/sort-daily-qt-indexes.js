@@ -229,7 +229,9 @@ function passageOnly(title) {
 function buildSectionIndex(existingMarkdown, title, description, items) {
   const fm = frontMatter(existingMarkdown || "", title);
   // 不再輸出「# 標題」：頁面上方已由 front matter 的 title 顯示標題，再輸出會重複一行。
-  let output = `${fm}\n\n${description}\n\n`;
+  // 說明行（description）為空時就整行不輸出，不留空行。
+  let output = `${fm}\n\n`;
+  if (description) output += `${description}\n\n`;
 
   let currentBook = "";
   for (const item of items) {
@@ -288,7 +290,7 @@ function writeIndexes(items, unparsed) {
   );
   fs.writeFileSync(
     ntIndexPath,
-    buildSectionIndex(ntMarkdown, "新約QT", "以下清單依新約聖經書卷順序排列；相同經文會排在一起。", ntItems),
+    buildSectionIndex(ntMarkdown, "新約QT", "", ntItems),
     "utf8"
   );
 
