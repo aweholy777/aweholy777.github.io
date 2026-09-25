@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 325,
+   "video_count": 326,
    "passage_count": 1861,
    "books": [
     {
@@ -1976,6 +1976,12 @@
        "passage": "民數記 20：14~21",
        "date": "2025-05-07",
        "yt": "lG-JL1R4pDs"
+      },
+      {
+       "slug": "2017-06-27",
+       "passage": "民數記 20：14~29",
+       "date": "2017-06-27",
+       "yt": "X3dyBAkAazs"
       }
      ]
     },
