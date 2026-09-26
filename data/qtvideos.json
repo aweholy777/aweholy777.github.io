@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 358,
+   "video_count": 359,
    "passage_count": 1861,
    "books": [
     {
@@ -2174,6 +2174,12 @@
        "passage": "民數記 33：38~56",
        "date": "2025-06-05",
        "yt": "qQ2E_QLvPEQ"
+      },
+      {
+       "slug": "2025-06-06",
+       "passage": "民數記 34：1~15",
+       "date": "2025-06-06",
+       "yt": "ObZtZN8vCaY"
       }
      ]
     },
