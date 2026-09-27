@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 364,
+   "video_count": 365,
    "passage_count": 1861,
    "books": [
     {
@@ -2217,7 +2217,14 @@
      "name": "申命記",
      "total": 86,
      "passages": 86,
-     "videos": []
+     "videos": [
+      {
+       "slug": "2020-03-22",
+       "passage": "申命記 1：1~8",
+       "date": "2020-03-22",
+       "yt": "FxTXrA5JLlw"
+      }
+     ]
     },
     {
      "name": "約書亞記",
