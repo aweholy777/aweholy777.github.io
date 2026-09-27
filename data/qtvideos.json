@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 372,
+   "video_count": 373,
    "passage_count": 1861,
    "books": [
     {
@@ -2265,6 +2265,12 @@
        "passage": "申命記 3：1~11",
        "date": "2020-03-29",
        "yt": "n-2EMAkf15U"
+      },
+      {
+       "slug": "2020-03-30",
+       "passage": "申命記 3：12~22",
+       "date": "2020-03-30",
+       "yt": "96FdEsCCcBM"
       }
      ]
     },
