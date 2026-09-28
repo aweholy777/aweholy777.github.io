@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 386,
+   "video_count": 387,
    "passage_count": 1861,
    "books": [
     {
@@ -2349,6 +2349,12 @@
        "passage": "申命記 7：1~ 11",
        "date": "2020-04-19",
        "yt": "VlzTx8ub18w"
+      },
+      {
+       "slug": "2020-04-20",
+       "passage": "申命記 7：12~ 26",
+       "date": "2020-04-20",
+       "yt": "YtG6Jhh37-o"
       }
      ]
     },
