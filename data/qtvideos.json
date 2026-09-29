@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 429,
+   "video_count": 430,
    "passage_count": 1861,
    "books": [
     {
@@ -2607,6 +2607,12 @@
        "passage": "申命記 27：1~10",
        "date": "2020-06-01",
        "yt": "8Ux3WwrZ7Og"
+      },
+      {
+       "slug": "2020-06-02",
+       "passage": "申命記 27：11~26",
+       "date": "2020-06-02",
+       "yt": "af5inDIIvlY"
       }
      ]
     },
