@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 409,
+   "video_count": 410,
    "passage_count": 1861,
    "books": [
     {
@@ -2487,6 +2487,12 @@
        "passage": "申命記 17：1~13",
        "date": "2020-05-12",
        "yt": "rsd9dUrSMYw"
+      },
+      {
+       "slug": "2020-05-13",
+       "passage": "申命記 17：14~20",
+       "date": "2020-05-13",
+       "yt": "PEv7kXTbc5s"
       }
      ]
     },
