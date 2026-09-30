@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 443,
+   "video_count": 444,
    "passage_count": 1861,
    "books": [
     {
@@ -2691,6 +2691,12 @@
        "passage": "申命記 31：9~18",
        "date": "2020-06-15",
        "yt": "L_3YkmpzVUs"
+      },
+      {
+       "slug": "2020-06-16",
+       "passage": "申命記 31：19~29",
+       "date": "2020-06-16",
+       "yt": "gJUqmNSNJAQ"
       }
      ]
     },
