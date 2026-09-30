@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 452,
+   "video_count": 453,
    "passage_count": 1861,
    "books": [
     {
@@ -2752,6 +2752,12 @@
        "passage": "約書亞記 1：10~18",
        "date": "2025-11-10",
        "yt": "4D8HZilo-KM"
+      },
+      {
+       "slug": "2025-11-11",
+       "passage": "約書亞記 2：1~7",
+       "date": "2025-11-11",
+       "yt": "bt0TNdzgqMY"
       }
      ]
     },
