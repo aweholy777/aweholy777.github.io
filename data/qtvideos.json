@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 470,
+   "video_count": 471,
    "passage_count": 1861,
    "books": [
     {
@@ -2860,6 +2860,12 @@
        "passage": "約書亞記 10：1~14",
        "date": "2025-11-28",
        "yt": "dS0lvwRXusk"
+      },
+      {
+       "slug": "2025-11-29",
+       "passage": "約書亞記 10：15~28",
+       "date": "2025-11-29",
+       "yt": "45BzVXqfFLc"
       }
      ]
     },
