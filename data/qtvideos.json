@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 464,
+   "video_count": 465,
    "passage_count": 1861,
    "books": [
     {
@@ -2824,6 +2824,12 @@
        "passage": "約書亞記 7：16~26",
        "date": "2025-11-22",
        "yt": "1aYAr68buLA"
+      },
+      {
+       "slug": "2025-11-23",
+       "passage": "約書亞記 8：1~9",
+       "date": "2025-11-23",
+       "yt": "kfyNiTJ3rLM"
       }
      ]
     },
