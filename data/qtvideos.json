@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 474,
+   "video_count": 475,
    "passage_count": 1861,
    "books": [
     {
@@ -2884,6 +2884,12 @@
        "passage": "約書亞記 11：16~23",
        "date": "2025-12-02",
        "yt": "mR9fGPrgy7I"
+      },
+      {
+       "slug": "2025-12-03",
+       "passage": "約書亞記 12：1~24",
+       "date": "2025-12-03",
+       "yt": "bpXUjfNyRUs"
       }
      ]
     },
