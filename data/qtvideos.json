@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 454,
+   "video_count": 455,
    "passage_count": 1861,
    "books": [
     {
@@ -2764,6 +2764,12 @@
        "passage": "約書亞記 2：8~14",
        "date": "2025-11-12",
        "yt": "kcbwjbDnbjc"
+      },
+      {
+       "slug": "2025-11-13",
+       "passage": "約書亞記 2：15~24",
+       "date": "2025-11-13",
+       "yt": "pv0v2p2sF4Q"
       }
      ]
     },
