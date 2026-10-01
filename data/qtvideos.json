@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 459,
+   "video_count": 460,
    "passage_count": 1861,
    "books": [
     {
@@ -2794,6 +2794,12 @@
        "passage": "約書亞記 4：15~5：1",
        "date": "2025-11-17",
        "yt": "RrZ8UltJtJE"
+      },
+      {
+       "slug": "2025-11-18",
+       "passage": "約書亞記 5：2~15",
+       "date": "2025-11-18",
+       "yt": "B1KocPkRz00"
       }
      ]
     },
