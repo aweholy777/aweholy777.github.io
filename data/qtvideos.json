@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 462,
+   "video_count": 463,
    "passage_count": 1861,
    "books": [
     {
@@ -2812,6 +2812,12 @@
        "passage": "約書亞記 6：15~27",
        "date": "2025-11-20",
        "yt": "6my5heEOa88"
+      },
+      {
+       "slug": "2025-11-21",
+       "passage": "約書亞記 7：1~15",
+       "date": "2025-11-21",
+       "yt": "thZrUIEfFZQ"
       }
      ]
     },
