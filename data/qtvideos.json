@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 494,
+   "video_count": 495,
    "passage_count": 1861,
    "books": [
     {
@@ -3004,6 +3004,12 @@
        "passage": "約書亞記 22：10~20",
        "date": "2025-12-22",
        "yt": "-Dg581GKk58"
+      },
+      {
+       "slug": "2025-12-26",
+       "passage": "約書亞記 22：21~34",
+       "date": "2025-12-26",
+       "yt": "Ri0Y2ICuCfA"
       }
      ]
     },
