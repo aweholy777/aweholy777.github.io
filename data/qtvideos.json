@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 487,
+   "video_count": 488,
    "passage_count": 1861,
    "books": [
     {
@@ -2962,6 +2962,12 @@
        "passage": "約書亞記 19：1~23",
        "date": "2025-12-15",
        "yt": "Jnm2xo60FqU"
+      },
+      {
+       "slug": "2025-12-16",
+       "passage": "約書亞記 19：24~51",
+       "date": "2025-12-16",
+       "yt": "E_VSVc7w5VA"
       }
      ]
     },
