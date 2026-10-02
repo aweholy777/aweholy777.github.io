@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 477,
+   "video_count": 478,
    "passage_count": 1861,
    "books": [
     {
@@ -2902,6 +2902,12 @@
        "passage": "約書亞記 13：15~33",
        "date": "2025-12-05",
        "yt": "HGrg5smDjR0"
+      },
+      {
+       "slug": "2025-12-06",
+       "passage": "約書亞記 14：1~15",
+       "date": "2025-12-06",
+       "yt": "Q30d2afXz_c"
       }
      ]
     },
