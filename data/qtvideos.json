@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 491,
+   "video_count": 492,
    "passage_count": 1861,
    "books": [
     {
@@ -2986,6 +2986,12 @@
        "passage": "約書亞記 21：8~26",
        "date": "2025-12-19",
        "yt": "VqvEf4zEHWY"
+      },
+      {
+       "slug": "2025-12-20",
+       "passage": "約書亞記 21：27~45",
+       "date": "2025-12-20",
+       "yt": "x6RHOK4XP5I"
       }
      ]
     },
