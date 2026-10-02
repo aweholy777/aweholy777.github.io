@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 484,
+   "video_count": 485,
    "passage_count": 1861,
    "books": [
     {
@@ -2944,6 +2944,12 @@
        "passage": "約書亞記 17：14~18",
        "date": "2025-12-12",
        "yt": "1FCO2hE5f_0"
+      },
+      {
+       "slug": "2025-12-13",
+       "passage": "約書亞記 18：1~10",
+       "date": "2025-12-13",
+       "yt": "IzC8whiv6Zk"
       }
      ]
     },
