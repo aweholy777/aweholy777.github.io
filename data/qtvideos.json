@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 500,
+   "video_count": 501,
    "passage_count": 1861,
    "books": [
     {
@@ -3047,7 +3047,14 @@
      "name": "士師記",
      "total": 49,
      "passages": 49,
-     "videos": []
+     "videos": [
+      {
+       "slug": "2021-08-03",
+       "passage": "士師記 1：1~10",
+       "date": "2021-08-03",
+       "yt": "qDb9fT8jcxU"
+      }
+     ]
     },
     {
      "name": "路得記",
