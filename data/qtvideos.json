@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 520,
+   "video_count": 521,
    "passage_count": 1861,
    "books": [
     {
@@ -3167,6 +3167,12 @@
        "passage": "士師記 8：22~35",
        "date": "2021-08-22",
        "yt": "rsgY_Imidvo"
+      },
+      {
+       "slug": "2021-08-23",
+       "passage": "士師記 9：1~15",
+       "date": "2021-08-23",
+       "yt": "iyP6_0NEvik"
       }
      ]
     },
