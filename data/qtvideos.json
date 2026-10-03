@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 508,
+   "video_count": 509,
    "passage_count": 1861,
    "books": [
     {
@@ -3095,6 +3095,12 @@
        "passage": "士師記 4：1~10",
        "date": "2021-08-10",
        "yt": "bIZph_Dwbu4"
+      },
+      {
+       "slug": "2021-08-11",
+       "passage": "士師記 4：11~24",
+       "date": "2021-08-11",
+       "yt": "6R2lk7IRzSg"
       }
      ]
     },
