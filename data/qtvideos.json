@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 498,
+   "video_count": 499,
    "passage_count": 1861,
    "books": [
     {
@@ -3028,6 +3028,12 @@
        "passage": "約書亞記 24：1~13",
        "date": "2025-12-29",
        "yt": "EnQMPcIgQyw"
+      },
+      {
+       "slug": "2025-12-30",
+       "passage": "約書亞記 24：14~24",
+       "date": "2025-12-30",
+       "yt": "Pl9tdPAzMVc"
       }
      ]
     },
