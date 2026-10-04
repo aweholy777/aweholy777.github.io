@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 528,
+   "video_count": 529,
    "passage_count": 1861,
    "books": [
     {
@@ -3215,6 +3215,12 @@
        "passage": "士師記 11：12~28",
        "date": "2021-08-30",
        "yt": "CJzFF2fjSkI"
+      },
+      {
+       "slug": "2021-08-31",
+       "passage": "士師記 11：29~40",
+       "date": "2021-08-31",
+       "yt": "4OLTktxQX08"
       }
      ]
     },
