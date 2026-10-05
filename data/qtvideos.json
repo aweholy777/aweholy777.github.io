@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 557,
+   "video_count": 558,
    "passage_count": 1861,
    "books": [
     {
@@ -3396,6 +3396,12 @@
        "passage": "路得記 3：14~18",
        "date": "2017-05-07",
        "yt": "4hLqO0fkPrs"
+      },
+      {
+       "slug": "2026-05-07",
+       "passage": "路得記 4：1~6",
+       "date": "2026-05-07",
+       "yt": "S6Lqwu1cpuY"
       }
      ]
     },
