@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 549,
+   "video_count": 550,
    "passage_count": 1861,
    "books": [
     {
@@ -3348,7 +3348,14 @@
      "name": "路得記",
      "total": 12,
      "passages": 12,
-     "videos": []
+     "videos": [
+      {
+       "slug": "2026-05-01",
+       "passage": "路得記 1：1~14",
+       "date": "2026-05-01",
+       "yt": "f8U25YHRygw"
+      }
+     ]
     },
     {
      "name": "撒母耳記上",
