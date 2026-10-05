@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 551,
+   "video_count": 552,
    "passage_count": 1861,
    "books": [
     {
@@ -3360,6 +3360,12 @@
        "passage": "路得記 1：15~22",
        "date": "2026-05-02",
        "yt": "EemtRajtYwI"
+      },
+      {
+       "slug": "2026-05-03",
+       "passage": "路得記 2：1~7",
+       "date": "2026-05-03",
+       "yt": "0GGUCjqBh7k"
       }
      ]
     },
