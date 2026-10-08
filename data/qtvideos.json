@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 629,
+   "video_count": 630,
    "passage_count": 1861,
    "books": [
     {
@@ -3835,6 +3835,12 @@
        "passage": "撒母耳記上 30：1~15",
        "date": "2023-03-29",
        "yt": "ADTaIhS0Vu4"
+      },
+      {
+       "slug": "2023-03-30",
+       "passage": "撒母耳記上 30： 16~31",
+       "date": "2023-03-30",
+       "yt": "xRKHGThFetg"
       }
      ]
     },
