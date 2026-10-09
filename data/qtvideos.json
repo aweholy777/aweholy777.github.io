@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 646,
+   "video_count": 647,
    "passage_count": 1861,
    "books": [
     {
@@ -3944,6 +3944,12 @@
        "passage": "撒母耳記下 8：1~18",
        "date": "2023-04-24",
        "yt": "LJ1KsugEbDU"
+      },
+      {
+       "slug": "2023-04-25",
+       "passage": "撒母耳記下 9：1~13",
+       "date": "2023-04-25",
+       "yt": "pKRVNXX2cqs"
       }
      ]
     },
