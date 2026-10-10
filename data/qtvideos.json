@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 664,
+   "video_count": 665,
    "passage_count": 1861,
    "books": [
     {
@@ -4052,6 +4052,12 @@
        "passage": "撒母耳記下 17：1~14",
        "date": "2023-05-12",
        "yt": "H_OqKSVlZRs"
+      },
+      {
+       "slug": "2023-05-13",
+       "passage": "撒母耳記下 17：15~29",
+       "date": "2023-05-13",
+       "yt": "6-dU_9wlfuQ"
       }
      ]
     },
