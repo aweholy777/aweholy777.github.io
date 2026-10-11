@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 694,
+   "video_count": 695,
    "passage_count": 1861,
    "books": [
     {
@@ -4239,6 +4239,12 @@
        "passage": "列王紀上 4：1~19",
        "date": "2024-04-11",
        "yt": "7_LwveZmP-c"
+      },
+      {
+       "slug": "2024-04-12",
+       "passage": "列王紀上 4：20~34",
+       "date": "2024-04-12",
+       "yt": "LvRlRVfSGNw"
       }
      ]
     },
