@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 764,
+   "video_count": 765,
    "passage_count": 1861,
    "books": [
     {
@@ -4666,6 +4666,12 @@
        "passage": "列王紀下 8：16~29",
        "date": "2024-07-08",
        "yt": "u827rPjkZP0"
+      },
+      {
+       "slug": "2024-07-09",
+       "passage": "列王紀下 9：1~13",
+       "date": "2024-07-09",
+       "yt": "gXUtRqXz5hg"
       }
      ]
     },
