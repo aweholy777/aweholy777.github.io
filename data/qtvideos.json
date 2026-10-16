@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 806,
+   "video_count": 807,
    "passage_count": 1861,
    "books": [
     {
@@ -4925,7 +4925,14 @@
      "name": "歷代志上",
      "total": 41,
      "passages": 41,
-     "videos": []
+     "videos": [
+      {
+       "slug": "2018-08-21",
+       "passage": "歷代志上 1：1~4：43",
+       "date": "2018-08-21",
+       "yt": "tpPO0mPFmCc"
+      }
+     ]
     },
     {
      "name": "歷代志下",
