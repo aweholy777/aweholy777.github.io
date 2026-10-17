@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 835,
+   "video_count": 836,
    "passage_count": 1861,
    "books": [
     {
@@ -5099,6 +5099,12 @@
        "passage": "歷代志上 22：2~19",
        "date": "2018-09-18",
        "yt": "IGLsGAMd3Ec"
+      },
+      {
+       "slug": "2018-09-19",
+       "passage": "歷代志上 23：1~32",
+       "date": "2018-09-19",
+       "yt": "U7U782qSyWw"
       }
      ]
     },
