@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 847,
+   "video_count": 848,
    "passage_count": 1861,
    "books": [
     {
@@ -5178,7 +5178,14 @@
      "name": "歷代志下",
      "total": 62,
      "passages": 62,
-     "videos": []
+     "videos": [
+      {
+       "slug": "2018-10-26",
+       "passage": "歷代志下 1：1~17",
+       "date": "2018-10-26",
+       "yt": "FuonC6DBc-0"
+      }
+     ]
     },
     {
      "name": "以斯拉記",
