@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 905,
+   "video_count": 906,
    "passage_count": 1861,
    "books": [
     {
@@ -5526,6 +5526,12 @@
        "passage": "歷代志下 34：14~33",
        "date": "2018-12-27",
        "yt": "DHH82Tgfxzg"
+      },
+      {
+       "slug": "2018-12-28",
+       "passage": "歷代志下 35：1~19",
+       "date": "2018-12-28",
+       "yt": "OAFPsLitXDc"
       }
      ]
     },
