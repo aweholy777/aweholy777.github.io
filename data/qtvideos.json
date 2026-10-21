@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 920,
+   "video_count": 921,
    "passage_count": 1861,
    "books": [
     {
@@ -5623,6 +5623,12 @@
        "passage": "以斯拉記 8：1~20",
        "date": "2022-04-18",
        "yt": "PdFhdYQ4QAE"
+      },
+      {
+       "slug": "2022-04-19",
+       "passage": "以斯拉記 8：21~36",
+       "date": "2022-04-19",
+       "yt": "xYoTPjh00D0"
       }
      ]
     },
