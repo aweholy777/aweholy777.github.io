@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 916,
+   "video_count": 917,
    "passage_count": 1861,
    "books": [
     {
@@ -5599,6 +5599,12 @@
        "passage": "以斯拉記 6：1~12",
        "date": "2022-04-07",
        "yt": "xuLTEMgAx7s"
+      },
+      {
+       "slug": "2022-04-08",
+       "passage": "以斯拉記 6：13~22",
+       "date": "2022-04-08",
+       "yt": "_DmDeo5ONNQ"
       }
      ]
     },
