@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 926,
+   "video_count": 927,
    "passage_count": 1861,
    "books": [
     {
@@ -5666,6 +5666,12 @@
        "passage": "尼希米記 2：1~10",
        "date": "2024-09-02",
        "yt": "pDmuJTbuH5k"
+      },
+      {
+       "slug": "2024-09-03",
+       "passage": "尼希米記 2：11~20",
+       "date": "2024-09-03",
+       "yt": "TNYQY-0ln7g"
       }
      ]
     },
