@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 924,
+   "video_count": 925,
    "passage_count": 1861,
    "books": [
     {
@@ -5654,7 +5654,14 @@
      "name": "尼希米記",
      "total": 30,
      "passages": 30,
-     "videos": []
+     "videos": [
+      {
+       "slug": "2024-09-01",
+       "passage": "尼希米記 1：1~11",
+       "date": "2024-09-01",
+       "yt": "l_sLjp_Yc7E"
+      }
+     ]
     },
     {
      "name": "以斯帖記",
