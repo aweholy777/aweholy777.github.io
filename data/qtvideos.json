@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 938,
+   "video_count": 939,
    "passage_count": 1861,
    "books": [
     {
@@ -5738,6 +5738,12 @@
        "passage": "尼希米記 8：1~12",
        "date": "2024-09-14",
        "yt": "qQUveTiIDbI"
+      },
+      {
+       "slug": "2024-09-15",
+       "passage": "尼希米記 8：13~18",
+       "date": "2024-09-15",
+       "yt": "9AwlOJCprNw"
       }
      ]
     },
