@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 953,
+   "video_count": 954,
    "passage_count": 1861,
    "books": [
     {
@@ -5828,6 +5828,12 @@
        "passage": "尼希米記 13：10~22",
        "date": "2024-09-29",
        "yt": "-0VPRNkygRE"
+      },
+      {
+       "slug": "2024-09-30",
+       "passage": "尼希米記 13：23~31",
+       "date": "2024-09-30",
+       "yt": "jYJBzopqSow"
       }
      ]
     },
