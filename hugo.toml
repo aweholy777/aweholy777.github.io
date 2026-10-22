@@ -58,6 +58,11 @@ theme = "mainroad"
 # --- 導覽列定義 (根據圖片和新需求) ---
 
 [[menu.main]]
+  name = "當日QT"
+  url = "/today-qt/"
+  weight = 5
+
+[[menu.main]]
   name = "首頁"
   pageRef = "/" # 指向網站根目錄
   weight = 10

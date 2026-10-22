@@ -523,3 +523,26 @@ th {
         grid-template-columns: 1fr;
     }
 }
+
+/* ── 當日QT（/today-qt/）：每日 06:00 由 tasks/daily-qt/generate_today_qt.py 產生 ── */
+.today-qt-note {
+    margin: 1.2rem 0 1.6rem;
+    padding: 0.7rem 1rem;
+    border-left: 4px solid #c53030;
+    background: #fff5f5;
+    color: #4a4a4a;
+    font-size: 0.92rem;
+    line-height: 1.7;
+}
+
+.today-qt-note a {
+    color: #c53030;
+    text-decoration: underline;
+}
+
+/* 選單把「當日QT」放第一項時，給一點視覺強調 */
+.menu__item--today-qt > .menu__link,
+.menu__list > .menu__item:first-child > .menu__link[href="/today-qt/"] {
+    color: #c53030;
+    font-weight: 700;
+}

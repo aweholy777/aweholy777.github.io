@@ -48,3 +48,7 @@ video-pipeline/*_log.txt
 # 自動備份檔（*.bak / *.bak-時間戳）：留本機、不進 repo
 *.bak
 *.bak-*
+# 當日QT 產生器：上面的 *.py 全域規則會連它一起吃掉，必須明示保留（GitHub Actions 要用）
+!tasks/daily-qt/*.py
+# 當日QT 執行紀錄（每次執行都會變，只留本機）
+tasks/daily-qt/last-run.json

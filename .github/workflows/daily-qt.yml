@@ -1,0 +1,87 @@
+# 每日「當日QT」：台北時間 06:00 自動產生、commit、push
+#
+# 產生器：tasks/daily-qt/generate_today_qt.py
+#   1) 取活潑的生命當日進度（與「生成當日QT」產生器同一個 API）
+#   2) 抓和合本經文（FHL qb.php）
+#   3) 在 content/daily-qt/{otqt,ntqt} 找涵蓋同段經文的舊文章，沿用其分享
+#   4) 寫出 content/today-qt.md → 網站 /today-qt/
+#
+# 部署：正式站是 Cloudflare Pages（cmtc.tw），push main 就自動建置部署，
+#       所以這裡不需要（也不應該）自己跑 deploy-pages。
+#       ⚠️ GitHub Pages 那條 deploy.yml 的 run 目前幾乎全部 cancelled（實測 39/40），
+#          但那不代表網站沒更新——實際部署是 Cloudflare Pages 在做。
+
+name: 每日當日QT
+
+on:
+  schedule:
+    # UTC 22:00 = 台北 06:00（GitHub 排程可能延遲數分鐘）
+    - cron: "0 22 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: "daily-qt"
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  today-qt:
+    runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Taipei
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 產生當日QT
+        run: python tasks/daily-qt/generate_today_qt.py
+
+      - name: Commit 並 push（含重試，避開 Mac 每小時上傳的 push）
+        id: commit
+        run: |
+          git config user.name  "cmtc-daily-qt[bot]"
+          git config user.email "actions@users.noreply.github.com"
+          git add content/today-qt.md
+          if git diff --cached --quiet; then
+            echo "當日QT 內容未變更，跳過 commit"
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "daily-qt: $(date +%Y-%m-%d) 當日QT 自動更新"
+          for i in 1 2 3 4 5; do
+            if git pull --rebase --autostash origin main && git push; then
+              echo "push 成功"
+              echo "pushed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "push 失敗（第 $i 次），10 秒後重試…"
+            sleep 10
+          done
+          echo "push 連續失敗，中止" >&2
+          exit 1
+
+      - name: 等 Cloudflare Pages 上線並驗證
+        if: steps.commit.outputs.pushed == 'true'
+        run: |
+          TODAY=$(date +%Y-%m-%d)
+          for i in $(seq 1 15); do
+            if curl -fsS --max-time 20 "https://cmtc.tw/today-qt/?cb=$RANDOM" | grep -q "$TODAY"; then
+              echo "✅ https://cmtc.tw/today-qt/ 已顯示 $TODAY 的內容"
+              exit 0
+            fi
+            echo "第 $i 次尚未更新，25 秒後重試…"
+            sleep 25
+          done
+          echo "⚠️ 6 分鐘內未在線上看到 $TODAY（Cloudflare Pages 可能還在建置，稍後可人工確認）" >&2
+          exit 1
