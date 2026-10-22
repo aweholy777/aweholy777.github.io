@@ -58,11 +58,6 @@ theme = "mainroad"
 # --- 導覽列定義 (根據圖片和新需求) ---
 
 [[menu.main]]
-  name = "當日QT"
-  url = "/today-qt/"
-  weight = 5
-
-[[menu.main]]
   name = "首頁"
   pageRef = "/" # 指向網站根目錄
   weight = 10
@@ -74,6 +69,11 @@ theme = "mainroad"
   weight = 20
 
   # 每日QT 子菜單 (根據圖片)
+  [[menu.main]]
+    name = "當日QT"
+    url = "/today-qt/"
+    weight = 20
+    parent = "daily-qt"
   [[menu.main]]
     name = "生成當日QT"
     url = "https://index-html-clean-copy.vercel.app/"

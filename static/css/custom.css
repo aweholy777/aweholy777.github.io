@@ -540,9 +540,8 @@ th {
     text-decoration: underline;
 }
 
-/* 選單把「當日QT」放第一項時，給一點視覺強調 */
-.menu__item--today-qt > .menu__link,
-.menu__list > .menu__item:first-child > .menu__link[href="/today-qt/"] {
+/* 「當日QT」在「每日QT」下拉選單裡排第一項，用紅色加粗標示 */
+.menu__link[href="/today-qt/"] {
     color: #c53030;
     font-weight: 700;
 }
