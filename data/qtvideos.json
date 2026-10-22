@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 956,
+   "video_count": 957,
    "passage_count": 1861,
    "books": [
     {
@@ -5853,6 +5853,12 @@
        "passage": "以斯帖記 1：13~22",
        "date": "2022-06-12",
        "yt": "2MewyBf3R38"
+      },
+      {
+       "slug": "2022-06-13",
+       "passage": "以斯帖記 2：1~11",
+       "date": "2022-06-13",
+       "yt": "Uho4V77uvus"
       }
      ]
     },
