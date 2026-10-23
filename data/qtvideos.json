@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 977,
+   "video_count": 978,
    "passage_count": 1861,
    "books": [
     {
@@ -5986,6 +5986,12 @@
        "passage": "約伯記 5：1~16",
        "date": "2021-10-09",
        "yt": "XX68aXpIPCs"
+      },
+      {
+       "slug": "2021-10-10",
+       "passage": "約伯記 5：17~27",
+       "date": "2021-10-10",
+       "yt": "aRp3OXdeIJ8"
       }
      ]
     },
