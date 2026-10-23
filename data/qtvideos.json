@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 976,
+   "video_count": 977,
    "passage_count": 1861,
    "books": [
     {
@@ -5980,6 +5980,12 @@
        "passage": "約伯記 4：12~21",
        "date": "2021-10-08",
        "yt": "dU7--IbPbFc"
+      },
+      {
+       "slug": "2021-10-09",
+       "passage": "約伯記 5：1~16",
+       "date": "2021-10-09",
+       "yt": "XX68aXpIPCs"
       }
      ]
     },
