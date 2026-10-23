@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 974,
+   "video_count": 975,
    "passage_count": 1861,
    "books": [
     {
@@ -5968,6 +5968,12 @@
        "passage": "約伯記 3：11~26",
        "date": "2021-10-06",
        "yt": "bSDi6PVDgMQ"
+      },
+      {
+       "slug": "2021-10-07",
+       "passage": "約伯記 4：1~11",
+       "date": "2021-10-07",
+       "yt": "44XhMFFikWA"
       }
      ]
     },
