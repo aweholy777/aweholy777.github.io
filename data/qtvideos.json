@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 963,
+   "video_count": 964,
    "passage_count": 1861,
    "books": [
     {
@@ -5895,6 +5895,12 @@
        "passage": "以斯帖記 7：1~10",
        "date": "2022-06-19",
        "yt": "UivG9_xUhTo"
+      },
+      {
+       "slug": "2022-06-20",
+       "passage": "以斯帖記 8：1~10",
+       "date": "2022-06-20",
+       "yt": "OD_VY6eURm4"
       }
      ]
     },
