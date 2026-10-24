@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 992,
+   "video_count": 993,
    "passage_count": 1861,
    "books": [
     {
@@ -6076,6 +6076,12 @@
        "passage": "約伯記 12：1~12",
        "date": "2021-10-24",
        "yt": "bDM5QdK_FC8"
+      },
+      {
+       "slug": "2021-10-25",
+       "passage": "約伯記 12：13~25",
+       "date": "2021-10-25",
+       "yt": "YwkMkmqem8Q"
       }
      ]
     },
