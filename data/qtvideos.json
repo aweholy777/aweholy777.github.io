@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 987,
+   "video_count": 988,
    "passage_count": 1861,
    "books": [
     {
@@ -6046,6 +6046,12 @@
        "passage": "約伯記 9：25~35",
        "date": "2021-10-19",
        "yt": "bFigEx3Bv_M"
+      },
+      {
+       "slug": "2021-10-20",
+       "passage": "約伯記 10：1~12",
+       "date": "2021-10-20",
+       "yt": "IA4ztNMKPcI"
       }
      ]
     },
