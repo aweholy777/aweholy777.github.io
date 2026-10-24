@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 983,
+   "video_count": 984,
    "passage_count": 1861,
    "books": [
     {
@@ -6022,6 +6022,12 @@
        "passage": "約伯記 8：1~7",
        "date": "2021-10-15",
        "yt": "cASx3v_5JQk"
+      },
+      {
+       "slug": "2021-10-16",
+       "passage": "約伯記 8：8~32",
+       "date": "2021-10-16",
+       "yt": "AcpftxOL-fU"
       }
      ]
     },
