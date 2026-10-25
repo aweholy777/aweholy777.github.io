@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1020,
+   "video_count": 1021,
    "passage_count": 1861,
    "books": [
     {
@@ -6244,6 +6244,12 @@
        "passage": "約伯記 29：1~17",
        "date": "2021-11-21",
        "yt": "M9PuFhJ0ia0"
+      },
+      {
+       "slug": "2021-11-22",
+       "passage": "約伯記 29：18~25",
+       "date": "2021-11-22",
+       "yt": "auGfOF1D9QQ"
       }
      ]
     },
