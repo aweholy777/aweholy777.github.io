@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1012,
+   "video_count": 1013,
    "passage_count": 1861,
    "books": [
     {
@@ -6196,6 +6196,12 @@
        "passage": "約伯記 23：1~17",
        "date": "2021-11-13",
        "yt": "IiGZ5vRaWNE"
+      },
+      {
+       "slug": "2021-11-14",
+       "passage": "約伯記 24：1~25",
+       "date": "2021-11-14",
+       "yt": "ZGiXZ4f77Zw"
       }
      ]
     },
