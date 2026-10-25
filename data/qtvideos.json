@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1024,
+   "video_count": 1025,
    "passage_count": 1861,
    "books": [
     {
@@ -6268,6 +6268,12 @@
        "passage": "約伯記 31：1~23",
        "date": "2021-11-25",
        "yt": "gKP50nTkDec"
+      },
+      {
+       "slug": "2021-11-26",
+       "passage": "約伯記 31：24~40",
+       "date": "2021-11-26",
+       "yt": "P2PkWulBquQ"
       }
      ]
     },
