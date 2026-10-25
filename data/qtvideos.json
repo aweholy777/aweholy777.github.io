@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1027,
+   "video_count": 1028,
    "passage_count": 1861,
    "books": [
     {
@@ -6286,6 +6286,12 @@
        "passage": "約伯記 32：11~22",
        "date": "2021-12-11",
        "yt": "7tODec0jsJY"
+      },
+      {
+       "slug": "2021-12-12",
+       "passage": "約伯記 33：1~13",
+       "date": "2021-12-12",
+       "yt": "mfzt_i4JuJw"
       }
      ]
     },
