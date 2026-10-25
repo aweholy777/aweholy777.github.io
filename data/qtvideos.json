@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1014,
+   "video_count": 1015,
    "passage_count": 1861,
    "books": [
     {
@@ -6208,6 +6208,12 @@
        "passage": "約伯記 25：1~6",
        "date": "2021-11-15",
        "yt": "MSTh5wA92_g"
+      },
+      {
+       "slug": "2021-11-16",
+       "passage": "約伯記 26：1~14",
+       "date": "2021-11-16",
+       "yt": "19uitnKprVE"
       }
      ]
     },
