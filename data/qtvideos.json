@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1044,
+   "video_count": 1045,
    "passage_count": 1861,
    "books": [
     {
@@ -6388,6 +6388,12 @@
        "passage": "約伯記 42：1~6",
        "date": "2021-12-30",
        "yt": "rtcZJF8yoqE"
+      },
+      {
+       "slug": "2021-12-31",
+       "passage": "約伯記 42：7~17",
+       "date": "2021-12-31",
+       "yt": "F1QpqpW0nZ8"
       }
      ]
     },
