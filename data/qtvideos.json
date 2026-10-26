@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1037,
+   "video_count": 1038,
    "passage_count": 1861,
    "books": [
     {
@@ -6346,6 +6346,12 @@
        "passage": "約伯記 38：1~21",
        "date": "2021-12-21",
        "yt": "7iBydy02r6Q"
+      },
+      {
+       "slug": "2021-12-22",
+       "passage": "約伯記 38：22~38",
+       "date": "2021-12-22",
+       "yt": "HhOfR4duYeY"
       }
      ]
     },
