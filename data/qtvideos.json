@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1032,
+   "video_count": 1033,
    "passage_count": 1861,
    "books": [
     {
@@ -6316,6 +6316,12 @@
        "passage": "約伯記 35：1~16",
        "date": "2021-12-16",
        "yt": "L_5Tr7JQmhw"
+      },
+      {
+       "slug": "2021-12-17",
+       "passage": "約伯記 36：1~15",
+       "date": "2021-12-17",
+       "yt": "XtorS6PC1uA"
       }
      ]
     },
