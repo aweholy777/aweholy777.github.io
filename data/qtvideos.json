@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1040,
+   "video_count": 1041,
    "passage_count": 1861,
    "books": [
     {
@@ -6364,6 +6364,12 @@
        "passage": "約伯記 39：5~30",
        "date": "2021-12-26",
        "yt": "22BhB0R7aS0"
+      },
+      {
+       "slug": "2021-12-27",
+       "passage": "約伯記 40：1~5",
+       "date": "2021-12-27",
+       "yt": "qsLmwNcxV6c"
       }
      ]
     },
