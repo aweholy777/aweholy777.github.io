@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1054,
+   "video_count": 1055,
    "passage_count": 1861,
    "books": [
     {
@@ -6455,6 +6455,12 @@
        "passage": "詩篇 9：1~10",
        "date": "2021-06-09",
        "yt": "emTnEIwbTXo"
+      },
+      {
+       "slug": "2021-06-10",
+       "passage": "詩篇 9：11~20",
+       "date": "2021-06-10",
+       "yt": "qMDEXRzRcb8"
       },
       {
        "slug": "2016-12-02",
