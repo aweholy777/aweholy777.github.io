@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1061,
+   "video_count": 1062,
    "passage_count": 1861,
    "books": [
     {
@@ -6497,6 +6497,12 @@
        "passage": "詩篇 15：1~5",
        "date": "2021-07-23",
        "yt": "ghefD0YRq8A"
+      },
+      {
+       "slug": "2021-07-24",
+       "passage": "詩篇 16：1~11",
+       "date": "2021-07-24",
+       "yt": "8V-l9p-P4dU"
       },
       {
        "slug": "2016-12-02",
