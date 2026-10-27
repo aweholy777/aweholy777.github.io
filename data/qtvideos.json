@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1071,
+   "video_count": 1072,
    "passage_count": 1861,
    "books": [
     {
@@ -6563,6 +6563,12 @@
        "passage": "詩篇 22：22~31",
        "date": "2022-06-26",
        "yt": "BcVciJcg9gA"
+      },
+      {
+       "slug": "2022-06-27",
+       "passage": "詩篇 23：1~6",
+       "date": "2022-06-27",
+       "yt": "b-ZEcgH33us"
       }
      ]
     },
