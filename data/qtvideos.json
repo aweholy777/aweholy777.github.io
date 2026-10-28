@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1094,
+   "video_count": 1095,
    "passage_count": 1861,
    "books": [
     {
@@ -6701,6 +6701,12 @@
        "passage": "詩篇33篇1~22節",
        "date": "2016-12-14",
        "yt": "1yz12ZfcmEM"
+      },
+      {
+       "slug": "2022-11-25",
+       "passage": "詩篇 33：1~22",
+       "date": "2022-11-25",
+       "yt": "au8hj37b9KM"
       }
      ]
     },
