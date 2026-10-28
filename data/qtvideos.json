@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1088,
+   "video_count": 1089,
    "passage_count": 1861,
    "books": [
     {
@@ -6665,6 +6665,12 @@
        "passage": "詩篇31篇1~8節",
        "date": "2016-12-11",
        "yt": "EcAWRlonbxU"
+      },
+      {
+       "slug": "2022-07-05",
+       "passage": "詩篇 31：1~8",
+       "date": "2022-07-05",
+       "yt": "T3-ngMWV3Xc"
       }
      ]
     },
