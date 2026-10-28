@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1090,
+   "video_count": 1091,
    "passage_count": 1861,
    "books": [
     {
@@ -6677,6 +6677,12 @@
        "passage": "詩篇 31篇9~24節",
        "date": "2016-12-12",
        "yt": "vv6Ikjz3lMA"
+      },
+      {
+       "slug": "2022-07-06",
+       "passage": "詩篇 31：9~24",
+       "date": "2022-07-06",
+       "yt": "HqduT8maDRs"
       }
      ]
     },
