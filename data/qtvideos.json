@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1096,
+   "video_count": 1097,
    "passage_count": 1861,
    "books": [
     {
@@ -6713,6 +6713,12 @@
        "passage": "詩篇 34篇1~10節",
        "date": "2016-12-15",
        "yt": "6ZxeuZe7Tss"
+      },
+      {
+       "slug": "2022-11-26",
+       "passage": "詩篇 34：1~10",
+       "date": "2022-11-26",
+       "yt": "RmyyWxQilcA"
       }
      ]
     },
