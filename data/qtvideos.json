@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1082,
+   "video_count": 1083,
    "passage_count": 1861,
    "books": [
     {
@@ -6629,6 +6629,12 @@
        "passage": "詩篇 28篇1~9節",
        "date": "2016-12-08",
        "yt": "pAmgovoXJtk"
+      },
+      {
+       "slug": "2022-07-02",
+       "passage": "詩篇 28：1~9",
+       "date": "2022-07-02",
+       "yt": "Ig8n2S6T0p0"
       }
      ]
     },
