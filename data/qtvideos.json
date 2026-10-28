@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1079,
+   "video_count": 1080,
    "passage_count": 1861,
    "books": [
     {
@@ -6611,6 +6611,12 @@
        "passage": "詩篇 26：1~12",
        "date": "2022-06-30",
        "yt": "LfR1cZ1UZ2M"
+      },
+      {
+       "slug": "2016-12-07",
+       "passage": "詩篇 27篇1~14節",
+       "date": "2016-12-07",
+       "yt": "bc9t-HF3Ce8"
       }
      ]
     },
