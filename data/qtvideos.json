@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1108,
+   "video_count": 1109,
    "passage_count": 1861,
    "books": [
     {
@@ -6785,6 +6785,12 @@
        "passage": "詩 37：12~26",
        "date": "2016-12-21",
        "yt": "vJQSjHBUUPk"
+      },
+      {
+       "slug": "2022-12-02",
+       "passage": "詩篇 37：18~26",
+       "date": "2022-12-02",
+       "yt": "NNgz0GObsRc"
       }
      ]
     },
