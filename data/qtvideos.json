@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1101,
+   "video_count": 1102,
    "passage_count": 1861,
    "books": [
     {
@@ -6743,6 +6743,12 @@
        "passage": "詩篇35篇",
        "date": "2016-12-17",
        "yt": "76zYbDpVaPY"
+      },
+      {
+       "slug": "2016-12-18",
+       "passage": "詩35：19~28",
+       "date": "2016-12-18",
+       "yt": "0Ux6-cpvklg"
       }
      ]
     },
