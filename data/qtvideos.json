@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1116,
+   "video_count": 1117,
    "passage_count": 1861,
    "books": [
     {
@@ -6833,6 +6833,12 @@
        "passage": "詩篇 40：1~10",
        "date": "2022-12-06",
        "yt": "IiKNZ_i7wQo"
+      },
+      {
+       "slug": "2022-12-07",
+       "passage": "詩篇 40：11~17",
+       "date": "2022-12-07",
+       "yt": "cEANL-NYv4E"
       }
      ]
     },
