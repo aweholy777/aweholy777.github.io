@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1114,
+   "video_count": 1115,
    "passage_count": 1861,
    "books": [
     {
@@ -6821,6 +6821,12 @@
        "passage": "詩篇 38：11~22",
        "date": "2016-12-27",
        "yt": "_y00ZbPsv1U"
+      },
+      {
+       "slug": "2022-12-05",
+       "passage": "詩篇 39：1~13",
+       "date": "2022-12-05",
+       "yt": "Pg-mjAERCo4"
       }
      ]
     },
