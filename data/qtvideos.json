@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1122,
+   "video_count": 1123,
    "passage_count": 1861,
    "books": [
     {
@@ -6869,6 +6869,12 @@
        "passage": "詩篇 44：9~26",
        "date": "2024-03-04",
        "yt": "Vw47PP_IEUA"
+      },
+      {
+       "slug": "2024-03-05",
+       "passage": "詩篇 45：1~17",
+       "date": "2024-03-05",
+       "yt": "AlXv-EcyofY"
       }
      ]
     },
