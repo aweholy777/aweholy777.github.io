@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1136,
+   "video_count": 1137,
    "passage_count": 1861,
    "books": [
     {
@@ -6953,6 +6953,12 @@
        "passage": "詩篇 55：16~23",
        "date": "2024-03-18",
        "yt": "VMdtWjeGP9w"
+      },
+      {
+       "slug": "2024-03-19",
+       "passage": "詩篇 56：1~13",
+       "date": "2024-03-19",
+       "yt": "jgNsMI-2CvU"
       }
      ]
     },
