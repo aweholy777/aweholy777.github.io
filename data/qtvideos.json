@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1123,
+   "video_count": 1124,
    "passage_count": 1861,
    "books": [
     {
@@ -6875,6 +6875,12 @@
        "passage": "詩篇 45：1~17",
        "date": "2024-03-05",
        "yt": "AlXv-EcyofY"
+      },
+      {
+       "slug": "2024-03-06",
+       "passage": "詩篇 46：1~11",
+       "date": "2024-03-06",
+       "yt": "gd_ouk1cbmw"
       }
      ]
     },
