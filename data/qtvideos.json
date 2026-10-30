@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1126,
+   "video_count": 1127,
    "passage_count": 1861,
    "books": [
     {
@@ -6893,6 +6893,12 @@
        "passage": "詩篇 48：1~14",
        "date": "2024-03-08",
        "yt": "KIciAE3X330"
+      },
+      {
+       "slug": "2024-03-09",
+       "passage": "詩篇 49：1~12",
+       "date": "2024-03-09",
+       "yt": "3PI5Ityv6Qc"
       }
      ]
     },
