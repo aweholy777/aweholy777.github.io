@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1145,
+   "video_count": 1146,
    "passage_count": 1861,
    "books": [
     {
@@ -7007,6 +7007,12 @@
        "passage": "詩篇 64：1~10",
        "date": "2024-11-03",
        "yt": "FjVqYpNG5Ag"
+      },
+      {
+       "slug": "2024-11-04",
+       "passage": "詩篇 65：1~13",
+       "date": "2024-11-04",
+       "yt": "Y0h0gwmMbYI"
       }
      ]
     },
