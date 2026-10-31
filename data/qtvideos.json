@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1163,
+   "video_count": 1164,
    "passage_count": 1861,
    "books": [
     {
@@ -7115,6 +7115,12 @@
        "passage": "詩篇 72：12~20",
        "date": "2024-11-17",
        "yt": "Hb_NdelCsQQ"
+      },
+      {
+       "slug": "2018-02-13",
+       "passage": "詩篇73篇 1~14",
+       "date": "2018-02-13",
+       "yt": "j_eIH670gDM"
       }
      ]
     },
