@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1155,
+   "video_count": 1156,
    "passage_count": 1861,
    "books": [
     {
@@ -7067,6 +7067,12 @@
        "passage": "詩篇 68：28~35",
        "date": "2017-12-17",
        "yt": "hD-kszi-lEM"
+      },
+      {
+       "slug": "2024-11-10",
+       "passage": "詩篇 69：1~12",
+       "date": "2024-11-10",
+       "yt": "60ea8rFnxIs"
       }
      ]
     },
