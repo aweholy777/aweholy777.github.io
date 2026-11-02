@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1209,
+   "video_count": 1210,
    "passage_count": 1861,
    "books": [
     {
@@ -7391,6 +7391,12 @@
        "passage": "詩篇 94：1~11",
        "date": "2018-10-05",
        "yt": "PvurlGUNG6g"
+      },
+      {
+       "slug": "2026-04-11",
+       "passage": "詩篇 94：1~23",
+       "date": "2026-04-11",
+       "yt": "N5T5QjGTIMM"
       }
      ]
     },
