@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1200,
+   "video_count": 1201,
    "passage_count": 1861,
    "books": [
     {
@@ -7337,6 +7337,12 @@
        "passage": "詩篇 87：1~7",
        "date": "2025-07-03",
        "yt": "v6M6noYzDwg"
+      },
+      {
+       "slug": "2025-07-04",
+       "passage": "詩篇 88：1~18",
+       "date": "2025-07-04",
+       "yt": "dsmhj5l2Xrw"
       }
      ]
     },
