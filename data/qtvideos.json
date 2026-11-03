@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1215,
+   "video_count": 1216,
    "passage_count": 1861,
    "books": [
     {
@@ -7427,6 +7427,12 @@
        "passage": "詩篇 98：1~9",
        "date": "2026-04-15",
        "yt": "7WT105QPsBw"
+      },
+      {
+       "slug": "2026-04-16",
+       "passage": "詩篇 99：1~9",
+       "date": "2026-04-16",
+       "yt": "8iZoCmGtvvY"
       }
      ]
     },
