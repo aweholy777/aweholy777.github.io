@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1213,
+   "video_count": 1214,
    "passage_count": 1861,
    "books": [
     {
@@ -7415,6 +7415,12 @@
        "passage": "詩篇 96：1~13",
        "date": "2026-04-13",
        "yt": "iz55yy947QM"
+      },
+      {
+       "slug": "2026-04-14",
+       "passage": "詩篇 97：1~12",
+       "date": "2026-04-14",
+       "yt": "m-d5Lz7l8BI"
       }
      ]
     },
