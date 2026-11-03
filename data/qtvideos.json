@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1220,
+   "video_count": 1221,
    "passage_count": 1861,
    "books": [
     {
@@ -7457,6 +7457,12 @@
        "passage": "詩篇 102：12~28",
        "date": "2018-10-15",
        "yt": "7fgrzrG4MXU"
+      },
+      {
+       "slug": "2026-04-20",
+       "passage": "詩篇 102：17~28",
+       "date": "2026-04-20",
+       "yt": "v4ANFMy4kII"
       }
      ]
     },
