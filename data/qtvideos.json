@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1230,
+   "video_count": 1231,
    "passage_count": 1861,
    "books": [
     {
@@ -7517,6 +7517,12 @@
        "passage": "詩篇 104：24~35",
        "date": "2026-04-25",
        "yt": "SZMwM4ccY00"
+      },
+      {
+       "slug": "2018-10-20",
+       "passage": "詩篇 105：1~15",
+       "date": "2018-10-20",
+       "yt": "MQ-0hOvBtmY"
       }
      ]
     },
