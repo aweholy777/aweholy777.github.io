@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1236,
+   "video_count": 1237,
    "passage_count": 1861,
    "books": [
     {
@@ -7553,6 +7553,12 @@
        "passage": "詩篇 106：1~12",
        "date": "2026-04-28",
        "yt": "zklY9d1Y6oc"
+      },
+      {
+       "slug": "2026-04-29",
+       "passage": "詩篇 106：13~33",
+       "date": "2026-04-29",
+       "yt": "4Nk2rrDrAfk"
       }
      ]
     },
