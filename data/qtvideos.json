@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1245,
+   "video_count": 1246,
    "passage_count": 1861,
    "books": [
     {
@@ -7607,6 +7607,12 @@
        "passage": "詩篇 109：16~25",
        "date": "2019-07-18",
        "yt": "1kWrdql4JMM"
+      },
+      {
+       "slug": "2019-07-19",
+       "passage": "詩篇 109：26~31",
+       "date": "2019-07-19",
+       "yt": "uhe0PdG-ruk"
       }
      ]
     },
