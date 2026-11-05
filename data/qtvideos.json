@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1265,
+   "video_count": 1266,
    "passage_count": 1861,
    "books": [
     {
@@ -7727,6 +7727,12 @@
        "passage": "詩篇 119：89~104",
        "date": "2019-09-19",
        "yt": "R8wMVlejPE4"
+      },
+      {
+       "slug": "2019-09-20",
+       "passage": "詩篇 119：105~120",
+       "date": "2019-09-20",
+       "yt": "LHeZPwCbVXE"
       }
      ]
     },
