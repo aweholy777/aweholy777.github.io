@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1257,
+   "video_count": 1258,
    "passage_count": 1861,
    "books": [
     {
@@ -7679,6 +7679,12 @@
        "passage": "詩篇 118：8~18",
        "date": "2019-07-30",
        "yt": "qbklYom5YFM"
+      },
+      {
+       "slug": "2019-07-31",
+       "passage": "詩篇 118：19~29",
+       "date": "2019-07-31",
+       "yt": "0L0xeKClGd8"
       }
      ]
     },
