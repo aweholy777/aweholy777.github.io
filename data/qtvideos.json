@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1276,
+   "video_count": 1277,
    "passage_count": 1861,
    "books": [
     {
@@ -7793,6 +7793,12 @@
        "passage": "詩篇 126：1~6",
        "date": "2019-09-30",
        "yt": "0m13_fW_bqQ"
+      },
+      {
+       "slug": "2020-06-23",
+       "passage": "詩篇 127：1~5",
+       "date": "2020-06-23",
+       "yt": "K9P8mYXckRg"
       }
      ]
     },
