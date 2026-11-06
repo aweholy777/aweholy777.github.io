@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1297,
+   "video_count": 1298,
    "passage_count": 1861,
    "books": [
     {
@@ -7919,6 +7919,12 @@
        "passage": "詩篇 146：1~10",
        "date": "2020-07-13",
        "yt": "UqvWEu2gqhY"
+      },
+      {
+       "slug": "2020-07-14",
+       "passage": "詩篇 147：1~11",
+       "date": "2020-07-14",
+       "yt": "DEm-EH6FDBE"
       }
      ]
     },
