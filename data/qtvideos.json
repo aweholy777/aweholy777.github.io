@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1286,
+   "video_count": 1287,
    "passage_count": 1861,
    "books": [
     {
@@ -7853,6 +7853,12 @@
        "passage": "詩篇 137：1~9",
        "date": "2020-07-02",
        "yt": "iMj5_qKLeSo"
+      },
+      {
+       "slug": "2020-07-03",
+       "passage": "詩篇 138：1~8",
+       "date": "2020-07-03",
+       "yt": "Arkvd_LRnkM"
       }
      ]
     },
