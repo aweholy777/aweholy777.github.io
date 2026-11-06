@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1283,
+   "video_count": 1284,
    "passage_count": 1861,
    "books": [
     {
@@ -7835,6 +7835,12 @@
        "passage": "詩篇 135：1~14",
        "date": "2020-06-29",
        "yt": "UjRtMYTsh8I"
+      },
+      {
+       "slug": "2020-06-30",
+       "passage": "詩篇 135：15~21",
+       "date": "2020-06-30",
+       "yt": "-f5ylVcDwTY"
       }
      ]
     },
