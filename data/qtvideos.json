@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1302,
+   "video_count": 1303,
    "passage_count": 1861,
    "books": [
     {
@@ -7956,7 +7956,14 @@
      "name": "箴言",
      "total": 59,
      "passages": 59,
-     "videos": []
+     "videos": [
+      {
+       "slug": "2023-10-01",
+       "passage": "箴言 1：1~19",
+       "date": "2023-10-01",
+       "yt": "7ocFmdkNqso"
+      }
+     ]
     },
     {
      "name": "傳道書",
