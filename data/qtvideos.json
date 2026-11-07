@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1312,
+   "video_count": 1313,
    "passage_count": 1861,
    "books": [
     {
@@ -8016,6 +8016,12 @@
        "passage": "箴言 5：1~23",
        "date": "2023-10-09",
        "yt": "JY35U-_nm8U"
+      },
+      {
+       "slug": "2023-10-10",
+       "passage": "箴言 6：1~19",
+       "date": "2023-10-10",
+       "yt": "z7us09yxJiQ"
       }
      ]
     },
