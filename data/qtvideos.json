@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1323,
+   "video_count": 1324,
    "passage_count": 1861,
    "books": [
     {
@@ -8082,6 +8082,12 @@
        "passage": "箴言 12：1~16",
        "date": "2023-11-05",
        "yt": "_LUyeJKOnCE"
+      },
+      {
+       "slug": "2023-11-06",
+       "passage": "箴言 12：17~28",
+       "date": "2023-11-06",
+       "yt": "kASq6_37Zn8"
       }
      ]
     },
