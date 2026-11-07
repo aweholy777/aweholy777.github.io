@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1315,
+   "video_count": 1316,
    "passage_count": 1861,
    "books": [
     {
@@ -8034,6 +8034,12 @@
        "passage": "箴言 7：1~27",
        "date": "2023-10-12",
        "yt": "kQ-U90_e80k"
+      },
+      {
+       "slug": "2023-10-13",
+       "passage": "箴言 8：1~21",
+       "date": "2023-10-13",
+       "yt": "Z8AVdVLkHNg"
       }
      ]
     },
