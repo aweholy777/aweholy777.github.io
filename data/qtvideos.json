@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1316,
+   "video_count": 1317,
    "passage_count": 1861,
    "books": [
     {
@@ -8040,6 +8040,12 @@
        "passage": "箴言 8：1~21",
        "date": "2023-10-13",
        "yt": "Z8AVdVLkHNg"
+      },
+      {
+       "slug": "2023-10-14",
+       "passage": "箴言 8：22~36",
+       "date": "2023-10-14",
+       "yt": "HyX2sO16OgE"
       }
      ]
     },
