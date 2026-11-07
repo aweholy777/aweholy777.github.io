@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1320,
+   "video_count": 1321,
    "passage_count": 1861,
    "books": [
     {
@@ -8064,6 +8064,12 @@
        "passage": "箴言 10：17~32",
        "date": "2023-11-02",
        "yt": "kPdTKBgETJk"
+      },
+      {
+       "slug": "2023-11-03",
+       "passage": "箴言 11：1~15",
+       "date": "2023-11-03",
+       "yt": "nPir4EV3Cyk"
       }
      ]
     },
