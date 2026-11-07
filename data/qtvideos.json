@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1307,
+   "video_count": 1308,
    "passage_count": 1861,
    "books": [
     {
@@ -7986,6 +7986,12 @@
        "passage": "箴言書 3：1~12",
        "date": "2018-01-01",
        "yt": "83Pbh7kiSsA"
+      },
+      {
+       "slug": "2023-10-05",
+       "passage": "箴言 3：11~26",
+       "date": "2023-10-05",
+       "yt": "Abjc7uhIUj4"
       }
      ]
     },
