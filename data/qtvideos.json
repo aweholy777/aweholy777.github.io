@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1309,
+   "video_count": 1310,
    "passage_count": 1861,
    "books": [
     {
@@ -7998,6 +7998,12 @@
        "passage": "箴言 3：27~35",
        "date": "2023-10-06",
        "yt": "lWlzTk8nbDc"
+      },
+      {
+       "slug": "2023-10-07",
+       "passage": "箴言 4：1~9",
+       "date": "2023-10-07",
+       "yt": "RoSXiMxSLdI"
       }
      ]
     },
