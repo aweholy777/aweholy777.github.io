@@ -169,6 +169,24 @@ def main():
                     help="（已棄用、保留相容）發布已由 GitHub Actions 處理，本腳本不再 push")
     a = ap.parse_args()
 
+    # ── 遠端暫停旗標：repo 內 video-pipeline/UPLOAD_PAUSE 存在且未到期 → 跳過（到期自動恢復）
+    #    放在取憑證之前：憑證失效時也不會誤觸上傳。
+    if a.auto:
+        _pause = HERE / "UPLOAD_PAUSE"
+        if _pause.exists():
+            try:
+                _until = datetime.fromisoformat(_pause.read_text(encoding="utf-8").strip())
+            except Exception:
+                _until = None
+            if _until and datetime.now() < _until:
+                print(f"UPLOAD_PAUSE：暫停上傳至 {_until:%Y-%m-%d %H:%M}，本次跳過。", flush=True)
+                return
+            print("UPLOAD_PAUSE 已到期，恢復上傳。", flush=True)
+            try:
+                _pause.unlink()
+            except Exception:
+                pass
+
     yt = get_service(allow_interactive=not a.auto)
 
     def _is_quota(e: HttpError) -> bool:
