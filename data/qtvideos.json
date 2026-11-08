@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1326,
+   "video_count": 1327,
    "passage_count": 1861,
    "books": [
     {
@@ -8100,6 +8100,12 @@
        "passage": "箴言 13：13~25",
        "date": "2023-11-08",
        "yt": "h__6j_QfkOA"
+      },
+      {
+       "slug": "2023-11-09",
+       "passage": "箴言 14：1~16",
+       "date": "2023-11-09",
+       "yt": "DSTtFjtbspU"
       }
      ]
     },
