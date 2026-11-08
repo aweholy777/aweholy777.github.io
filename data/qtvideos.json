@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1336,
+   "video_count": 1337,
    "passage_count": 1861,
    "books": [
     {
@@ -8160,6 +8160,12 @@
        "passage": "箴言 19：1~17",
        "date": "2023-11-18",
        "yt": "ooDNqBZNB58"
+      },
+      {
+       "slug": "2023-11-19",
+       "passage": "箴言 19：18~29",
+       "date": "2023-11-19",
+       "yt": "lBhY9jviUF0"
       }
      ]
     },
