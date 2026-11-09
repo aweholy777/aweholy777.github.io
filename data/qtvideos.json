@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1352,
+   "video_count": 1353,
    "passage_count": 1861,
    "books": [
     {
@@ -8256,6 +8256,12 @@
        "passage": "箴言 27：1~12",
        "date": "2023-12-19",
        "yt": "5BWanO0I5IA"
+      },
+      {
+       "slug": "2023-12-20",
+       "passage": "箴言 27：13~27",
+       "date": "2023-12-20",
+       "yt": "9aKOwE6Mz2w"
       }
      ]
     },
