@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1347,
+   "video_count": 1348,
    "passage_count": 1861,
    "books": [
     {
@@ -8226,6 +8226,12 @@
        "passage": "箴言 24：23~34",
        "date": "2023-12-14",
        "yt": "H5AJcbBd_TE"
+      },
+      {
+       "slug": "2023-12-15",
+       "passage": "箴言 25：1~13",
+       "date": "2023-12-15",
+       "yt": "Z05_d-NVYIw"
       }
      ]
     },
