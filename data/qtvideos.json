@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1363,
+   "video_count": 1364,
    "passage_count": 1861,
    "books": [
     {
@@ -8329,6 +8329,12 @@
        "passage": "傳道書 1：12~18",
        "date": "2022-12-10",
        "yt": "UKcrAojWFIE"
+      },
+      {
+       "slug": "2022-12-11",
+       "passage": "傳道書 2：1~11",
+       "date": "2022-12-11",
+       "yt": "RDzfAvFKTUg"
       }
      ]
     },
