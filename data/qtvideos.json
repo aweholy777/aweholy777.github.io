@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1375,
+   "video_count": 1376,
    "passage_count": 1861,
    "books": [
     {
@@ -8401,6 +8401,12 @@
        "passage": "傳道書 8：9~17",
        "date": "2022-12-22",
        "yt": "MHSfxRoBcro"
+      },
+      {
+       "slug": "2022-12-26",
+       "passage": "傳道書 9：1~10",
+       "date": "2022-12-26",
+       "yt": "-Fh5VO9x2R4"
       }
      ]
     },
