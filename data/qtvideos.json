@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1360,
+   "video_count": 1361,
    "passage_count": 1861,
    "books": [
     {
@@ -8304,6 +8304,12 @@
        "passage": "箴言 31：1~9",
        "date": "2023-12-30",
        "yt": "Hn5fWvOXXhg"
+      },
+      {
+       "slug": "2023-12-31",
+       "passage": "箴言 31：10~31",
+       "date": "2023-12-31",
+       "yt": "Tsf_kUKPfYs"
       }
      ]
     },
