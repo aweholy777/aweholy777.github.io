@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1384,
+   "video_count": 1385,
    "passage_count": 1861,
    "books": [
     {
@@ -8462,6 +8462,12 @@
        "passage": "雅歌 2：4 ~ 17",
        "date": "2017-11-24",
        "yt": "rT1NF59M4Ng"
+      },
+      {
+       "slug": "2017-11-25",
+       "passage": "雅歌 3：1 ~ 11",
+       "date": "2017-11-25",
+       "yt": "WysihG2K1f4"
       }
      ]
     },
