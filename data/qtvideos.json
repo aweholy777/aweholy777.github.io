@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1387,
+   "video_count": 1388,
    "passage_count": 1861,
    "books": [
     {
@@ -8480,6 +8480,12 @@
        "passage": "雅歌 5：2 ~ 6：1",
        "date": "2017-11-27",
        "yt": "qDm0d_k2P5k"
+      },
+      {
+       "slug": "2017-11-29",
+       "passage": "雅歌 6：11 ~ 7：13",
+       "date": "2017-11-29",
+       "yt": "bshYgIzqmCI"
       }
      ]
     },
