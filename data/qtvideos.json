@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1388,
+   "video_count": 1389,
    "passage_count": 1861,
    "books": [
     {
@@ -8493,7 +8493,14 @@
      "name": "以賽亞書",
      "total": 121,
      "passages": 121,
-     "videos": []
+     "videos": [
+      {
+       "slug": "2025-12-23",
+       "passage": "以賽亞書 1：1~7",
+       "date": "2025-12-23",
+       "yt": "1Ktv3plauXM"
+      }
+     ]
     },
     {
      "name": "耶利米書",
