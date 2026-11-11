@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1395,
+   "video_count": 1396,
    "passage_count": 1861,
    "books": [
     {
@@ -8535,6 +8535,12 @@
        "passage": "以賽亞書 3：1~12",
        "date": "2017-08-16",
        "yt": "8KPGGfDTm_c"
+      },
+      {
+       "slug": "2017-08-17",
+       "passage": "以賽亞書 3：13~4：1",
+       "date": "2017-08-17",
+       "yt": "qtXp5S2yzPk"
       }
      ]
     },
