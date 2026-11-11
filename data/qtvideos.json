@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1401,
+   "video_count": 1402,
    "passage_count": 1861,
    "books": [
     {
@@ -8571,6 +8571,12 @@
        "passage": "以賽亞書 6：1~13",
        "date": "2017-08-22",
        "yt": "TnjYWVeLzhs"
+      },
+      {
+       "slug": "2017-08-23",
+       "passage": "以賽亞書 7：1~9",
+       "date": "2017-08-23",
+       "yt": "dXIuRZwBIhw"
       }
      ]
     },
