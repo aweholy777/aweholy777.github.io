@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1421,
+   "video_count": 1422,
    "passage_count": 1861,
    "books": [
     {
@@ -8691,6 +8691,12 @@
        "passage": "以賽亞書 17：12~18：7",
        "date": "2017-09-10",
        "yt": "DJ33XrIY8Z8"
+      },
+      {
+       "slug": "2017-09-11",
+       "passage": "以賽亞書 19：1~15",
+       "date": "2017-09-11",
+       "yt": "0ycFQ-CLNzY"
       }
      ]
     },
