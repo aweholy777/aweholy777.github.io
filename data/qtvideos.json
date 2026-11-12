@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1425,
+   "video_count": 1426,
    "passage_count": 1861,
    "books": [
     {
@@ -8715,6 +8715,12 @@
        "passage": "以賽亞書 21：1~10",
        "date": "2017-09-14",
        "yt": "6AJ-IN-9-qs"
+      },
+      {
+       "slug": "2017-09-15",
+       "passage": "以賽亞書 21：11~17",
+       "date": "2017-09-15",
+       "yt": "Yxe5Hm0m4wU"
       }
      ]
     },
