@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1407,
+   "video_count": 1408,
    "passage_count": 1861,
    "books": [
     {
@@ -8607,6 +8607,12 @@
        "passage": "以賽亞書 9： 8~ 21",
        "date": "2017-08-28",
        "yt": "dAqFy9hskQU"
+      },
+      {
+       "slug": "2017-08-29",
+       "passage": "以賽亞書 10：1~11",
+       "date": "2017-08-29",
+       "yt": "Khl3ph5Eems"
       }
      ]
     },
