@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1431,
+   "video_count": 1432,
    "passage_count": 1861,
    "books": [
     {
@@ -8751,6 +8751,12 @@
        "passage": "以賽亞書 24：14~23",
        "date": "2017-09-20",
        "yt": "rSftT10EHNE"
+      },
+      {
+       "slug": "2017-09-21",
+       "passage": "以賽亞書 25：1~12",
+       "date": "2017-09-21",
+       "yt": "qLVUWDNQmfU"
       }
      ]
     },
