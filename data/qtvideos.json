@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1434,
+   "video_count": 1435,
    "passage_count": 1861,
    "books": [
     {
@@ -8769,6 +8769,12 @@
        "passage": "以賽亞書 26：8~21",
        "date": "2017-09-23",
        "yt": "ftMkZ5bruLY"
+      },
+      {
+       "slug": "2017-09-24",
+       "passage": "以賽亞書 27：1~13",
+       "date": "2017-09-24",
+       "yt": "MIMZa-4q67w"
       }
      ]
     },
