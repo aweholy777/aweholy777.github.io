@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1446,
+   "video_count": 1447,
    "passage_count": 1861,
    "books": [
     {
@@ -8841,6 +8841,12 @@
        "passage": "以賽亞書 32：1~8",
        "date": "2017-10-05",
        "yt": "y6Rp7fhJt5U"
+      },
+      {
+       "slug": "2017-10-06",
+       "passage": "以賽亞書 32：9~20",
+       "date": "2017-10-06",
+       "yt": "AnBxeCbu7Es"
       }
      ]
     },
