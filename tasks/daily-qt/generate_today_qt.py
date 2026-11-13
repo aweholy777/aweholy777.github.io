@@ -24,6 +24,7 @@ import argparse
 import datetime as dt
 import json
 import re
+import subprocess
 import sys
 import time
 import urllib.error
@@ -38,6 +39,8 @@ OUT_FILE = CONTENT / "today-qt.md"
 LAST_RUN = Path(__file__).resolve().parent / "last-run.json"
 
 DAILY_REFERENCE_URL = "https://index-html-clean-copy.vercel.app/api/daily-reference"
+# 來源站（活潑的生命官網）：直接抓最可靠，Vercel API 只是它的代理，會偶發 500
+DURANNO_URL = "https://www.duranno.tw/livinglife/index.php/daily"
 FHL_URL = "https://bible.fhl.net/json/qb.php"
 UA = "cmtc-daily-qt/1.0 (+https://cmtc.tw)"
 
@@ -86,12 +89,29 @@ def http_get(url: str, tries: int = 4, timeout: int = 30) -> bytes:
 
 
 def get_daily_reference(date: str | None) -> dict:
+    # 1) 先直抓 duranno.tw 官網（最可靠，不經第三方代理）
+    #    註：duranno.tw 憑證缺 SKID，Python/OpenSSL 會拒收，改用 curl 抓
+    try:
+        cp = subprocess.run(["curl", "-sS", "-m", "40", "-A", UA, DURANNO_URL], capture_output=True)
+        if cp.returncode != 0:
+            raise RuntimeError(cp.stderr.decode("utf-8", "replace")[:200] or f"curl exit {cp.returncode}")
+        html = cp.stdout.decode("utf-8", errors="replace")
+        m = re.search(r'<div class="range">\s*([^<]+?)\s*</div>', html)
+        if m and m.group(1).strip():
+            ref = m.group(1).strip()
+            print(f"  （來源：duranno.tw 直抓）")
+            return {"status": "success", "reference": ref, "sourceUrl": DURANNO_URL, "source": "duranno-direct"}
+        print("  ⚠️ duranno.tw 直抓解析失敗，改用 Vercel API")
+    except Exception as e:  # noqa: BLE001
+        print(f"  ⚠️ duranno.tw 直抓失敗（{e}），改用 Vercel API")
+    # 2) 退回 Vercel API（代理，偶發 500）
     url = DAILY_REFERENCE_URL
     if date:
         url = f"{url}?date={date}"
     data = json.loads(http_get(url).decode("utf-8"))
     if data.get("status") != "success" or not data.get("reference"):
         raise RuntimeError(f"當日進度 API 回應異常：{data}")
+    data["source"] = "vercel-api"
     return data
 
 
