@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1443,
+   "video_count": 1444,
    "passage_count": 1861,
    "books": [
     {
@@ -8823,6 +8823,12 @@
        "passage": "以賽亞書 30：18~26",
        "date": "2017-10-02",
        "yt": "T4ZsPFCYgO4"
+      },
+      {
+       "slug": "2017-10-03",
+       "passage": "以賽亞書 30：27~33",
+       "date": "2017-10-03",
+       "yt": "NolNnnTZl6s"
       }
      ]
     },
