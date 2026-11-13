@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1448,
+   "video_count": 1449,
    "passage_count": 1861,
    "books": [
     {
@@ -8853,6 +8853,12 @@
        "passage": "以賽亞書 33：1~6",
        "date": "2017-10-07",
        "yt": "mQdlGsme_cc"
+      },
+      {
+       "slug": "2017-10-08",
+       "passage": "以賽亞書 33：7~16",
+       "date": "2017-10-08",
+       "yt": "_oDYAJYB3fY"
       }
      ]
     },
