@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1472,
+   "video_count": 1473,
    "passage_count": 1861,
    "books": [
     {
@@ -8997,6 +8997,12 @@
        "passage": "以賽亞書 44：9 ~20",
        "date": "2018-04-14",
        "yt": "37ErTq7byp4"
+      },
+      {
+       "slug": "2018-04-15",
+       "passage": "以賽亞書 44：21 ~28",
+       "date": "2018-04-15",
+       "yt": "I2KeOlK4Hu8"
       }
      ]
     },
