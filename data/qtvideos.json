@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1468,
+   "video_count": 1469,
    "passage_count": 1861,
    "books": [
     {
@@ -8973,6 +8973,12 @@
        "passage": "以賽亞書 42：18~25",
        "date": "2018-04-10",
        "yt": "KPeRSxsfp3E"
+      },
+      {
+       "slug": "2018-04-11",
+       "passage": "以賽亞書 43：1~13",
+       "date": "2018-04-11",
+       "yt": "ACL1v2OcM3I"
       }
      ]
     },
