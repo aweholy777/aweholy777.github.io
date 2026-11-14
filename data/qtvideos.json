@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1464,
+   "video_count": 1465,
    "passage_count": 1861,
    "books": [
     {
@@ -8949,6 +8949,12 @@
        "passage": "以賽亞書 41：14~20",
        "date": "2018-04-06",
        "yt": "F9mPc9bjBjE"
+      },
+      {
+       "slug": "2018-04-07",
+       "passage": "以賽亞書 41：21~29",
+       "date": "2018-04-07",
+       "yt": "rnXzClu5u8w"
       }
      ]
     },
