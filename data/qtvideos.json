@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1458,
+   "video_count": 1459,
    "passage_count": 1861,
    "books": [
     {
@@ -8913,6 +8913,12 @@
        "passage": "以賽亞書 38：9~22",
        "date": "2017-10-17",
        "yt": "QPrKbxtPJqE"
+      },
+      {
+       "slug": "2017-10-18",
+       "passage": "以賽亞書 39：1~8",
+       "date": "2017-10-18",
+       "yt": "Pm5QXP2Etyw"
       }
      ]
     },
