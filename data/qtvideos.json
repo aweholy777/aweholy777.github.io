@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1490,
+   "video_count": 1491,
    "passage_count": 1861,
    "books": [
     {
@@ -9105,6 +9105,12 @@
        "passage": "以賽亞書 54：1~10",
        "date": "2018-05-01",
        "yt": "agTV4dz3-pk"
+      },
+      {
+       "slug": "2018-05-02",
+       "passage": "以賽亞書 54：11~17",
+       "date": "2018-05-02",
+       "yt": "1RawSYGNdAM"
       }
      ]
     },
