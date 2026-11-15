@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1481,
+   "video_count": 1482,
    "passage_count": 1861,
    "books": [
     {
@@ -9051,6 +9051,12 @@
        "passage": "以賽亞書 49：14 ~26",
        "date": "2018-04-24",
        "yt": "0UCcZmg_vGo"
+      },
+      {
+       "slug": "2018-04-25",
+       "passage": "以賽亞書 50：1 ~11",
+       "date": "2018-04-25",
+       "yt": "Ii7FtfdYJ7w"
       }
      ]
     },
