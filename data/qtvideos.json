@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1476,
+   "video_count": 1477,
    "passage_count": 1861,
    "books": [
     {
@@ -9021,6 +9021,12 @@
        "passage": "以賽亞書 46：1 ~7",
        "date": "2018-04-18",
        "yt": "zZtVBPRf2Go"
+      },
+      {
+       "slug": "2018-04-19",
+       "passage": "以賽亞書 46：8 ~13",
+       "date": "2018-04-19",
+       "yt": "Hy71wwest64"
       }
      ]
     },
