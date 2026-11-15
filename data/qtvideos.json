@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1474,
+   "video_count": 1475,
    "passage_count": 1861,
    "books": [
     {
@@ -9009,6 +9009,12 @@
        "passage": "以賽亞書 45：1 ~13",
        "date": "2018-04-16",
        "yt": "le_FuatFiX4"
+      },
+      {
+       "slug": "2018-04-17",
+       "passage": "以賽亞書 45：14 ~25",
+       "date": "2018-04-17",
+       "yt": "iS4saNLBGWk"
       }
      ]
     },
