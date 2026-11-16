@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1505,
+   "video_count": 1506,
    "passage_count": 1861,
    "books": [
     {
@@ -9195,6 +9195,12 @@
        "passage": "以賽亞書 64：1~12",
        "date": "2018-05-16",
        "yt": "8I_VjzeqkNs"
+      },
+      {
+       "slug": "2018-05-17",
+       "passage": "以賽亞書 65：1~16",
+       "date": "2018-05-17",
+       "yt": "V5jq7KtMRBk"
       }
      ]
     },
