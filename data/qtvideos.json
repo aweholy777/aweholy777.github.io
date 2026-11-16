@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1498,
+   "video_count": 1499,
    "passage_count": 1861,
    "books": [
     {
@@ -9153,6 +9153,12 @@
        "passage": "以賽亞書 59：9~21",
        "date": "2018-05-09",
        "yt": "jr4g25g5qRk"
+      },
+      {
+       "slug": "2018-05-10",
+       "passage": "以賽亞書 60：1~9",
+       "date": "2018-05-10",
+       "yt": "bmWrnmros10"
       }
      ]
     },
