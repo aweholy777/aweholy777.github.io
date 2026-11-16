@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1515,
+   "video_count": 1516,
    "passage_count": 1861,
    "books": [
     {
@@ -9262,6 +9262,12 @@
        "passage": "耶利米書 2：29~37",
        "date": "2019-05-16",
        "yt": "-KpZf8uNZls"
+      },
+      {
+       "slug": "2019-05-17",
+       "passage": "耶利米書 3：1~18",
+       "date": "2019-05-17",
+       "yt": "jlFKqHLYDyw"
       }
      ]
     },
