@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1512,
+   "video_count": 1513,
    "passage_count": 1861,
    "books": [
     {
@@ -9244,6 +9244,12 @@
        "passage": "耶利米書 2：1~8",
        "date": "2019-05-13",
        "yt": "kgS8l3Qw1sc"
+      },
+      {
+       "slug": "2019-05-14",
+       "passage": "耶利米書 2：9~19",
+       "date": "2019-05-14",
+       "yt": "LT1AdRNlBHA"
       }
      ]
     },
