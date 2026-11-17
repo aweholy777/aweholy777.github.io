@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1531,
+   "video_count": 1532,
    "passage_count": 1861,
    "books": [
     {
@@ -9358,6 +9358,12 @@
        "passage": "耶利米書 9：1~9",
        "date": "2019-06-01",
        "yt": "QHs26eL5EaQ"
+      },
+      {
+       "slug": "2019-06-02",
+       "passage": "耶利米書 9：10~16",
+       "date": "2019-06-02",
+       "yt": "EaIfh2n8Muo"
       }
      ]
     },
