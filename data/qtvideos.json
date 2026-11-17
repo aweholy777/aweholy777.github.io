@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1535,
+   "video_count": 1536,
    "passage_count": 1861,
    "books": [
     {
@@ -9382,6 +9382,12 @@
        "passage": "耶利米書 10：12~25",
        "date": "2019-06-05",
        "yt": "vlGmNWdWqPA"
+      },
+      {
+       "slug": "2019-06-06",
+       "passage": "耶利米書 11：1~8",
+       "date": "2019-06-06",
+       "yt": "YQQa4gGdN94"
       }
      ]
     },
