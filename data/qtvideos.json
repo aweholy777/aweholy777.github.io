@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1540,
+   "video_count": 1541,
    "passage_count": 1861,
    "books": [
     {
@@ -9412,6 +9412,12 @@
        "passage": "耶利米書 13：1~14",
        "date": "2019-06-10",
        "yt": "1BH6L89uCtg"
+      },
+      {
+       "slug": "2019-06-11",
+       "passage": "耶利米書 13：15~27",
+       "date": "2019-06-11",
+       "yt": "Lgqm9g7GqHA"
       }
      ]
     },
