@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1529,
+   "video_count": 1530,
    "passage_count": 1861,
    "books": [
     {
@@ -9346,6 +9346,12 @@
        "passage": "耶利米書 8：4~12",
        "date": "2019-05-30",
        "yt": "mixJN2ErVq4"
+      },
+      {
+       "slug": "2019-05-31",
+       "passage": "耶利米書 8：13~22",
+       "date": "2019-05-31",
+       "yt": "6QHIrr5pxJY"
       }
      ]
     },
