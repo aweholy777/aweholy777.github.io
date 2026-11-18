@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1560,
+   "video_count": 1561,
    "passage_count": 1861,
    "books": [
     {
@@ -9532,6 +9532,12 @@
        "passage": "耶利米書 22：20~30",
        "date": "2019-06-30",
        "yt": "cNcYa0ooURk"
+      },
+      {
+       "slug": "2019-07-01",
+       "passage": "耶利米書 23：1~8",
+       "date": "2019-07-01",
+       "yt": "5-FvUL93Xhs"
       }
      ]
     },
