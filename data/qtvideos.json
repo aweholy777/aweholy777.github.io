@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1556,
+   "video_count": 1557,
    "passage_count": 1861,
    "books": [
     {
@@ -9508,6 +9508,12 @@
        "passage": "耶利米書 21：1~7",
        "date": "2019-06-26",
        "yt": "X5Rcw4y-Qck"
+      },
+      {
+       "slug": "2019-06-27",
+       "passage": "耶利米書 21：8~14",
+       "date": "2019-06-27",
+       "yt": "MfNtPRbZea8"
       }
      ]
     },
