@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1550,
+   "video_count": 1551,
    "passage_count": 1861,
    "books": [
     {
@@ -9472,6 +9472,12 @@
        "passage": "耶利米書 17：19~27",
        "date": "2019-06-20",
        "yt": "bde3sW_Z28g"
+      },
+      {
+       "slug": "2019-06-21",
+       "passage": "耶利米書 18：1~12",
+       "date": "2019-06-21",
+       "yt": "4oBpo7kBT3M"
       }
      ]
     },
