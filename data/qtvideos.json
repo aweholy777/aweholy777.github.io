@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1554,
+   "video_count": 1555,
    "passage_count": 1861,
    "books": [
     {
@@ -9496,6 +9496,12 @@
        "passage": "耶利米書 20：1~6",
        "date": "2019-06-24",
        "yt": "UfX7pxuJDpA"
+      },
+      {
+       "slug": "2019-06-25",
+       "passage": "耶利米書 20：7~18",
+       "date": "2019-06-25",
+       "yt": "WqINC3eXCF0"
       }
      ]
     },
