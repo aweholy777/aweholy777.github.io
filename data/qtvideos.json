@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1587,
+   "video_count": 1588,
    "passage_count": 1861,
    "books": [
     {
@@ -9694,6 +9694,12 @@
        "passage": "耶利米書 33：14~26",
        "date": "2020-09-19",
        "yt": "J_EHjoLhTlc"
+      },
+      {
+       "slug": "2020-09-20",
+       "passage": "耶利米書 34：1~7",
+       "date": "2020-09-20",
+       "yt": "hKLz-qylgCA"
       }
      ]
     },
