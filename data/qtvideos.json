@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1573,
+   "video_count": 1574,
    "passage_count": 1861,
    "books": [
     {
@@ -9610,6 +9610,12 @@
        "passage": "耶利米書 28：1~17",
        "date": "2020-09-05",
        "yt": "I5qt8uFZYew"
+      },
+      {
+       "slug": "2020-09-06",
+       "passage": "耶利米書 29：1~14",
+       "date": "2020-09-06",
+       "yt": "vHh8HjOPzWM"
       }
      ]
     },
