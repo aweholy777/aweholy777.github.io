@@ -5,6 +5,26 @@ draft: false
 # original_url: https://cmtc.tw/in-depth-articles-2
 ---
 
+## 影片
+
+### 316 佈道法
+約 3：16「神愛世人，甚至將祂的獨生子賜給他們，叫一切信祂的，不至滅亡，反得永生。」
+
+{{< youtube ieUFOJ3E8Rc >}}
+
+### 一日與神同行
+
+{{< youtube m2st9f_nmZo >}}
+
+### 父親的產業
+
+{{< youtube 86mFocIfNPs >}}
+
+---
+
+<br>
+<br>
+
 ![天國近了！](/images/天國近了.png)
 
 ## 天國近了 ##
