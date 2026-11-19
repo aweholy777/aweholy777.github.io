@@ -32,7 +32,7 @@
           </div>
           <div class="dc-card__body">
             <h3 class="dc-card__title">{{ .Title }}</h3>
-            {{- $desc := .Plain | strings.TrimSpace | truncate 110 -}}
+            {{- $desc := trim .Plain " \n\t\r" | truncate 110 -}}
             {{- with $desc }}<p class="dc-card__desc">{{ . }}</p>{{ end -}}
             <span class="dc-card__more">閱讀全文 →</span>
           </div>
