@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1568,
+   "video_count": 1569,
    "passage_count": 1861,
    "books": [
     {
@@ -9580,6 +9580,12 @@
        "passage": "耶利米書 25：30~38",
        "date": "2019-07-08",
        "yt": "1njeSgavnQo"
+      },
+      {
+       "slug": "2020-09-01",
+       "passage": "耶利米書 26：1~15",
+       "date": "2020-09-01",
+       "yt": "MZ0sakVAQkA"
       }
      ]
     },
