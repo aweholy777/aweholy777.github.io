@@ -5,99 +5,17 @@ draft: false
 # original_url: https://cmtc.tw/in-depth-articles-2
 ---
 
-## 影片
-
-### 316 佈道法
-約 3：16「神愛世人，甚至將祂的獨生子賜給他們，叫一切信祂的，不至滅亡，反得永生。」
-
-{{< youtube ieUFOJ3E8Rc >}}
-
-### 一日與神同行
-
-{{< youtube m2st9f_nmZo >}}
-
-### 父親的產業
-
-{{< youtube 86mFocIfNPs >}}
-
----
-
-<br>
-<br>
-
-![天國近了！](/images/天國近了.png)
-
-## 天國近了 ##
-
-  讀經：馬太福音 4章 12\~17節 … [繼續閱讀](天國近了/)
-
-<br>
-<br>
-
-
-
-![追求生命的長進](/images/grape.jpg)
-
-## 追求生命的長進 ##
-
-  讀經：太七：15~23   這段經文，是耶穌教導門徒如何防備教會裏的假先知，透過「兩種 … [繼續閱讀](pursuing-growth-in-life/)
-
-<br>
-<br>
-
-![超前部署」](/images/advance_deployment.png)
-
-## 超前部署 ##
- [繼續閱讀](超前部署/)
-
-
-<br>
-<br>
-
-
-[![生命的糧](/images/AQkNqb7fYmIhawR.jpg)](/%e7%94%9f%e5%91%bd%e7%9a%84%e7%b3%a7)
-
-## [生命的糧](/%e7%94%9f%e5%91%bd%e7%9a%84%e7%b3%a7)
-
-經：約6章 當耶穌行完五餅二魚的神蹟，餵飽了男女老幼超過上萬人，「耶穌既知道眾人要來強逼他作王，就獨自又退到山 … [繼續閱讀](/%e7%94%9f%e5%91%bd%e7%9a%84%e7%b3%a7 "生命的糧")
-
-
-
-[![基督徒可以提早寫「遺囑」](/images/UBKgiXm9c23o1vq.jpg)](/%e5%9f%ba%e7%9d%a3%e5%be%92%e5%8f%af%e4%bb%a5%e6%8f%90%e6%97%a9%e5%af%ab%e3%80%8c%e9%81%ba%e5%9b%91%e3%80%8d)
-
-## [基督徒可以提早寫「遺囑」](/%e5%9f%ba%e7%9d%a3%e5%be%92%e5%8f%af%e4%bb%a5%e6%8f%90%e6%97%a9%e5%af%ab%e3%80%8c%e9%81%ba%e5%9b%91%e3%80%8d)
-
-腓利比書1：23~25 我正在兩難之間，情願離世與基督同在，因為這是好得無比的。然而，我在肉身活著，為你們更 … [繼續閱讀](/%e5%9f%ba%e7%9d%a3%e5%be%92%e5%8f%af%e4%bb%a5%e6%8f%90%e6%97%a9%e5%af%ab%e3%80%8c%e9%81%ba%e5%9b%91%e3%80%8d "基督徒可以提早寫「遺囑」")
-
-
-
-[![與神親密](/images/lvjy7rCZENMn8AV.jpg)](/%e8%88%87%e7%a5%9e%e8%a6%aa%e5%af%86)
-
-## [與神親密](/%e8%88%87%e7%a5%9e%e8%a6%aa%e5%af%86)
-
-前言： 與神親密，我們要先學習分辨「神的愛」與「神的心」是有分別的！我們無法用人類有限的悟性或言語去理解這二者 … [繼續閱讀](/%e8%88%87%e7%a5%9e%e8%a6%aa%e5%af%86 "與神親密")
-
-
-
-[![耶穌降生的意義](/images/M3GxUj1SvQ7scNH.png)](/%e8%80%b6%e7%a9%8c%e9%99%8d%e7%94%9f%e7%9a%84%e6%84%8f%e7%be%a9)
-
-## [耶穌降生的意義](/%e8%80%b6%e7%a9%8c%e9%99%8d%e7%94%9f%e7%9a%84%e6%84%8f%e7%be%a9)
-
-讀經：馬太福音一：21、路加福音1：28~33 每年12月普世都會慶祝聖誕節，其實已經有許多人知道聖誕節的主角 … [繼續閱讀](/%e8%80%b6%e7%a9%8c%e9%99%8d%e7%94%9f%e7%9a%84%e6%84%8f%e7%be%a9 "耶穌降生的意義")
-
-
-
-[![聖誕並非聖誕節](/images/sxFOtqbzuvW6ar9.jpg)](/%e8%81%96%e8%aa%95%e4%b8%a6%e9%9d%9e%e8%81%96%e8%aa%95%e7%af%80)
-
-## [聖誕並非聖誕節](/%e8%81%96%e8%aa%95%e4%b8%a6%e9%9d%9e%e8%81%96%e8%aa%95%e7%af%80)
-
-【心靈小品】 ～ 聖誕並非聖誕節 ～ 《前言》 今年從12月16日起，到今天為止，共安排了10埸「聖誕佈道」， … [繼續閱讀](/%e8%81%96%e8%aa%95%e4%b8%a6%e9%9d%9e%e8%81%96%e8%aa%95%e7%af%80 "聖誕並非聖誕節")
-
-
-
-1
-[2](/wp-admin/admin-ajax.php)
-[3](/wp-admin/admin-ajax.php)
-…
-[10](/wp-admin/admin-ajax.php)
-[Next](/wp-admin/admin-ajax.php)
+<div class="dc-videos">
+  <div class="dc-video">
+    <iframe src="https://www.youtube.com/embed/ieUFOJ3E8Rc" title="316 佈道法" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    <h3 class="dc-video__title">316 佈道法</h3>
+  </div>
+  <div class="dc-video">
+    <iframe src="https://www.youtube.com/embed/m2st9f_nmZo" title="一日與神同行" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    <h3 class="dc-video__title">一日與神同行</h3>
+  </div>
+  <div class="dc-video">
+    <iframe src="https://www.youtube.com/embed/86mFocIfNPs" title="父親的產業" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    <h3 class="dc-video__title">父親的產業</h3>
+  </div>
+</div>

@@ -1,0 +1,75 @@
+{{ define "main" }}
+<main class="main list dc-page" role="main">
+  <header class="dc-hero">
+    <h1 class="dc-hero__title">{{ .Title }}</h1>
+    <p class="dc-hero__sub">在神的話語中扎根　讓生命被更新</p>
+  </header>
+
+  <h2 class="dc-section-title">影片</h2>
+  {{- with .Content }}
+  <div class="dc-intro">{{ . }}</div>
+  {{- end }}
+
+  <h2 class="dc-section-title">文章</h2>
+  <div class="dc-grid">
+    {{- $seen := newScratch -}}
+    {{- range (.Pages.ByDate.Reverse) -}}
+      {{- if not ($seen.Get .Title) -}}
+        {{- $seen.Set .Title true -}}
+        {{- $page := . -}}
+        {{- $img := "" -}}
+        {{- with (findRESubmatch `<img[^>]+src="([^"]+)"` .Content 1) -}}
+          {{- $img = index (index . 0) 1 -}}
+        {{- end -}}
+        {{- if not $img -}}
+          {{- with (findRESubmatch `youtube\.com/embed/([A-Za-z0-9_-]{11})` .Content 1) -}}
+            {{- $img = printf "https://img.youtube.com/vi/%s/hqdefault.jpg" (index (index . 0) 1) -}}
+          {{- end -}}
+        {{- end -}}
+        <a class="dc-card" href="{{ .RelPermalink }}">
+          <div class="dc-card__media{{ if not $img }} dc-card__media--empty{{ end }}">
+            {{- with $img }}<img src="{{ . | relURL }}" alt="{{ $page.Title }}" loading="lazy">{{ end -}}
+          </div>
+          <div class="dc-card__body">
+            <h3 class="dc-card__title">{{ .Title }}</h3>
+            {{- $desc := .Plain | strings.TrimSpace | truncate 110 -}}
+            {{- with $desc }}<p class="dc-card__desc">{{ . }}</p>{{ end -}}
+            <span class="dc-card__more">閱讀全文 →</span>
+          </div>
+        </a>
+      {{- end -}}
+    {{- end -}}
+  </div>
+</main>
+
+<style>
+.dc-page { max-width: 1120px; margin: 0 auto; padding-bottom: 3rem; }
+.dc-hero { text-align: center; padding: 2.2rem 1rem 1.4rem; }
+.dc-hero__title { font-size: 2.2rem; font-weight: 700; letter-spacing: .08em; margin: 0; color: #2a2a2a; }
+.dc-hero__title::after { content: ""; display: block; width: 56px; height: 3px; margin: .9rem auto 0; background: #f87148; border-radius: 2px; }
+.dc-hero__sub { color: #666; font-size: 1rem; margin: 1rem 0 0; letter-spacing: .08em; }
+.dc-intro { margin-bottom: .5rem; }
+.dc-section-title { font-size: 1.4rem; font-weight: 700; color: #2a2a2a; margin: 2.6rem 0 1.3rem; padding-left: .75rem; border-left: 4px solid #f87148; line-height: 1.2; }
+.dc-videos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.3rem; }
+.dc-video { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 3px 14px rgba(0,0,0,.08); }
+.dc-video iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; display: block; }
+.dc-video__title { font-size: 1rem; font-weight: 600; color: #2a2a2a; margin: .85rem 1.1rem 1.1rem; }
+.dc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.6rem; }
+.dc-card { display: flex; flex-direction: column; background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 3px 14px rgba(0,0,0,.07); text-decoration: none; color: inherit; transition: transform .18s ease, box-shadow .18s ease; }
+.dc-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,.14); }
+.dc-card__media { aspect-ratio: 16 / 9; overflow: hidden; background: #eef1f4; }
+.dc-card__media--empty { background: linear-gradient(135deg, #fdf3ee 0%, #f6d5c6 100%); }
+.dc-card__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .45s ease; }
+.dc-card:hover .dc-card__media img { transform: scale(1.05); }
+.dc-card__body { padding: 1.05rem 1.15rem 1.25rem; display: flex; flex-direction: column; gap: .5rem; flex: 1; }
+.dc-card__title { font-size: 1.06rem; font-weight: 700; line-height: 1.5; color: #1f2933; margin: 0; }
+.dc-card__desc { font-size: .9rem; line-height: 1.65; color: #5b6773; margin: 0; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.dc-card__more { font-size: .88rem; font-weight: 600; color: #f87148; }
+@media (max-width: 640px) {
+  .dc-hero { padding-top: 1.4rem; }
+  .dc-hero__title { font-size: 1.7rem; }
+  .dc-grid, .dc-videos { grid-template-columns: 1fr; gap: 1.2rem; }
+  .dc-card__desc { -webkit-line-clamp: 2; }
+}
+</style>
+{{ end }}
