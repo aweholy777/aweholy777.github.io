@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1582,
+   "video_count": 1583,
    "passage_count": 1861,
    "books": [
     {
@@ -9664,6 +9664,12 @@
        "passage": "耶利米書 31：31~40",
        "date": "2020-09-14",
        "yt": "yAxayNsVgZA"
+      },
+      {
+       "slug": "2020-09-15",
+       "passage": "耶利米書 32：1~15",
+       "date": "2020-09-15",
+       "yt": "bcql08yXxaY"
       }
      ]
     },
