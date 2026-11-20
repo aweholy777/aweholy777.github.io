@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1604,
+   "video_count": 1605,
    "passage_count": 1861,
    "books": [
     {
@@ -9796,6 +9796,12 @@
        "passage": "耶利米書 43：1~13",
        "date": "2020-10-06",
        "yt": "e3zsrfE2gas"
+      },
+      {
+       "slug": "2020-10-07",
+       "passage": "耶利米書 44：1~10",
+       "date": "2020-10-07",
+       "yt": "3xWbjQsFj6c"
       }
      ]
     },
