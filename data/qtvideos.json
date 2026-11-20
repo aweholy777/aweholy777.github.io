@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1607,
+   "video_count": 1608,
    "passage_count": 1861,
    "books": [
     {
@@ -9814,6 +9814,12 @@
        "passage": "耶利米書 44：20~30",
        "date": "2020-10-09",
        "yt": "cUL8fyQAVC8"
+      },
+      {
+       "slug": "2020-10-10",
+       "passage": "耶利米書 45：1~5",
+       "date": "2020-10-10",
+       "yt": "LnGs5tLG6L4"
       }
      ]
     },
