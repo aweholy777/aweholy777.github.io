@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1597,
+   "video_count": 1598,
    "passage_count": 1861,
    "books": [
     {
@@ -9754,6 +9754,12 @@
        "passage": "耶利米書 38：14~28",
        "date": "2020-09-29",
        "yt": "Y1kNGB5ShJ8"
+      },
+      {
+       "slug": "2020-09-30",
+       "passage": "耶利米書 39：1~18",
+       "date": "2020-09-30",
+       "yt": "RgB1eTinQuQ"
       }
      ]
     },
