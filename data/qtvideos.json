@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1593,
+   "video_count": 1594,
    "passage_count": 1861,
    "books": [
     {
@@ -9730,6 +9730,12 @@
        "passage": "耶利米書 36：20~32",
        "date": "2020-09-25",
        "yt": "lIdHLz73nFU"
+      },
+      {
+       "slug": "2020-09-26",
+       "passage": "耶利米書 37：1~10",
+       "date": "2020-09-26",
+       "yt": "kOqjwekwLf8"
       }
      ]
     },
