@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1590,
+   "video_count": 1591,
    "passage_count": 1861,
    "books": [
     {
@@ -9712,6 +9712,12 @@
        "passage": "耶利米書 35：1~11",
        "date": "2020-09-22",
        "yt": "mvVGjs-wuH4"
+      },
+      {
+       "slug": "2020-09-23",
+       "passage": "耶利米書 35：12~19",
+       "date": "2020-09-23",
+       "yt": "XNEv9t2vIOc"
       }
      ]
     },
