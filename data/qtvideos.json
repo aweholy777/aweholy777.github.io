@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1600,
+   "video_count": 1601,
    "passage_count": 1861,
    "books": [
     {
@@ -9772,6 +9772,12 @@
        "passage": "耶利米書 40：7~16",
        "date": "2020-10-02",
        "yt": "ZH034ZhFPNw"
+      },
+      {
+       "slug": "2020-10-03",
+       "passage": "耶利米書 41：1~18",
+       "date": "2020-10-03",
+       "yt": "EiVDLfd8QBM"
       }
      ]
     },
