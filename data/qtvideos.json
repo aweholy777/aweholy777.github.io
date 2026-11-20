@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1598,
+   "video_count": 1599,
    "passage_count": 1861,
    "books": [
     {
@@ -9760,6 +9760,12 @@
        "passage": "耶利米書 39：1~18",
        "date": "2020-09-30",
        "yt": "RgB1eTinQuQ"
+      },
+      {
+       "slug": "2020-10-01",
+       "passage": "耶利米書 40：1~6",
+       "date": "2020-10-01",
+       "yt": "G9qfzoYUxfo"
       }
      ]
     },
