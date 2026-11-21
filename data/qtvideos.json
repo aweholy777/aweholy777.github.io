@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1621,
+   "video_count": 1622,
    "passage_count": 1861,
    "books": [
     {
@@ -9898,6 +9898,12 @@
        "passage": "耶利米書 51：1~14",
        "date": "2020-10-24",
        "yt": "XqlA0eWMwDQ"
+      },
+      {
+       "slug": "2020-10-25",
+       "passage": "耶利米書 51：15~24",
+       "date": "2020-10-25",
+       "yt": "RVzKZHhudtM"
       }
      ]
     },
