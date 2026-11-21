@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1612,
+   "video_count": 1613,
    "passage_count": 1861,
    "books": [
     {
@@ -9844,6 +9844,12 @@
        "passage": "耶利米書 48：1~25",
        "date": "2020-10-14",
        "yt": "dtZJX-YzJSI"
+      },
+      {
+       "slug": "2020-10-15",
+       "passage": "耶利米書 48：26~35",
+       "date": "2020-10-15",
+       "yt": "fKyUTjEX_V8"
       }
      ]
     },
