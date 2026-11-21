@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1628,
+   "video_count": 1629,
    "passage_count": 1861,
    "books": [
     {
@@ -9947,7 +9947,14 @@
      "name": "耶利米哀歌",
      "total": 14,
      "passages": 14,
-     "videos": []
+     "videos": [
+      {
+       "slug": "2023-06-04",
+       "passage": "耶利米哀歌 1：1~11",
+       "date": "2023-06-04",
+       "yt": "X9jzgzjw_18"
+      }
+     ]
     },
     {
      "name": "以西結書",
