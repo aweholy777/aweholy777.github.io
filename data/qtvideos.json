@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1615,
+   "video_count": 1616,
    "passage_count": 1861,
    "books": [
     {
@@ -9862,6 +9862,12 @@
        "passage": "耶利米書 49：1~6",
        "date": "2020-10-17",
        "yt": "vl-46s_f0EM"
+      },
+      {
+       "slug": "2020-10-18",
+       "passage": "耶利米書 49：7~22",
+       "date": "2020-10-18",
+       "yt": "jNhL14bNkh4"
       }
      ]
     },
