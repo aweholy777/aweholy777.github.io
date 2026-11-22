@@ -271,6 +271,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--date", help="YYYY-MM-DD（預設：台北時間今天）")
     ap.add_argument("--reference", help="覆寫當日進度，例如 歷代志上29：10∼19")
     ap.add_argument("--dry-run", action="store_true", help="只印出結果，不寫檔")
+    ap.add_argument("--archive-date", help="強制沿用指定日期的舊文章，例如 2018-03-02（上游故障時手動指定）")
     args = ap.parse_args(argv)
 
     date_str = args.date or (dt.datetime.utcnow() + dt.timedelta(hours=8)).strftime("%Y-%m-%d")
@@ -288,7 +289,13 @@ def main(argv: list[str] | None = None) -> int:
     print(f"[2/4] 和合本經文：{len(verses)} 節（{verses[0]['chap']}:{verses[0]['sec']}–{verses[-1]['chap']}:{verses[-1]['sec']}）")
 
     index = load_archive_index()
-    archive = find_archive(parsed, index)
+    if args.archive_date:
+        archive = next((it for it in index if it["date"] == args.archive_date), None)
+        if not archive:
+            print(f"⚠️ 找不到 {args.archive_date} 的舊文章，改回自動比對")
+            archive = find_archive(parsed, index)
+    else:
+        archive = find_archive(parsed, index)
     if archive:
         sections = split_article(archive["path"])
         print(f"[3/4] 對應舊文章：{archive['date']} {archive['title']}"
