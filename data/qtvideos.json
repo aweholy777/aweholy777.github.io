@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1635,
+   "video_count": 1636,
    "passage_count": 1861,
    "books": [
     {
@@ -9989,6 +9989,12 @@
        "passage": "耶利米哀歌 3：1~18",
        "date": "2023-06-10",
        "yt": "sD04ncsIrO4"
+      },
+      {
+       "slug": "2023-06-11",
+       "passage": "耶利米哀歌 3：19~39",
+       "date": "2023-06-11",
+       "yt": "AujXhjKkfqE"
       }
      ]
     },
