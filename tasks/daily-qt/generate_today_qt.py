@@ -41,6 +41,10 @@ LAST_RUN = Path(__file__).resolve().parent / "last-run.json"
 DAILY_REFERENCE_URL = "https://index-html-clean-copy.vercel.app/api/daily-reference"
 # 來源站（活潑的生命官網）：直接抓最可靠，Vercel API 只是它的代理，會偶發 500
 DURANNO_URL = "https://www.duranno.tw/livinglife/index.php/daily"
+
+# 備援：CGN 中文《活潑的生命》YouTube 頻道（每日影片標題含 YYYYMMDD 與經文範圍）
+CGN_RSS = "https://www.youtube.com/feeds/videos.xml?channel_id=UCqUnxXxHSFb6At-njlSX9AQ"
+BROWSER_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
 FHL_URL = "https://bible.fhl.net/json/qb.php"
 UA = "cmtc-daily-qt/1.0 (+https://cmtc.tw)"
 
@@ -88,6 +92,37 @@ def http_get(url: str, tries: int = 4, timeout: int = 30) -> bytes:
     raise RuntimeError(f"取得失敗（重試 {tries} 次）：{url}\n最後錯誤：{last}")
 
 
+def get_cgn_reference(date: str | None) -> str | None:
+    """備援來源：CGN 中文《活潑的生命》YouTube 頻道。
+    影片標題格式：[活潑的生命] 20261122 主題(哥林多後書 1:15~24)
+    duranno.tw 維護時（頁面只剩「每日經文系統維護中」）可用。"""
+    day = date or (dt.datetime.utcnow() + dt.timedelta(hours=8)).strftime("%Y-%m-%d")
+    ymd = day.replace("-", "")
+    try:
+        cp = subprocess.run(
+            ["curl", "-sS", "-m", "40", "-A", BROWSER_UA, CGN_RSS], capture_output=True
+        )
+        if cp.returncode != 0:
+            return None
+        raw = cp.stdout.decode("utf-8", "replace")
+    except Exception:  # noqa: BLE001
+        return None
+    for m in re.finditer(r"<title>([^<]*)</title>", raw):
+        t = m.group(1).replace("&amp;", "&").replace("&#39;", "'").replace("&quot;", '"')
+        if "活潑的生命" not in t or ymd not in t:
+            continue
+        mm = re.search(
+            r"[（(]\s*([^（）()]+?)\s*(\d+)\s*[：:]\s*(\d+)\s*[~∼\-–]\s*(?:(\d+)\s*[：:])?\s*(\d+)\s*[）)]",
+            t,
+        )
+        if not mm:
+            continue
+        book, ch1, v1, ch2, v2 = mm.groups()
+        book = book.strip()
+        return f"{book}{ch1}：{v1}∼{ch2}：{v2}" if ch2 else f"{book}{ch1}：{v1}∼{v2}"
+    return None
+
+
 def get_daily_reference(date: str | None) -> dict:
     # 1) 先直抓 duranno.tw 官網（最可靠，不經第三方代理）
     #    註：duranno.tw 憑證缺 SKID，Python/OpenSSL 會拒收，改用 curl 抓
@@ -101,10 +136,21 @@ def get_daily_reference(date: str | None) -> dict:
             ref = m.group(1).strip()
             print(f"  （來源：duranno.tw 直抓）")
             return {"status": "success", "reference": ref, "sourceUrl": DURANNO_URL, "source": "duranno-direct"}
-        print("  ⚠️ duranno.tw 直抓解析失敗，改用 Vercel API")
+        print("  ⚠️ duranno.tw 直抓解析失敗（可能維護中），改用 CGN 頻道")
     except Exception as e:  # noqa: BLE001
-        print(f"  ⚠️ duranno.tw 直抓失敗（{e}），改用 Vercel API")
-    # 2) 退回 Vercel API（代理，偶發 500）
+        print(f"  ⚠️ duranno.tw 直抓失敗（{e}），改用 CGN 頻道")
+    # 2) 備援：CGN 中文《活潑的生命》YouTube 頻道標題（duranno 維護時最有用）
+    cgn_ref = get_cgn_reference(date)
+    if cgn_ref:
+        print(f"  （來源：CGN 活潑的生命 YouTube）{cgn_ref}")
+        return {
+            "status": "success",
+            "reference": cgn_ref,
+            "sourceUrl": CGN_RSS,
+            "source": "cgn-youtube",
+        }
+    print("  ⚠️ CGN 頻道也找不到今日進度，改用 Vercel API")
+    # 3) 退回 Vercel API（代理，偶發 500）
     url = DAILY_REFERENCE_URL
     if date:
         url = f"{url}?date={date}"
