@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1654,
+   "video_count": 1655,
    "passage_count": 1861,
    "books": [
     {
@@ -10110,6 +10110,12 @@
        "passage": "以西結書 9：1~11",
        "date": "2025-07-29",
        "yt": "mx5M8tUfMik"
+      },
+      {
+       "slug": "2025-07-30",
+       "passage": "以西結書 10：1~8",
+       "date": "2025-07-30",
+       "yt": "og0WCnS3va0"
       }
      ]
     },
