@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1664,
+   "video_count": 1665,
    "passage_count": 1861,
    "books": [
     {
@@ -10170,6 +10170,12 @@
        "passage": "以西結書 14：12~23",
        "date": "2025-08-08",
        "yt": "QLU2P4P28uE"
+      },
+      {
+       "slug": "2025-08-10",
+       "passage": "以西結書 16：1~14",
+       "date": "2025-08-10",
+       "yt": "uv4GCvPUQEc"
       }
      ]
     },
