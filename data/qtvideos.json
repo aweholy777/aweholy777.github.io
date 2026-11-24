@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1703,
+   "video_count": 1704,
    "passage_count": 1861,
    "books": [
     {
@@ -10404,6 +10404,12 @@
        "passage": "以西結書 34：1~10",
        "date": "2026-08-01",
        "yt": "FDgnFxEQ-rI"
+      },
+      {
+       "slug": "2026-08-02",
+       "passage": "以西結書 34：11~24",
+       "date": "2026-08-02",
+       "yt": "kL7aeI7R9hU"
       }
      ]
     },
