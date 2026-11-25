@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1706,
+   "video_count": 1707,
    "passage_count": 1861,
    "books": [
     {
@@ -10422,6 +10422,12 @@
        "passage": "以西結書 35：1~15",
        "date": "2026-08-04",
        "yt": "UNOa53776Tc"
+      },
+      {
+       "slug": "2026-08-05",
+       "passage": "以西結書 36：1~15",
+       "date": "2026-08-05",
+       "yt": "PJ8at3QA2uI"
       }
      ]
     },
