@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1723,
+   "video_count": 1724,
    "passage_count": 1861,
    "books": [
     {
@@ -10524,6 +10524,12 @@
        "passage": "以西結書 44：1~14",
        "date": "2026-08-21",
        "yt": "B9KGhssdFv8"
+      },
+      {
+       "slug": "2026-08-22",
+       "passage": "以西結書 44：15~31",
+       "date": "2026-08-22",
+       "yt": "lrUyHs7J2Pc"
       }
      ]
     },
