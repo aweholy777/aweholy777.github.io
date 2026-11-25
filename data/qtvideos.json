@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1725,
+   "video_count": 1726,
    "passage_count": 1861,
    "books": [
     {
@@ -10536,6 +10536,12 @@
        "passage": "以西結書 45：1~8",
        "date": "2026-08-23",
        "yt": "40rju8trYs4"
+      },
+      {
+       "slug": "2026-08-24",
+       "passage": "以西結書 45：9~25",
+       "date": "2026-08-24",
+       "yt": "Vl2PKGIdrRg"
       }
      ]
     },
