@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1719,
+   "video_count": 1720,
    "passage_count": 1861,
    "books": [
     {
@@ -10500,6 +10500,12 @@
        "passage": "以西結書 41：1~26",
        "date": "2026-08-17",
        "yt": "xZnspm8Bvro"
+      },
+      {
+       "slug": "2026-08-18",
+       "passage": "以西結書 42：1~20",
+       "date": "2026-08-18",
+       "yt": "d7q5ifAihfg"
       }
      ]
     },
