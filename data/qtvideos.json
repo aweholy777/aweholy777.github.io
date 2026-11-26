@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1742,
+   "video_count": 1743,
    "passage_count": 1861,
    "books": [
     {
@@ -10645,6 +10645,12 @@
        "passage": "但以理書 3：24~30",
        "date": "2020-11-22",
        "yt": "gDPVnRl5A4c"
+      },
+      {
+       "slug": "2020-11-23",
+       "passage": "但以理書 4：1~18",
+       "date": "2020-11-23",
+       "yt": "pC6pAXt1dPY"
       }
      ]
     },
