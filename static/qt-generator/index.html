@@ -38,11 +38,11 @@ button:hover:not(:disabled){filter:brightness(.96)}
 .verses{max-height:360px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:14px;background:#fffdfa}
 .verses div{margin:0 0 .45rem;font-size:.98rem}
 .verses .vn{color:var(--accent-2);font-weight:700;margin-right:.4rem}
-.edit-grid{display:grid;gap:10px;margin-top:14px}
+.edit-grid{display:grid;gap:12px;margin-top:14px}
 .edit-box label{display:block;font-size:.85rem;font-weight:700;color:var(--accent-2);margin-bottom:4px}
-.edit-box textarea{width:100%;min-height:74px;resize:vertical;font-size:.92rem;line-height:1.6}
-.edit-box textarea.tall{min-height:150px}
-pre.md{white-space:pre-wrap;word-break:break-word;background:#1f2430;color:#e8e8e8;padding:16px;border-radius:12px;font-size:.85rem;line-height:1.65;max-height:420px;overflow:auto;margin-top:14px;font-family:Consolas,Menlo,monospace}
+.edit-box textarea{width:100%;min-height:80px;resize:vertical;font-size:.94rem;line-height:1.65}
+.edit-box textarea.mid{min-height:190px}
+.edit-box textarea.tall{min-height:380px}
 .tag{display:inline-block;font-size:.78rem;padding:2px 8px;border-radius:999px;background:#fdf1ec;color:var(--accent-2);margin-left:6px;vertical-align:middle}
 .hint{font-size:.84rem;color:var(--muted);margin-top:8px}
 a{color:var(--accent-2)}
@@ -94,7 +94,7 @@ a{color:var(--accent-2)}
 
     <div class="edit-grid">
       <div class="edit-box">
-        <label for="sec2">2. 今天默想經文（可微調，即時同步下方 Markdown）</label>
+        <label for="sec2">2. 今天默想經文（可直接微調後複製或下載）</label>
         <textarea id="sec2" placeholder="（今日經文如上）"></textarea>
       </div>
       <div class="edit-box">
@@ -103,7 +103,7 @@ a{color:var(--accent-2)}
       </div>
       <div class="edit-box">
         <label for="sec4">4. 今天的回應</label>
-        <textarea id="sec4" placeholder="（找不到對應的回應內容，可在此補充）"></textarea>
+        <textarea id="sec4" class="mid" placeholder="（找不到對應的回應內容，可在此補充）"></textarea>
       </div>
     </div>
 
@@ -112,7 +112,6 @@ a{color:var(--accent-2)}
       <button type="button" id="download" class="ghost">下載 .md</button>
       <button type="button" id="copyText" class="ghost">複製純文字經文</button>
     </div>
-    <pre class="md" id="md"></pre>
   </div>
 
   <div class="card">
@@ -346,7 +345,6 @@ function renderMarkdown() {
     ].join("\n");
   }
   STATE.md = md;
-  $("#md").textContent = md;
 }
 
 async function applyArchiveChoice(idx) {
