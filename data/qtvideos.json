@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1733,
+   "video_count": 1734,
    "passage_count": 1861,
    "books": [
     {
@@ -10591,7 +10591,14 @@
      "name": "但以理書",
      "total": 29,
      "passages": 29,
-     "videos": []
+     "videos": [
+      {
+       "slug": "2020-11-14",
+       "passage": "但以理書 1：1~9",
+       "date": "2020-11-14",
+       "yt": "JussLq2iMWw"
+      }
+     ]
     },
     {
      "name": "何西阿書",
