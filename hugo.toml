@@ -136,7 +136,7 @@ rssLimit = 50
     parent = "daily-qt"
   [[menu.main]]
     name = "讀經進度記錄表"
-    url = "/daily-qt/Biblereadingtracker.html"
+    url = "/daily-qt/biblereadingtracker/"
     params = { target = "_blank" }   # 開新分頁
     weight = 32
     parent = "daily-qt"
