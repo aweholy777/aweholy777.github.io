@@ -52,4 +52,8 @@ video-pipeline/*_log.txt
 # 當日QT 執行紀錄（每次執行都會變，只留本機）
 tasks/daily-qt/last-run.json
 
+# 本機跨專案工作筆記（只留本機，不推進公開 repo）
+進度.md
+經驗.md
+
 .wrangler/

@@ -1,23 +1,27 @@
 # .github/workflows/deploy.yml
-# GitHub Pages 部署（2026-06-12 恢復）
-# 說明：Cloudflare Pages 遷移尚未接通前，由本 workflow 負責正式部署。
-# CF Pages 接通並驗證後，可再把本檔降級為 build check。
+# Hugo 建置檢查（正式站部署由 Cloudflare Pages 負責，不再重複部署至 GitHub Pages）
+# 只在網站核心檔案變動或手動觸發時執行，避免 Mac 每小時上傳影片時空跑 CI。
 
-name: Deploy Hugo site to Pages
+name: Hugo Build Check
 
 on:
   push:
     branches: ["main"]
+    paths:
+      - "content/**"
+      - "layouts/**"
+      - "static/**"
+      - "themes/**"
+      - "functions/**"
+      - "hugo.toml"
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: "hugo-build-check"
+  cancel-in-progress: true
 
 defaults:
   run:
@@ -31,31 +35,23 @@ jobs:
     steps:
       - name: Install Hugo CLI
         run: |
-          wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb
+          wget -q -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb
           sudo dpkg -i ${{ runner.temp }}/hugo.deb
       - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v5
       - name: Build with Hugo
         env:
           HUGO_ENVIRONMENT: production
         run: hugo --minify --buildFuture
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./public
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: 檢查輸出檔案不得接近 Cloudflare Pages 25 MiB 上限
+        run: |
+          # 20 MiB 警戒線（CF 硬上限 25 MiB）
+          BIG=$(find public -type f -size +20971520c)
+          if [ -n "$BIG" ]; then
+            echo "❌ 發現超過 20 MiB 的輸出檔（接近 CF 25 MiB 上限）："
+            ls -lh $BIG
+            exit 1
+          fi
+          echo "✅ 所有輸出檔案均低於 20 MiB"

@@ -3,10 +3,12 @@
 
 #baseURL = "https://aweholy777.github.io/" # !! 請務必更新為您最終的 GitHub Pages 網址 !!
 
-baseURL = "https://cmtc.tw/" # !! 請務必更新為您最終的 GitHub Pages 網址 !!
+baseURL = "https://cmtc.tw/"
 languageCode = "zh-TW"
-title = "城市宣培中心" # 根據圖片更新標題
+title = "城市宣培中心"
 theme = "mainroad"
+# 限制 RSS 篇數，避免 index.xml 突破 Cloudflare Pages 25 MiB 單檔上限
+rssLimit = 50
 # 正確的 GA4 設定方式
 [services]
   [services.googleAnalytics]
@@ -30,16 +32,40 @@ theme = "mainroad"
 [pagination]
   pagerSize = 10
 
+# 搜尋索引分片：避免單一 index.json 突破 Cloudflare Pages 25 MiB 上限
+[outputFormats]
+  [outputFormats.search_ot1]
+    mediaType = "application/json"
+    baseName = "index-ot1"
+    isPlainText = true
+    notAlternative = true
+  [outputFormats.search_ot2]
+    mediaType = "application/json"
+    baseName = "index-ot2"
+    isPlainText = true
+    notAlternative = true
+  [outputFormats.search_nt]
+    mediaType = "application/json"
+    baseName = "index-nt"
+    isPlainText = true
+    notAlternative = true
+  [outputFormats.search_other]
+    mediaType = "application/json"
+    baseName = "index-other"
+    isPlainText = true
+    notAlternative = true
+
 [outputs]
-  home = ["HTML", "RSS", "JSON"]
+  home = ["HTML", "RSS", "JSON", "search_ot1", "search_ot2", "search_nt", "search_other"]
 
 # 主題參數
 [params]
-  description = "城市宣培中心 | City Ministration Training Center" # 可選：添加描述
-  # sidebar = true # 可選配置
-  # widgets = ["search", "recent", "categories", "taglist"] # 可選配置
-  customCSS = ["css/custom.css", "css/custom-font.css", "css/qt-library.css", "css/qt-index.css", "css/qt-article.css"] # 載入自訂 CSS
-  customJS = ["js/custom.js"]
+  description = "城市宣培中心 | City Ministration Training Center"
+  opengraph = true
+  schema = true
+  twitter_cards = true
+  # 僅全站共用 CSS；qt-library / qt-index / qt-article 改於 baseof.html 按頁條件載入
+  customCSS = ["css/custom.css"]
 
 
   # --- 新增或修改 Logo 設定 ---
@@ -110,7 +136,7 @@ theme = "mainroad"
     parent = "daily-qt"
   [[menu.main]]
     name = "讀經進度記錄表"
-    url = "https://cmtc.tw/daily-qt/Biblereadingtracker.html"  # 直接指定連結
+    url = "/daily-qt/Biblereadingtracker.html"
     params = { target = "_blank" }   # 開新分頁
     weight = 32
     parent = "daily-qt"

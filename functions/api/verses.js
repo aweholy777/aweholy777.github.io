@@ -1,9 +1,9 @@
 // GET /api/verses?book=哥林多後書&ch=4&v1=1&v2=10
 // 回傳 { status:"success", book, ch, verses:[{chap,sec,text}], truncated }
-// 資料來源：信望愛 FHL 和合本（unv）——一次最多取 50 節，超過請由前端分次呼叫。
+// 資料來源：信望愛 FHL 和合本（unv）——單次範圍查詢（每章 1 次 HTTP 請求）。
 const FHL = "https://bible.fhl.net/json/qb.php";
 const UA = "cmtc-daily-qt/1.0 (+https://cmtc.tw)";
-const MAX_VERSES = 50;
+const MAX_VERSES = 200;
 
 const CORS = {
   "access-control-allow-origin": "*",
@@ -77,7 +77,7 @@ const BOOKS = {
   "約翰二書": "約二",
   "約翰三書": "約三",
   "猶大書": "猶",
-  "啟示錄": "啟"
+  "啟示錄": "啟",
 };
 
 function json(payload, status = 200, extra = {}) {
@@ -85,7 +85,7 @@ function json(payload, status = 200, extra = {}) {
     status,
     headers: {
       "content-type": "application/json; charset=utf-8",
-      "cache-control": "public, max-age=86400",
+      "cache-control": status === 200 ? "public, max-age=86400" : "no-store",
       ...CORS,
       ...extra,
     },
@@ -115,31 +115,29 @@ export async function onRequestGet(context) {
   if (v2 < v1) return json({ status: "error", error: "參數錯誤：v2 小於 v1" }, 400);
 
   const end = Math.min(v2, v1 + MAX_VERSES - 1);
-  const out = [];
-  for (let sec = v1; sec <= end; sec++) {
-    const url =
-      `${FHL}?chineses=${encodeURIComponent(code)}&chap=${ch}&sec=${sec}&version=unv`;
-    let data;
-    try {
-      const r = await fetch(url, { headers: { "user-agent": UA } });
-      if (!r.ok) break;
-      data = await r.json();
-    } catch (e) {
-      break;
+  const secParam = v1 === end ? `${v1}` : `${v1}-${end}`;
+  const url = `${FHL}?chineses=${encodeURIComponent(code)}&chap=${ch}&sec=${secParam}&version=unv`;
+
+  let data;
+  try {
+    const r = await fetch(url, { headers: { "user-agent": UA } });
+    if (!r.ok) {
+      return json({ status: "error", error: `FHL 回應異常（HTTP ${r.status}）` }, 502);
     }
-    const recs = (data && data.record) || [];
-    if (!recs.length) break; // 章末，自然停止
-    for (const rec of recs) {
-      out.push({ chap: Number(rec.chap), sec: Number(rec.sec), text: rec.bible_text });
-    }
+    data = await r.json();
+  } catch (e) {
+    return json({ status: "error", error: "FHL 連線失敗，請稍後再試" }, 502);
   }
+
+  const recs = (data && data.record) || [];
+  const out = recs
+    .map((rec) => ({ chap: Number(rec.chap), sec: Number(rec.sec), text: rec.bible_text }))
+    .filter((v) => v.sec >= v1 && v.sec <= end)
+    .sort((a, b) => a.sec - b.sec);
 
   if (!out.length) {
     return json({ status: "error", error: `FHL 查無經文（${book} ${ch}:${v1}）` }, 502);
   }
-  return json(
-    { status: "success", book, ch, verses: out, truncated: end < v2 },
-    200,
-    { "cache-control": "public, max-age=86400" },
-  );
+  const hitCap = end < v2 && out[out.length - 1].sec >= end;
+  return json({ status: "success", book, ch, verses: out, truncated: hitCap }, 200);
 }

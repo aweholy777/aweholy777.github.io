@@ -1,0 +1,9 @@
+{{- $pages := slice -}}
+{{- range .Site.RegularPages -}}
+  {{- if and (not .Draft) .File (not (hasPrefix .RelPermalink "/daily-qt/otqt/")) (not (hasPrefix .RelPermalink "/daily-qt/ntqt/")) (not (eq .Section "search")) -}}
+    {{- if and (not (hasPrefix .File.LogicalName "_")) (not (in .File.Path ".ai/")) -}}
+      {{- $pages = $pages | append . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- partial "search-shard.json" (dict "pages" $pages) -}}

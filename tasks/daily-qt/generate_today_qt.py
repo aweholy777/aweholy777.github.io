@@ -93,11 +93,18 @@ def http_get(url: str, tries: int = 4, timeout: int = 30) -> bytes:
     raise RuntimeError(f"取得失敗（重試 {tries} 次）：{url}\n最後錯誤：{last}")
 
 
+TAIPEI_TZ = dt.timezone(dt.timedelta(hours=8))
+
+
+def taipei_today() -> str:
+    return dt.datetime.now(TAIPEI_TZ).strftime("%Y-%m-%d")
+
+
 def get_cgn_reference(date: str | None) -> str | None:
     """備援來源：CGN 中文《活潑的生命》YouTube 頻道。
     影片標題格式：[活潑的生命] 20261122 主題(哥林多後書 1:15~24)
     duranno.tw 維護時（頁面只剩「每日經文系統維護中」）可用。"""
-    day = date or (dt.datetime.utcnow() + dt.timedelta(hours=8)).strftime("%Y-%m-%d")
+    day = date or taipei_today()
     ymd = day.replace("-", "")
     try:
         cp = subprocess.run(
@@ -125,21 +132,24 @@ def get_cgn_reference(date: str | None) -> str | None:
 
 
 def get_daily_reference(date: str | None) -> dict:
-    # 1) 先直抓 duranno.tw 官網（最可靠，不經第三方代理）
+    today = taipei_today()
+    target_date = date or today
+    # 1) 查「今天」時先直抓 duranno.tw 官網（duranno /daily 永遠只回今天，歷史日期略過）
     #    註：duranno.tw 憑證缺 SKID，Python/OpenSSL 會拒收，改用 curl 抓
-    try:
-        cp = subprocess.run(["curl", "-sS", "-m", "40", "-A", UA, DURANNO_URL], capture_output=True)
-        if cp.returncode != 0:
-            raise RuntimeError(cp.stderr.decode("utf-8", "replace")[:200] or f"curl exit {cp.returncode}")
-        html = cp.stdout.decode("utf-8", errors="replace")
-        m = re.search(r'<div class="range">\s*([^<]+?)\s*</div>', html)
-        if m and m.group(1).strip():
-            ref = m.group(1).strip()
-            print(f"  （來源：duranno.tw 直抓）")
-            return {"status": "success", "reference": ref, "sourceUrl": DURANNO_URL, "source": "duranno-direct"}
-        print("  ⚠️ duranno.tw 直抓解析失敗（可能維護中），改用 CGN 頻道")
-    except Exception as e:  # noqa: BLE001
-        print(f"  ⚠️ duranno.tw 直抓失敗（{e}），改用 CGN 頻道")
+    if target_date == today:
+        try:
+            cp = subprocess.run(["curl", "-sS", "-m", "40", "-A", UA, DURANNO_URL], capture_output=True)
+            if cp.returncode != 0:
+                raise RuntimeError(cp.stderr.decode("utf-8", "replace")[:200] or f"curl exit {cp.returncode}")
+            html = cp.stdout.decode("utf-8", errors="replace")
+            m = re.search(r'<div class="range">\s*([^<]+?)\s*</div>', html)
+            if m and m.group(1).strip():
+                ref = m.group(1).strip()
+                print("  （來源：duranno.tw 直抓）")
+                return {"status": "success", "reference": ref, "sourceUrl": DURANNO_URL, "source": "duranno-direct"}
+            print("  ⚠️ duranno.tw 直抓解析失敗（可能維護中），改用 CGN 頻道")
+        except Exception as e:  # noqa: BLE001
+            print(f"  ⚠️ duranno.tw 直抓失敗（{e}），改用 CGN 頻道")
     # 2) 備援：CGN 中文《活潑的生命》YouTube 頻道標題（duranno 維護時最有用）
     cgn_ref = get_cgn_reference(date)
     if cgn_ref:
@@ -181,16 +191,22 @@ def fetch_verses(parsed: dict) -> list[dict]:
     for chap in range(parsed["ch1"], parsed["ch2"] + 1):
         first = parsed["v1"] if chap == parsed["ch1"] else 1
         last = parsed["v2"] if chap == parsed["ch2"] else 200
-        for sec in range(first, last + 1):
-            q = urllib.parse.urlencode({"chineses": code, "chap": chap, "sec": sec, "version": "unv"})
-            data = json.loads(http_get(f"{FHL_URL}?{q}").decode("utf-8"))
-            recs = data.get("record") or []
-            if not recs:
-                if chap == parsed["ch1"] and sec == first:
-                    raise RuntimeError(f"FHL 查無經文：{code} {chap}:{sec}")
-                continue  # 章末超出的節次自然停止
-            for r in recs:
-                out.append({"chap": int(r["chap"]), "sec": int(r["sec"]), "text": r["bible_text"]})
+        sec_param = str(first) if first == last else f"{first}-{last}"
+        q = urllib.parse.urlencode({"chineses": code, "chap": chap, "sec": sec_param, "version": "unv"})
+        data = json.loads(http_get(f"{FHL_URL}?{q}").decode("utf-8"))
+        recs = data.get("record") or []
+        if not recs:
+            if chap == parsed["ch1"]:
+                raise RuntimeError(f"FHL 查無經文：{code} {chap}:{sec_param}")
+            break
+        chap_verses = [
+            {"chap": int(r["chap"]), "sec": int(r["sec"]), "text": r["bible_text"]}
+            for r in recs
+            if first <= int(r["sec"]) <= last
+        ]
+        chap_verses.sort(key=lambda v: v["sec"])
+        out.extend(chap_verses)
+        if chap < parsed["ch2"]:
             time.sleep(0.15)
     if not out:
         raise RuntimeError("FHL 未回傳任何經文")
@@ -228,20 +244,46 @@ def load_archive_index() -> list[dict]:
     return items
 
 
-def find_archive(parsed: dict, index: list[dict]) -> dict | None:
+def _lin(pos: tuple[int, int]) -> int:
+    return pos[0] * 1000 + pos[1]
+
+
+def find_archive(parsed: dict, index: list[dict], allow_partial: bool = True) -> tuple[dict | None, str]:
     start = (parsed["ch1"], parsed["v1"])
     end = (parsed["ch2"], parsed["v2"])
     cands = [
         it for it in index
         if it["book"] == parsed["book"] and it["start"] <= start and it["end"] >= end
     ]
-    if not cands:
-        return None
-    # 優先完全相同範圍，其次涵蓋範圍最小者
-    exact = [c for c in cands if c["start"] == start and c["end"] == end]
-    if exact:
-        return exact[0]
-    return min(cands, key=lambda c: (c["end"][0] - c["start"][0], c["end"][1] - c["start"][1]))
+    if cands:
+        # 優先完全相同範圍（多篇時取最新日期），其次涵蓋範圍最小、日期最新者
+        exact = [c for c in cands if c["start"] == start and c["end"] == end]
+        if exact:
+            return max(exact, key=lambda c: c["date"]), "exact"
+        best = min(
+            cands,
+            key=lambda c: (c["end"][0] - c["start"][0], c["end"][1] - c["start"][1], ""),
+        )
+        # 同等最小範圍時取最新日期
+        min_span = (best["end"][0] - best["start"][0], best["end"][1] - best["start"][1])
+        same_span = [
+            c for c in cands
+            if (c["end"][0] - c["start"][0], c["end"][1] - c["start"][1]) == min_span
+        ]
+        return max(same_span, key=lambda c: c["date"]), "cover"
+
+    if not allow_partial:
+        return None, "none"
+
+    best_it, best_ov = None, 0
+    s_lin, e_lin = _lin(start), _lin(end)
+    for it in index:
+        if it["book"] != parsed["book"]:
+            continue
+        ov = min(_lin(it["end"]), e_lin) - max(_lin(it["start"]), s_lin) + 1
+        if ov > best_ov or (ov == best_ov and ov > 0 and best_it and it["date"] > best_it["date"]):
+            best_ov, best_it = ov, it
+    return (best_it, "partial") if best_it else (None, "none")
 
 
 def split_article(path: Path) -> dict:
@@ -257,7 +299,8 @@ def split_article(path: Path) -> dict:
 
 # ---------------------------------------------------------------- 產生頁面
 def build_page(date_str: str, ref: str, parsed: dict, verses: list[dict],
-               archive: dict | None, sections: dict[int, str], source_url: str) -> str:
+               archive: dict | None, sections: dict[int, str], source_url: str,
+               match_mode: str = "exact") -> str:
     # ref 本身已含書卷名，顯示時只留章節，避免「歷代志上 歷代志上29：10~19」
     if parsed["ch1"] == parsed["ch2"]:
         ref_short = f'{parsed["ch1"]}：{parsed["v1"]}~{parsed["v2"]}'
@@ -268,10 +311,15 @@ def build_page(date_str: str, ref: str, parsed: dict, verses: list[dict],
         verse_lines.append(f"> {v['chap']}：{v['sec']} {v['text']}  ")
     if archive:
         testament = "otqt" if "otqt" in str(archive["path"]) else "ntqt"
-        src_note = (
-            "今日進度依《活潑的生命》每日讀經，分享內容沿用 "
-            f'<a href="/daily-qt/{testament}/{archive["date"]}/">{archive["date"]} 的 QT</a>。'
-        )
+        link = f'<a href="/daily-qt/{testament}/{archive["date"]}/">{archive["date"]} 的 QT</a>'
+        if match_mode == "partial":
+            s, e = archive["start"], archive["end"]
+            orig = f"{s[0]}：{s[1]}~{e[1]}" if s[0] == e[0] else f"{s[0]}：{s[1]}~{e[0]}：{e[1]}"
+            src_note = (
+                f"今日進度依《活潑的生命》每日讀經，分享內容參考 {link}（原範圍 {orig}，與今日進度部分重疊）。"
+            )
+        else:
+            src_note = f"今日進度依《活潑的生命》每日讀經，分享內容沿用 {link}。"
     else:
         src_note = "今日進度依《活潑的生命》每日讀經；這段經文在過往 QT 典藏中尚無對應的分享文章，以下僅列經文。"
 
@@ -298,7 +346,7 @@ def build_page(date_str: str, ref: str, parsed: dict, verses: list[dict],
         "",
         "**1. 經文誦讀**",
         "",
-        sec(1),
+        sec(1, "（經文如上）"),
         "",
         "**2. 今天默想經文**",
         sec(2, "（今日經文如上）"),
@@ -319,9 +367,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--reference", help="覆寫當日進度，例如 歷代志上29：10∼19")
     ap.add_argument("--dry-run", action="store_true", help="只印出結果，不寫檔")
     ap.add_argument("--archive-date", help="強制沿用指定日期的舊文章，例如 2018-03-02（上游故障時手動指定）")
+    ap.add_argument("--no-partial", action="store_true", help="不允許部分重疊比對，只採用完全涵蓋舊文")
     args = ap.parse_args(argv)
 
-    date_str = args.date or (dt.datetime.utcnow() + dt.timedelta(hours=8)).strftime("%Y-%m-%d")
+    date_str = args.date or taipei_today()
 
     if args.reference:
         ref, source_url = args.reference, "(手動指定)"
@@ -336,22 +385,23 @@ def main(argv: list[str] | None = None) -> int:
     print(f"[2/4] 和合本經文：{len(verses)} 節（{verses[0]['chap']}:{verses[0]['sec']}–{verses[-1]['chap']}:{verses[-1]['sec']}）")
 
     index = load_archive_index()
+    match_mode = "manual"
     if args.archive_date:
         archive = next((it for it in index if it["date"] == args.archive_date), None)
         if not archive:
             print(f"⚠️ 找不到 {args.archive_date} 的舊文章，改回自動比對")
-            archive = find_archive(parsed, index)
+            archive, match_mode = find_archive(parsed, index, allow_partial=not args.no_partial)
     else:
-        archive = find_archive(parsed, index)
+        archive, match_mode = find_archive(parsed, index, allow_partial=not args.no_partial)
     if archive:
         sections = split_article(archive["path"])
-        print(f"[3/4] 對應舊文章：{archive['date']} {archive['title']}"
+        print(f"[3/4] 對應舊文章（{match_mode}）：{archive['date']} {archive['title']}"
               f"（段落 {sorted(sections)}）")
     else:
         sections = {}
         print("[3/4] 找不到對應的舊文章，只輸出經文")
 
-    page = build_page(date_str, ref, parsed, verses, archive, sections, source_url)
+    page = build_page(date_str, ref, parsed, verses, archive, sections, source_url, match_mode=match_mode)
 
     if args.dry_run:
         print("[4/4] dry-run，未寫檔。內容預覽：\n" + "-" * 60)
@@ -362,8 +412,9 @@ def main(argv: list[str] | None = None) -> int:
     LAST_RUN.write_text(json.dumps({
         "date": date_str, "reference": ref,
         "archive": archive["date"] if archive else None,
+        "match_mode": match_mode,
         "verses": len(verses),
-        "generated_at": dt.datetime.utcnow().isoformat() + "Z",
+        "generated_at": dt.datetime.now(dt.timezone.utc).isoformat().replace("+00:00", "Z"),
     }, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[4/4] 已寫入 {OUT_FILE.relative_to(REPO)}")
     return 0

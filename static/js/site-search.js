@@ -6,7 +6,11 @@
   const sectionSelect = root.querySelector("[data-search-section]");
   const status = root.querySelector("[data-search-status]");
   const results = root.querySelector("[data-search-results]");
-  let index = [];
+
+  let shards = [];
+  const loadedByUrl = new Map();
+  let loadingCount = 0;
+  let loadFailed = false;
 
   const escapeHtml = (value) =>
     String(value || "").replace(/[&<>"']/g, (char) => ({
@@ -27,6 +31,48 @@
     normalize(query)
       .split(" ")
       .filter(Boolean);
+
+  function allLoadedItems() {
+    const out = [];
+    for (const items of loadedByUrl.values()) {
+      if (Array.isArray(items)) out.push(...items);
+    }
+    return out;
+  }
+
+  function shardsForSection(section) {
+    if (!section) return shards;
+    if (section === "舊約QT" || section === "新約QT") {
+      return shards.filter((s) => s.section === section);
+    }
+    return shards.filter((s) => !s.section);
+  }
+
+  function ensureShardsLoaded(section) {
+    const targets = shardsForSection(section).filter((s) => !loadedByUrl.has(s.url));
+    if (!targets.length) return;
+    loadingCount += targets.length;
+    render();
+    targets.forEach((shard) => {
+      loadedByUrl.set(shard.url, null); // 標記載入中，避免重複請求
+      fetch(shard.url, { credentials: "same-origin" })
+        .then((r) => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r.json();
+        })
+        .then((items) => {
+          loadedByUrl.set(shard.url, Array.isArray(items) ? items : []);
+        })
+        .catch(() => {
+          loadedByUrl.delete(shard.url);
+          loadFailed = true;
+        })
+        .finally(() => {
+          loadingCount = Math.max(0, loadingCount - 1);
+          render();
+        });
+    });
+  }
 
   function makeSnippet(content, terms) {
     const text = String(content || "").replace(/\s+/g, " ").trim();
@@ -66,9 +112,17 @@
   function render() {
     const terms = termsFrom(input.value);
     const section = sectionSelect.value;
+    const index = allLoadedItems();
+    const loadingSuffix = loadingCount > 0 ? "（其餘分片載入中…）" : "";
 
     if (!terms.length) {
-      status.textContent = `已載入 ${index.length} 篇文章，請輸入關鍵字搜尋。`;
+      if (loadingCount > 0 && !index.length) {
+        status.textContent = "正在載入搜尋索引...";
+      } else if (loadFailed && !index.length) {
+        status.textContent = "搜尋索引載入失敗，請稍後再試。";
+      } else {
+        status.textContent = `已載入 ${index.length} 篇文章，請輸入關鍵字搜尋。${loadingSuffix}`;
+      }
       results.innerHTML = "";
       return;
     }
@@ -81,8 +135,8 @@
       .slice(0, 80);
 
     status.textContent = matches.length
-      ? `找到 ${matches.length} 筆結果${matches.length === 80 ? "，只顯示前 80 筆" : ""}。`
-      : "找不到符合的文章。";
+      ? `找到 ${matches.length} 筆結果${matches.length === 80 ? "，只顯示前 80 筆" : ""}。${loadingSuffix}`
+      : (loadingCount > 0 ? "搜尋索引載入中…" : "找不到符合的文章。");
 
     results.innerHTML = matches.map(({ item }) => `
       <article class="site-search__result">
@@ -106,9 +160,16 @@
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return response.json();
     })
-    .then((items) => {
-      index = Array.isArray(items) ? items : [];
-      render();
+    .then((data) => {
+      if (Array.isArray(data)) {
+        loadedByUrl.set("/index.json", data);
+        render();
+      } else if (data && Array.isArray(data.shards)) {
+        shards = data.shards;
+        ensureShardsLoaded(sectionSelect.value);
+      } else {
+        throw new Error("格式錯誤");
+      }
       input.focus();
     })
     .catch(() => {
@@ -116,5 +177,8 @@
     });
 
   input.addEventListener("input", debounce(render, 120));
-  sectionSelect.addEventListener("change", render);
+  sectionSelect.addEventListener("change", () => {
+    ensureShardsLoaded(sectionSelect.value);
+    render();
+  });
 }());

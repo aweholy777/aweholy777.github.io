@@ -111,6 +111,7 @@ a{color:var(--accent-2)}
 
 <script>
 const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const msgEl = $("#msg");
 function say(text, kind = "ok") { msgEl.textContent = text; msgEl.className = "msg show " + kind; }
 function clearMsg() { msgEl.className = "msg"; msgEl.textContent = ""; }
@@ -209,11 +210,11 @@ async function generate() {
     const verseLines = verses.map(v => `> ${v.chap}：${v.sec} ${v.text}  `);
 
     // meta
-    let metaHtml = `經文 <b>${shortRef}</b>　共 <b>${verses.length}</b> 節`;
+    let metaHtml = `經文 <b>${esc(shortRef)}</b>　共 <b>${verses.length}</b> 節`;
     if (archive) {
       const it = archive.item;
       const modeText = archive.mode === "exact" ? "完全相同" : archive.mode === "cover" ? "涵蓋今日範圍" : "部分重疊（原文範圍不同）";
-      metaHtml += `<br>對應舊文章：<a href="${it.url}" target="_blank" rel="noopener">${it.title}</a>`
+      metaHtml += `<br>對應舊文章：<a href="${esc(it.url)}" target="_blank" rel="noopener">${esc(it.title)}</a>`
         + `<span class="tag">${modeText}</span>`;
       metaHtml += hasSharing
         ? `<br><span class="tag" style="background:#ecfdf3;color:#17803d">已帶入分享與回應</span>`
@@ -229,7 +230,7 @@ async function generate() {
 
     // verses
     $("#verses").innerHTML = verses.map(v =>
-      `<div><span class="vn">${v.chap}：${v.sec}</span>${v.text}</div>`).join("");
+      `<div><span class="vn">${v.chap}：${v.sec}</span>${esc(v.text)}</div>`).join("");
 
     // markdown
     const fm = [
@@ -314,7 +315,7 @@ async function checkSite() {
     if (d === today) $("#siteStatus").innerHTML = `線上 <b>/today-qt/</b>：<b>${d}</b>（今天的內容已更新 ✅）`;
     else $("#siteStatus").innerHTML = `線上 <b>/today-qt/</b>：<b>${d}</b>，落後今天（${today}）⚠️`;
   } catch (e) {
-    $("#siteStatus").textContent = "无法檢查線上頁面。";
+    $("#siteStatus").textContent = "無法檢查線上頁面。";
   }
 }
 

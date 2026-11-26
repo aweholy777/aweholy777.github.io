@@ -1,0 +1,21 @@
+{{- $pages := .pages -}}
+{{- $items := slice -}}
+{{- range $pages -}}
+  {{- $section := .Section -}}
+  {{- if hasPrefix .RelPermalink "/daily-qt/otqt/" -}}
+    {{- $section = "舊約QT" -}}
+  {{- else if hasPrefix .RelPermalink "/daily-qt/ntqt/" -}}
+    {{- $section = "新約QT" -}}
+  {{- else if eq .Section "daily-qt" -}}
+    {{- $section = "每日QT" -}}
+  {{- end -}}
+  {{- $plain := .Plain | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace -}}
+  {{- $items = $items | append (dict
+    "title" .Title
+    "url" .RelPermalink
+    "section" $section
+    "date" (.Date.Format "2006-01-02")
+    "content" $plain
+  ) -}}
+{{- end -}}
+{{- $items | jsonify -}}

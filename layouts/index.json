@@ -1,25 +1,9 @@
-{{- $items := slice -}}
-{{- range .Site.RegularPages -}}
-  {{- if and (not .Draft) .File -}}
-    {{- $filePath := .File.Path -}}
-    {{- $logicalName := .File.LogicalName -}}
-    {{- if and (not (hasPrefix $logicalName "_")) (not (in $filePath ".ai/")) (not (eq .Section "search")) -}}
-      {{- $section := .Section -}}
-      {{- if hasPrefix .RelPermalink "/daily-qt/otqt/" -}}
-        {{- $section = "舊約QT" -}}
-      {{- else if hasPrefix .RelPermalink "/daily-qt/ntqt/" -}}
-        {{- $section = "新約QT" -}}
-      {{- else if eq .Section "daily-qt" -}}
-        {{- $section = "每日QT" -}}
-      {{- end -}}
-      {{- $items = $items | append (dict
-        "title" .Title
-        "url" .RelPermalink
-        "section" $section
-        "date" (.Date.Format "2006-01-02")
-        "content" (.Plain | htmlUnescape)
-      ) -}}
-    {{- end -}}
-  {{- end -}}
-{{- end -}}
-{{- $items | jsonify -}}
+{{- dict
+  "version" 2
+  "shards" (slice
+    (dict "url" ("index-ot1.json" | relURL) "section" "舊約QT")
+    (dict "url" ("index-ot2.json" | relURL) "section" "舊約QT")
+    (dict "url" ("index-nt.json" | relURL) "section" "新約QT")
+    (dict "url" ("index-other.json" | relURL) "section" "")
+  )
+| jsonify -}}

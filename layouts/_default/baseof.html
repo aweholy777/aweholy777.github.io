@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ block "title" . }}{{ if not .IsHome }}{{ .Title }} - {{ end }}{{ .Site.Title }}{{ end }}</title>
     <script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
-    <meta name="description" content="{{ if .IsHome }}{{ .Site.Params.description }}{{ else }}{{ .Params.Description }}{{ end }}">
+    {{- $metaDesc := .Site.Params.description -}}
+    {{- if not .IsHome -}}
+        {{- $metaDesc = .Params.Description | default (.Summary | plainify | replaceRE "\\s+" " " | strings.TrimSpace | truncate 160) | default .Site.Params.description -}}
+    {{- end -}}
+    <meta name="description" content="{{ $metaDesc }}">
     {{- if .Site.Params.opengraph }}
         {{ template "_internal/opengraph.html" . }}
     {{- end }}
@@ -33,9 +37,16 @@
     <link rel="stylesheet" href="{{ . | relURL }}">
     {{- end }}
 
-    {{/* Font Awesome：僅每日QT 索引頁載入（列表書本圖標用） */}}
-    {{ if and (hasPrefix .RelPermalink "/daily-qt") (not .IsPage) -}}
+    {{/* 按頁條件載入專屬 CSS，避免全站每頁白抓無用樣式 */}}
+    {{- if eq .Section "qt-video" }}
+    <link rel="stylesheet" href="{{ "css/qt-library.css" | relURL }}">
+    {{- end }}
+    {{- if and (hasPrefix .RelPermalink "/daily-qt") (not .IsPage) }}
+    <link rel="stylesheet" href="{{ "css/qt-index.css" | relURL }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {{- end }}
+    {{- if and .IsPage (or (hasPrefix .RelPermalink "/daily-qt/otqt/") (hasPrefix .RelPermalink "/daily-qt/ntqt/")) }}
+    <link rel="stylesheet" href="{{ "css/qt-article.css" | relURL }}">
     {{- end }}
 
     {{/* Add RSS link if available */}}

@@ -58,11 +58,15 @@ async function fromCgn(date) {
 
 export async function onRequestGet(context) {
   const url = new URL(context.request.url);
-  const date = url.searchParams.get("date") || taipeiToday();
-  try {
-    const ref = await fromDuranno();
-    if (ref) return json({ status: "success", reference: ref, source: "duranno", date });
-  } catch (e) { /* 維護中或憑證問題，往下備援 */ }
+  const today = taipeiToday();
+  const date = url.searchParams.get("date") || today;
+  // duranno /daily 永遠只回傳「今天」，查詢非今日的歷史日期時略過它、直接走 CGN RSS
+  if (date === today) {
+    try {
+      const ref = await fromDuranno();
+      if (ref) return json({ status: "success", reference: ref, source: "duranno", date });
+    } catch (e) { /* 維護中或憑證問題，往下備援 */ }
+  }
   try {
     const ref = await fromCgn(date);
     if (ref) return json({ status: "success", reference: ref, source: "cgn-youtube", date });

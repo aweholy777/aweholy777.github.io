@@ -1,0 +1,10 @@
+{{- $all := slice -}}
+{{- range .Site.RegularPages -}}
+  {{- if and (not .Draft) .File (hasPrefix .RelPermalink "/daily-qt/otqt/") -}}
+    {{- if and (not (hasPrefix .File.LogicalName "_")) (not (in .File.Path ".ai/")) -}}
+      {{- $all = $all | append . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $half := div (len $all) 2 -}}
+{{- partial "search-shard.json" (dict "pages" (first $half $all)) -}}

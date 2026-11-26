@@ -1,7 +1,8 @@
 {{ define "main" }}
 {{ $lib := .Site.Data.qtvideos }}
 {{ $totalVideos := 0 }}{{ range $lib.testaments }}{{ $totalVideos = add $totalVideos .video_count }}{{ end }}
-<main class="main qtlib" role="main">
+{{ $jsonRes := resources.FromString "data/qtvideos.json" ($lib | jsonify) }}
+<main class="main qtlib" role="main" data-qtlib-src="{{ $jsonRes.RelPermalink }}">
   <header class="main__header qtlib__header">
     <h1 class="main__title">{{ .Title }}</h1>
     {{ with .Content }}<div class="content main__content clearfix">{{ . }}</div>{{ end }}
@@ -35,29 +36,11 @@
       </div>
 
       <div class="qtlib__grid" data-qtlib-grid>
-        {{ range $t := $lib.testaments }}
-        {{ range $b := $t.books }}
-        {{ if $b.videos }}
-        <section class="qtlib__section" data-testament="{{ $t.id }}" data-book="{{ $b.name }}">
-          <h3 class="qtlib__section-hd">{{ $t.name }} · {{ $b.name }}<small>{{ len $b.videos }} 支</small></h3>
-          <div class="qtlib__cards">
-            {{ range $v := $b.videos }}
-            <article class="qtlib__card" data-testament="{{ $t.id }}" data-book="{{ $b.name }}" data-text="{{ $v.passage }} {{ $v.date }}">
-              <button type="button" class="qtlib__thumb" data-yt="{{ $v.yt }}" data-title="{{ $v.passage }}" aria-label="播放 {{ $v.passage }}">
-                <img loading="lazy" width="320" height="180" src="https://i.ytimg.com/vi/{{ $v.yt }}/mqdefault.jpg" alt="{{ $v.passage }}">
-                <span class="qtlib__play" aria-hidden="true">▶</span>
-              </button>
-              <div class="qtlib__info">
-                <span class="qtlib__cardtitle">{{ $v.passage }}</span>
-                <span class="qtlib__carddate">{{ $v.date }}</span>
-              </div>
-            </article>
-            {{ end }}
-          </div>
-        </section>
-        {{ end }}
-        {{ end }}
-        {{ end }}
+        <div class="qtlib__empty">載入影片目錄中…</div>
+      </div>
+
+      <div class="qtlib__more-wrap" data-qtlib-more-wrap hidden>
+        <button type="button" class="qtlib__more" data-qtlib-more>載入更多影片</button>
       </div>
 
       <div class="qtlib__empty" data-qtlib-empty hidden>沒有符合的影片</div>
