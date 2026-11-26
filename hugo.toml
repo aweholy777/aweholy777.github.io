@@ -76,7 +76,7 @@ theme = "mainroad"
     parent = "daily-qt"
   [[menu.main]]
     name = "生成當日QT"
-    url = "https://index-html-clean-copy.vercel.app/"
+    url = "/qt-generator/"
     params = { target = "_blank" }   # 開新分頁
     weight = 24
     parent = "daily-qt"

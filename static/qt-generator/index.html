@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QT 產生器 - 城市宣培中心</title>
+<style>
+:root{--bg:#faf7f2;--card:#fff;--line:#eadfd0;--text:#232323;--muted:#7a7266;--accent:#f87148;--accent-2:#c2410c;--ok:#17803d;--warn:#b45309;--err:#b91c1c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Microsoft JhengHei","Noto Sans TC",system-ui,-apple-system,sans-serif;line-height:1.7}
+.wrap{max-width:900px;margin:0 auto;padding:24px 18px 60px}
+header.top{text-align:center;padding:18px 0 10px}
+h1{font-size:1.7rem;margin:0 0 6px;letter-spacing:.06em}
+h1::after{content:"";display:block;width:52px;height:3px;background:var(--accent);border-radius:2px;margin:12px auto 0}
+.sub{color:var(--muted);font-size:.95rem;margin:14px 0 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 20px;margin-top:20px;box-shadow:0 3px 14px rgba(0,0,0,.05)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+label.f{font-size:.88rem;color:var(--muted);min-width:70px}
+input[type=date],input[type=text]{font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:inherit;min-width:200px}
+input[type=text]{flex:1}
+button{font:inherit;padding:9px 16px;border-radius:10px;border:1px solid transparent;background:var(--accent);color:#fff;font-weight:600;cursor:pointer}
+button.ghost{background:#fff;color:var(--accent-2);border-color:var(--line)}
+button:disabled{opacity:.55;cursor:not-allowed}
+button:hover:not(:disabled){filter:brightness(.96)}
+.msg{margin-top:12px;font-size:.92rem;padding:10px 12px;border-radius:10px;display:none;white-space:pre-wrap}
+.msg.show{display:block}
+.msg.ok{background:#ecfdf3;color:var(--ok);border:1px solid #bbf7d0}
+.msg.warn{background:#fffbeb;color:var(--warn);border:1px solid #fde68a}
+.msg.err{background:#fef2f2;color:var(--err);border:1px solid #fecaca}
+.meta{font-size:.9rem;color:var(--muted);margin-top:10px}
+.meta b{color:var(--text)}
+.verses{max-height:420px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:14px;background:#fffdfa}
+.verses div{margin:0 0 .45rem;font-size:.98rem}
+.verses .vn{color:var(--accent-2);font-weight:700;margin-right:.4rem}
+pre.md{white-space:pre-wrap;word-break:break-word;background:#1f2430;color:#e8e8e8;padding:16px;border-radius:12px;font-size:.86rem;line-height:1.65;max-height:420px;overflow:auto;margin-top:14px;font-family:Consolas,Menlo,monospace}
+.tag{display:inline-block;font-size:.78rem;padding:2px 8px;border-radius:999px;background:#fdf1ec;color:var(--accent-2);margin-left:6px;vertical-align:middle}
+.hint{font-size:.85rem;color:var(--muted);margin-top:8px}
+a{color:var(--accent-2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>QT 產生器</h1>
+    <p class="sub">自動取得《活潑的生命》今日進度 → 抓和合本經文 → 比對典藏文章</p>
+  </header>
+
+  <div class="card">
+    <div class="row" style="margin-bottom:12px">
+      <label class="f" for="date">日期</label>
+      <input id="date" type="date">
+      <button id="auto" class="ghost">自動載入進度</button>
+    </div>
+    <div class="row">
+      <label class="f" for="ref">經文範圍</label>
+      <input id="ref" type="text" placeholder="例：哥林多後書4：1∼10">
+      <button id="go">產生</button>
+    </div>
+    <div id="msg" class="msg"></div>
+    <div class="hint">進度來源：duranno.tw 直抓 → CGN《活潑的生命》YouTube 備援。經文：信望愛 FHL 和合本。</div>
+  </div>
+
+  <div class="card" id="result" style="display:none">
+    <div class="meta" id="meta"></div>
+    <div class="verses" id="verses"></div>
+    <div class="row" style="margin-top:14px">
+      <button id="copy">複製 Markdown</button>
+      <button id="copyText" class="ghost">複製純文字</button>
+    </div>
+    <pre class="md" id="md"></pre>
+  </div>
+
+  <div class="card" id="statusCard">
+    <div class="meta" id="siteStatus">檢查線上 /today-qt/ …</div>
+  </div>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const msgEl = $("#msg");
+function say(text, kind = "ok") { msgEl.textContent = text; msgEl.className = "msg show " + kind; }
+function clearMsg() { msgEl.className = "msg"; msgEl.textContent = ""; }
+function taipeiToday() { return new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10); }
+
+function parseRef(raw) {
+  const s = (raw || "").replace(/\s+/g, "");
+  const m = s.match(/^([\u4e00-\u9fff]+?)(\d+)[：:](\d+)[∼~\-－—](?:(\d+)[：:])?(\d+)$/);
+  if (!m) return null;
+  const ch1 = +m[2], v1 = +m[3];
+  const ch2 = m[4] ? +m[4] : ch1, v2 = +m[5];
+  if (!ch1 || !v1 || !v2 || v2 < v1 && ch2 === ch1) return null;
+  return { book: m[1], ch1, v1, ch2, v2 };
+}
+
+const lin = ([ch, v]) => ch * 1000 + v;
+
+async function loadArchiveIndex() {
+  if (loadArchiveIndex.cache) return loadArchiveIndex.cache;
+  const r = await fetch("/data/archive-index.json", { cache: "force-cache" });
+  if (!r.ok) throw new Error("典藏索引讀取失敗");
+  loadArchiveIndex.cache = await r.json();
+  return loadArchiveIndex.cache;
+}
+
+function matchArchive(index, p) {
+  const s = [p.ch1, p.v1], e = [p.ch2, p.v2];
+  const cands = index.filter(it => it.book === p.book && lin(it.start) <= lin(s) && lin(it.end) >= lin(e));
+  if (cands.length) {
+    const exact = cands.find(it => lin(it.start) === lin(s) && lin(it.end) === lin(e));
+    if (exact) return { item: exact, mode: "exact" };
+    cands.sort((a, b) => (lin(a.end) - lin(a.start)) - (lin(b.end) - lin(b.start)));
+    return { item: cands[0], mode: "cover" };
+  }
+  let best = null, bestOv = 0;
+  for (const it of index) {
+    if (it.book !== p.book) continue;
+    const from = Math.max(lin(it.start), lin(s));
+    const to = Math.min(lin(it.end), lin(e));
+    const ov = Math.max(0, to - from + 1);
+    if (ov > bestOv) { bestOv = ov; best = it; }
+  }
+  return best ? { item: best, mode: "partial", overlap: bestOv } : null;
+}
+
+async function fetchVerses(p) {
+  const out = [];
+  for (let ch = p.ch1; ch <= p.ch2; ch++) {
+    const v1 = ch === p.ch1 ? p.v1 : 1;
+    const v2 = ch === p.ch2 ? p.v2 : 200;
+    let start = v1;
+    while (start <= v2) {
+      const url = `/api/verses?book=${encodeURIComponent(p.book)}&ch=${ch}&v1=${start}&v2=${v2}`;
+      const r = await fetch(url);
+      const d = await r.json();
+      if (d.status !== "success") throw new Error(d.error || "經文取得失敗");
+      out.push(...d.verses);
+      if (!d.truncated) break;
+      start = d.verses[d.verses.length - 1].sec + 1;
+    }
+  }
+  return out;
+}
+
+let LAST = null;
+
+async function generate() {
+  clearMsg();
+  const date = $("#date").value || taipeiToday();
+  const p = parseRef($("#ref").value);
+  if (!p) { say("範圍格式不對。範例：哥林多後書4：1∼10", "err"); return; }
+
+  $("#go").disabled = true;
+  say("抓取經文中…", "warn");
+  try {
+    const verses = await fetchVerses(p);
+    let archive = null;
+    try { archive = matchArchive(await loadArchiveIndex(), p); } catch (e) { /* 索引失敗不擋 */ }
+
+    const shortRef = `${p.book} ${p.ch1}：${p.v1}~${p.ch2 === p.ch1 ? "" : p.ch2 + "："}${p.v2}`;
+    const verseLines = verses.map(v => `> ${v.chap}：${v.sec} ${v.text}  `);
+
+    // meta
+    let metaHtml = `經文 <b>${shortRef}</b>　共 <b>${verses.length}</b> 節`;
+    if (archive) {
+      const it = archive.item;
+      const modeText = archive.mode === "exact" ? "完全相同" : archive.mode === "cover" ? "涵蓋今日範圍" : "部分重疊（原文範圍不同）";
+      metaHtml += `<br>對應舊文章：<a href="${it.url}" target="_blank" rel="noopener">${it.title}</a>`
+        + `<span class="tag">${modeText}</span>`;
+      if (archive.mode === "partial") {
+        metaHtml += `<br><span style="color:#b45309">注意：該文原範圍 ${it.start[0]}：${it.start[1]}~${it.end[0]}：${it.end[1]}，`
+          + `未完全涵蓋今日進度，分享內容可能超出或不足。</span>`;
+      }
+    } else {
+      metaHtml += `<br><span style="color:#b45309">找不到對應的舊文章（分享內容需自行補）。</span>`;
+    }
+    $("#meta").innerHTML = metaHtml;
+
+    // verses
+    $("#verses").innerHTML = verses.map(v =>
+      `<div><span class="vn">${v.chap}：${v.sec}</span>${v.text}</div>`).join("");
+
+    // markdown
+    const fm = [
+      "---",
+      `title: "當日QT ${date} ${shortRef}"`,
+      `date: ${date}T06:00:00+08:00`,
+      "draft: false",
+      "type: today-qt",
+      `reference: "${shortRef}"`,
+      `archive_date: "${archive ? archive.item.date : ""}"`,
+      `source_url: "(qt-generator)"`,
+      "---",
+      "",
+      "![](/images/qt.jpg)",
+      "",
+      `> ${shortRef}  `,
+      ...verseLines,
+      "",
+    ].join("\n");
+    const text = verses.map(v => `${v.chap}：${v.sec} ${v.text}`).join("\n");
+    LAST = { md: fm, text };
+
+    $("#md").textContent = fm;
+    $("#result").style.display = "";
+    say("完成。可複製 Markdown 貼到當日QT 內容。", "ok");
+  } catch (e) {
+    say("錯誤：" + (e && e.message ? e.message : e), "err");
+  } finally {
+    $("#go").disabled = false;
+  }
+}
+
+async function autoLoad() {
+  clearMsg();
+  const date = $("#date").value || taipeiToday();
+  $("#auto").disabled = true;
+  say("讀取今日進度…", "warn");
+  try {
+    const r = await fetch(`/api/daily-reference?date=${date}`);
+    const d = await r.json();
+    if (d.status !== "success") throw new Error(d.error || "取得失敗");
+    $("#ref").value = d.reference;
+    const src = d.source === "duranno" ? "duranno.tw 官網" : "CGN《活潑的生命》YouTube（備援）";
+    say(`已載入 ${d.date} 的進度：${d.reference}｜來源：${src}`, d.source === "duranno" ? "ok" : "warn");
+  } catch (e) {
+    say("自動取得失敗：" + (e && e.message ? e.message : e) + "\n請直接在上方手動輸入經文範圍再按「產生」。", "err");
+  } finally {
+    $("#auto").disabled = false;
+  }
+}
+
+async function copy(text, label) {
+  try {
+    await navigator.clipboard.writeText(text);
+    say(`已複製${label}。`, "ok");
+  } catch (e) {
+    say("複製失敗，請手動選取下方內容。", "err");
+  }
+}
+
+async function checkSite() {
+  try {
+    const r = await fetch("/today-qt/?cb=" + Date.now(), { cache: "no-store" });
+    const html = await r.text();
+    const m = html.match(/<title>[^<]*?(\d{4}-\d{2}-\d{2})/);
+    const today = taipeiToday();
+    if (!m) { $("#siteStatus").textContent = "線上 /today-qt/ 讀不到日期。"; return; }
+    const d = m[1];
+    if (d === today) $("#siteStatus").innerHTML = `線上 <b>/today-qt/</b>：<b>${d}</b>（今天的內容已更新 ✅）`;
+    else $("#siteStatus").innerHTML = `線上 <b>/today-qt/</b>：<b>${d}</b>，落後今天（${today}）⚠️`;
+  } catch (e) {
+    $("#siteStatus").textContent = "无法檢查線上頁面。";
+  }
+}
+
+$("#date").value = taipeiToday();
+$("#auto").addEventListener("click", autoLoad);
+$("#go").addEventListener("click", generate);
+$("#copy").addEventListener("click", () => LAST && copy(LAST.md, " Markdown"));
+$("#copyText").addEventListener("click", () => LAST && copy(LAST.text, "純文字"));
+$("#ref").addEventListener("keydown", (e) => { if (e.key === "Enter") generate(); });
+checkSite();
+</script>
+</body>
+</html>

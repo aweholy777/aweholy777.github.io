@@ -52,3 +52,5 @@ video-pipeline/*_log.txt
 !tasks/daily-qt/*.py
 # 當日QT 執行紀錄（每次執行都會變，只留本機）
 tasks/daily-qt/last-run.json
+
+.wrangler/
