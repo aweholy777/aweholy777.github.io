@@ -1,8 +1,10 @@
 {{ define "main" }}
 {{ $lib := .Site.Data.qtvideos }}
 {{ $totalVideos := 0 }}{{ range $lib.testaments }}{{ $totalVideos = add $totalVideos .video_count }}{{ end }}
-{{ $jsonRes := resources.FromString "data/qtvideos.json" ($lib | jsonify) }}
-<main class="main qtlib" role="main" data-qtlib-src="{{ $jsonRes.RelPermalink }}">
+{{ $jsonStr := $lib | jsonify }}
+{{ $jsonRes := resources.FromString "data/qtvideos.json" $jsonStr }}
+{{ $jsonVer := printf "%.8s" ($jsonStr | md5) }}
+<main class="main qtlib" role="main" data-qtlib-src="{{ $jsonRes.RelPermalink }}?v={{ $jsonVer }}">
   <header class="main__header qtlib__header">
     <h1 class="main__title">{{ .Title }}</h1>
     {{ with .Content }}<div class="content main__content clearfix">{{ . }}</div>{{ end }}
@@ -57,7 +59,8 @@
   </div>
 </div>
 
-<script defer src="{{ "js/qt-library.js" | relURL }}"></script>
+{{ $jsVer := printf "%.8s" (readFile "static/js/qt-library.js" | md5) }}
+<script defer src="{{ "js/qt-library.js" | relURL }}?v={{ $jsVer }}"></script>
 {{ end }}
 
 {{ define "sidebar" }}{{ end }}

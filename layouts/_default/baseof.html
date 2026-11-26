@@ -32,21 +32,21 @@
     {{ $style := resources.Get "css/style.css" | resources.ExecuteAsTemplate "css/style.css" . -}}
     <link rel="stylesheet" href="{{ $style.RelPermalink }}">
 
-    {{/* Load custom CSS files specified in config */}}
+    {{/* Load custom CSS files specified in config (帶內容雜湊破除 4 小時靜態快取) */}}
     {{ range .Site.Params.customCSS -}}
-    <link rel="stylesheet" href="{{ . | relURL }}">
+    <link rel="stylesheet" href="{{ . | relURL }}?v={{ printf "%.8s" (readFile (printf "static/%s" .) | md5) }}">
     {{- end }}
 
     {{/* 按頁條件載入專屬 CSS，避免全站每頁白抓無用樣式 */}}
     {{- if eq .Section "qt-video" }}
-    <link rel="stylesheet" href="{{ "css/qt-library.css" | relURL }}">
+    <link rel="stylesheet" href="{{ "css/qt-library.css" | relURL }}?v={{ printf "%.8s" (readFile "static/css/qt-library.css" | md5) }}">
     {{- end }}
     {{- if and (hasPrefix .RelPermalink "/daily-qt") (not .IsPage) }}
-    <link rel="stylesheet" href="{{ "css/qt-index.css" | relURL }}">
+    <link rel="stylesheet" href="{{ "css/qt-index.css" | relURL }}?v={{ printf "%.8s" (readFile "static/css/qt-index.css" | md5) }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     {{- end }}
     {{- if and .IsPage (or (hasPrefix .RelPermalink "/daily-qt/otqt/") (hasPrefix .RelPermalink "/daily-qt/ntqt/")) }}
-    <link rel="stylesheet" href="{{ "css/qt-article.css" | relURL }}">
+    <link rel="stylesheet" href="{{ "css/qt-article.css" | relURL }}?v={{ printf "%.8s" (readFile "static/css/qt-article.css" | md5) }}">
     {{- end }}
 
     {{/* Add RSS link if available */}}

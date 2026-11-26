@@ -23,5 +23,6 @@
     </div>
   </div>
 </main>
-<script defer src="{{ "js/site-search.js" | relURL }}"></script>
+{{ $searchJsVer := printf "%.8s" (readFile "static/js/site-search.js" | md5) }}
+<script defer src="{{ "js/site-search.js" | relURL }}?v={{ $searchJsVer }}"></script>
 {{ end }}
