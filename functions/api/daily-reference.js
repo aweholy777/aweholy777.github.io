@@ -46,12 +46,13 @@ async function fromCgn(date) {
   for (const m of xml.matchAll(/<title>([^<]*)<\/title>/g)) {
     const t = m[1];
     if (!t.includes("活潑的生命") || !t.includes(ymd)) continue;
-    const mm = t.match(/[（(]\s*([^（）()]+?)\s*(\d+)\s*[：:]\s*(\d+)\s*[~∼\-–]\s*(?:(\d+)\s*[：:])?\s*(\d+)\s*[）)]/);
+    const mm = t.match(/[（(]\s*([^（）()]+?)\s*(\d+)\s*[：:]\s*(\d+)\s*[~∼\-–－—～]\s*(?:(\d+)\s*[：:])?\s*(\d+)\s*[）)]/);
     if (!mm) continue;
     const book = mm[1].trim();
-    return mm[4]
+    const reference = mm[4]
       ? `${book}${mm[2]}：${mm[3]}∼${mm[4]}：${mm[5]}`
       : `${book}${mm[2]}：${mm[3]}∼${mm[5]}`;
+    return { reference, videoTitle: t.replace(/&amp;/g, "&").replace(/&#39;/g, "'").replace(/&quot;/g, '"') };
   }
   return null;
 }
@@ -68,11 +69,19 @@ export async function onRequestGet(context) {
     } catch (e) { /* 維護中或憑證問題，往下備援 */ }
   }
   try {
-    const ref = await fromCgn(date);
-    if (ref) return json({ status: "success", reference: ref, source: "cgn-youtube", date });
+    const hit = await fromCgn(date);
+    if (hit) {
+      return json({
+        status: "success",
+        reference: hit.reference,
+        videoTitle: hit.videoTitle,
+        source: "cgn-youtube",
+        date,
+      });
+    }
   } catch (e) { /* 繼續 */ }
-  return json(
-    { status: "error", error: "無法自動取得進度（duranno 與 CGN 都失敗），請手動輸入經文範圍。", date },
-    502,
-  );
+  const hint = date === today
+    ? "無法自動取得今日進度（duranno 與 CGN 都尚未提供或失敗），請手動輸入經文範圍。"
+    : `${date} 不在 CGN YouTube 最新 15 天清單內，請手動輸入經文範圍。`;
+  return json({ status: "error", error: hint, date }, 502);
 }

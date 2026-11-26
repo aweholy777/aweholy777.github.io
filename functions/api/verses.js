@@ -80,6 +80,17 @@ const BOOKS = {
   "啟示錄": "啟",
 };
 
+// 支援簡稱與古字別名（如 林後 / 詩 / 箴言書 / 約翰壹書）
+const ALIASES = {
+  "箴言書": "箴",
+  "約翰壹書": "約一",
+  "約翰貳書": "約二",
+  "約翰參書": "約三",
+};
+for (const code of Object.values(BOOKS)) {
+  ALIASES[code] = code;
+}
+
 function json(payload, status = 200, extra = {}) {
   return new Response(JSON.stringify(payload), {
     status,
@@ -104,7 +115,7 @@ function pick(params, name) {
 export async function onRequestGet(context) {
   const params = new URL(context.request.url).searchParams;
   const book = (params.get("book") || "").trim();
-  const code = BOOKS[book];
+  const code = BOOKS[book] || ALIASES[book];
   if (!code) {
     return json({ status: "error", error: `書卷對照表找不到：${book || "(空)"}` }, 400);
   }

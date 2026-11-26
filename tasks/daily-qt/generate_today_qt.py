@@ -67,15 +67,25 @@ BOOKS = [
     ("猶", "猶大書"), ("啟", "啟示錄"),
 ]
 NAME2CODE = {name: code for code, name in BOOKS}
+BOOK_ALIASES = {
+    "詩": "詩篇",
+    "箴言書": "箴言",
+    "約翰壹書": "約翰一書",
+    "約翰貳書": "約翰二書",
+    "約翰參書": "約翰三書",
+}
+for _code, _name in BOOKS:
+    BOOK_ALIASES.setdefault(_code, _name)
 
 REF_RE = re.compile(
     r"^(?P<book>[\u4e00-\u9fff]+?)\s*(?P<ch1>\d+)\s*[：:]\s*(?P<v1>\d+)"
-    r"\s*[∼~\-－—]\s*(?:(?P<ch2>\d+)\s*[：:]\s*)?(?P<v2>\d+)\s*$"
+    r"\s*[∼~\-－—～]\s*(?:(?P<ch2>\d+)\s*[：:]\s*)?(?P<v2>\d+)\s*$"
 )
 TITLE_RE = re.compile(
-    r"QT\s*(?P<book>[\u4e00-\u9fff]+?)\s*(?P<ch1>\d+)\s*[：:]\s*(?P<v1>\d+)"
-    r"\s*[∼~\-－—]\s*(?:(?P<ch2>\d+)\s*[：:]\s*)?(?P<v2>\d+)"
+    r"QT\s*(?P<book>[\u4e00-\u9fff]+?)\s*(?P<ch1>\d+)\s*(?:[：:]|篇)\s*(?P<v1>\d+)"
+    r"\s*[∼~\-－—～]\s*(?:(?P<ch2>\d+)\s*[：:]\s*)?(?P<v2>\d+)\s*節?"
 )
+PSALM_WHOLE_RE = re.compile(r"QT\s*(?P<book>詩篇|詩)\s*(?P<ch1>\d+)\s*篇\s*$")
 SECTION_RE = re.compile(r"\*\*\s*(?P<num>[1-4])\s*[\.、]\s*(?P<title>[^*]+?)\s*\*\*")
 
 
@@ -177,10 +187,11 @@ def parse_reference(ref: str) -> dict:
     m = REF_RE.match(ref.strip())
     if not m:
         raise RuntimeError(f"無法解析經文範圍：{ref!r}")
+    book = BOOK_ALIASES.get(m.group("book"), m.group("book"))
     ch1, v1 = int(m.group("ch1")), int(m.group("v1"))
     ch2 = int(m.group("ch2")) if m.group("ch2") else ch1
     v2 = int(m.group("v2"))
-    return {"book": m.group("book"), "ch1": ch1, "v1": v1, "ch2": ch2, "v2": v2}
+    return {"book": book, "ch1": ch1, "v1": v1, "ch2": ch2, "v2": v2}
 
 
 def fetch_verses(parsed: dict) -> list[dict]:
@@ -231,13 +242,18 @@ def load_archive_index() -> list[dict]:
                     title = line.split(":", 1)[1].strip().strip('"')
                     break
             m = TITLE_RE.search(title)
-            if not m:
-                continue
-            ch1, v1 = int(m.group("ch1")), int(m.group("v1"))
-            ch2 = int(m.group("ch2")) if m.group("ch2") else ch1
-            v2 = int(m.group("v2"))
+            if m:
+                book = BOOK_ALIASES.get(m.group("book"), m.group("book"))
+                ch1, v1 = int(m.group("ch1")), int(m.group("v1"))
+                ch2 = int(m.group("ch2")) if m.group("ch2") else ch1
+                v2 = int(m.group("v2"))
+            else:
+                mp = PSALM_WHOLE_RE.search(title)
+                if not mp:
+                    continue
+                book, ch1, v1, ch2, v2 = "詩篇", int(mp.group("ch1")), 1, int(mp.group("ch1")), 200
             items.append({
-                "path": f, "title": title, "book": m.group("book"),
+                "path": f, "title": title, "book": book,
                 "start": (ch1, v1), "end": (ch2, v2),
                 "date": f.stem,
             })

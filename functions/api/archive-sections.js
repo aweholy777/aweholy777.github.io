@@ -41,8 +41,8 @@ function toText(html) {
     .trim();
 }
 
-// 彈性匹配「1. 經文誦讀 / 2. 今天默想經文 / 3. 分享默想經文 / 4. 今天的回應」
-const HEADING_RE = /<(?:strong|b|h[2-4])[^>]*>\s*([1-4])\s*[\.、]\s*[^<]{2,20}<\/(?:strong|b|h[2-4])>/gi;
+// 彈性匹配 1~4 段標題（含 2016 早期較長的標題如「2.有感動的經文並完成默想（...）」）
+const HEADING_RE = /<(?:strong|b|h[2-4])[^>]*>\s*([1-4])\s*[\.、]?\s*[^<]{2,60}<\/(?:strong|b|h[2-4])>/gi;
 
 function extractSections(body) {
   const marks = [];
