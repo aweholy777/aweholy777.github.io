@@ -1,60 +1,37 @@
 # Repository Operating Rules
 
-This repository powers cmtc.tw, a Hugo site with a YouTube QT video library.
-The live owner is the Mac at `/Users/haoguozi/qtproject`. Read
-`AI_HANDOVER.md` first for the current operating state; it takes precedence
-over historical handoff documents and any Windows-specific instructions.
+This repository powers **cmtc.tw** (Hugo site) and the YouTube QT uploader.
 
-## Current Production Flow
+## Read this first
 
-- GitHub Pages deploys automatically after a push to `main`.
-- `com.cmtc.qtupload` runs on this Mac at minute `05` each hour and uploads at
-  most one video per run, with a rolling 24-hour cap of 24.
-- `video-pipeline/yt_uploaded.csv` is the sole upload authority. Never
-  casually edit it or run another machine's uploader at the same time.
-- The video catalog has already been rendered. `video-output/head/` is the
-  upload queue; do not regenerate or delete it without an explicit request.
+**`AGENTS.md` is the single authoritative handover document** — current project state,
+hard rules, the daily 當日QT pipeline, Cloudflare deployment, `/qt-generator/` APIs,
+and the troubleshooting table. Read it before touching anything.
 
-## Safety Rules
+`AI_HANDOVER.md`, `HANDOFF.md`, `新機接手說明.md`, `CLAUDE.local.md` are **historical
+background only**. Several of them wrongly claim GitHub Pages deployment; the live
+deployment is **Cloudflare Pages** (project `cmtc`, `HUGO_VERSION=0.144.2`).
 
-- Never read, print, commit, transmit, or replace
-  `video-pipeline/client_secret.json` or `video-pipeline/yt_token.json`.
-- Preserve `video-output/`, `.venv/`, `.uv-python/`, and `.claude/` unless the
-  user explicitly requests their removal. `public/` and `.uv-cache/` are
-  generated cache and may be rebuilt.
-- Before edits or a manual upload, run `git pull --rebase --autostash` unless
-  a current uploader run owns the repository.
-- Do not use `git add -A` for uploader maintenance. Commit only intended
-  files, normally `video-pipeline/yt_uploaded.csv`, `data/qtvideos.json`, and
-  regenerated progress tables.
-- Do not enable a Windows uploader while the Mac launchd job is enabled.
+## Non-negotiables
 
-## Content Rules
+- Before any edit: `git pull --rebase --autostash origin main` (a Mac pushes hourly).
+- Before any push on Windows: `gh auth switch --user aweholy777`.
+- Never `git add -A`; commit only the files you touched.
+- Verify with the repo-root `hugo.exe --buildFuture` (pinned to 0.144.2). Zero errors or it is not done.
+- `public/` is generated output — never hand-edit or commit it.
+- Never read, print, commit, or transmit `video-pipeline/client_secret.json`
+  or `video-pipeline/yt_token.json`.
+- Do not enable the Windows uploader while the Mac launchd job
+  (`com.cmtc.qtupload`, minute `05`, one video per run, 24h cap 24) is enabled.
+  `video-pipeline/yt_uploaded.csv` is the sole upload authority.
 
-- QT source: `content/daily-qt/ntqt/` and `content/daily-qt/otqt/`.
-- Every QT article needs `title`, `date`, and `draft` front matter, followed
-  by the established four-section QT structure.
-- Book-order indexes retain only the newest article for duplicate normalized
-  passages; old article files remain available and must not be batch-deleted.
-- Articles do not embed YouTube shortcodes. The central library is
-  `/qt-video/`, generated from `data/qtvideos.json`.
-- Preserve established production video settings: 25 fps, `audio_scale=0.8`,
-  and SageAttention. Test isolated changes before altering them.
+## Claude-specific notes
 
-## Validation
-
-- Run `bash tasks/mac-handover/upload_mac.sh --check` for uploader health;
-  it does not upload a video.
-- Run `bash -n tasks/mac-handover/upload_mac.sh` after changing the macOS
-  uploader script.
-- Build the Hugo site before publishing content or template changes when the
-  local Hugo toolchain is available. Never hand-edit `public/`.
-- Treat credentials, personal testimony, and prayer requests as sensitive;
-  keep them out of logs, commits, and external prompts.
-
-## Historical Files
-
-`HANDOFF.md`, `新機接手說明.md`, and old Windows scripts under `tasks/` are
-background material. They can describe retired 5090, 3060, or Windows flows.
-For live operations, follow `AI_HANDOVER.md` and
-`tasks/mac-handover/README.md` instead.
+- If the sandbox cannot reach the GUI launchd domain (`Input/output error` with a valid
+  plist), ask the user to run the installer from Terminal.app — do not add `sudo`
+  or change plist permissions.
+- Batch content edits over 5 files: write `tasks/<name>/plan.md`, delegate, and verify
+  with `git diff --stat` instead of editing file by file.
+- QT articles keep the fixed four-section structure
+  (`1. 經文誦讀` → `2. 今天默想經文` → `3. 分享默想經文` → `4. 今天的回應`)
+  and `title` / `date` / `draft` front matter.

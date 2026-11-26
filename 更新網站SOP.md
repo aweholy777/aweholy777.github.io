@@ -7,7 +7,7 @@
 原始碼放在 **GitHub**（repo：`aweholy777/aweholy777.github.io`）→ **Cloudflare Pages** 盯著它 →
 **你一 push，Cloudflare 就自動建置，cmtc.tw 自動更新。** 你不用「上傳到 Cloudflare」，它自己會去 GitHub 抓。
 
-本機專案位置：`D:\cmtctw\aweholy777.github.io`
+本機專案位置：`D:\AI成品\qtproject`
 
 ---
 
@@ -58,9 +58,48 @@
 ## 架構備忘（給未來的你/AI）
 
 - **GitHub repo `aweholy777/aweholy777.github.io`** = 網站原始碼，**必留**（Cloudflare 靠它建置）。
-- **本機 repo 路徑** = `D:\cmtctw\aweholy777.github.io`。
+- **本機 repo 路徑** = `D:\AI成品\qtproject`。
 - **Cloudflare Pages「cmtc」專案** = 服務 cmtc.tw，push 到 main 自動部署。網域 DNS 已搬到 Cloudflare（nameserver：phil/uma.ns.cloudflare.com）。
 - **GitHub Pages（deploy.yml）** = 舊的備份鏡像，可留可停，非必要。
 - **5090** = 每晚自動推影片到同一個 repo；跟你手動更新內容互不影響，都走同一條路（push → Cloudflare 自動部署）。
 - 網站用 **Hugo** 產生；內容在 `content/daily-qt/`。
 - 更詳細的來龍去脈見 `tasks/影片生成專案-完整脈絡.md`。
+
+---
+
+## 🤖 想換別的 AI 來管這個專案
+
+交接文件已整併成**一份**：repo 根目錄的 **`AGENTS.md`**。
+（Claude Code 讀 `CLAUDE.md`，它會指到 `AGENTS.md`；Codex／Gemini／opencode 直接讀 `AGENTS.md`。）
+
+### 三步驟
+
+```bash
+cd /d D:\AI成品\qtproject
+claude            # 或 codex / gemini / opencode / pi
+```
+
+進去後第一句打：
+
+```
+先讀 AGENTS.md 與 CLAUDE.md，回報你理解的專案現況（部署方式、每日QT 流程、鐵則）。
+現在不要修改任何檔案。
+```
+
+它講對了 → 再給任務。講錯了 → 把錯的補回 `AGENTS.md`（那是唯一權威版本）。
+
+### 這台機器已裝的 AI CLI
+
+| 指令 | 工具 |
+|---|---|
+| `claude` | Claude Code |
+| `codex` | Codex CLI |
+| `gemini` | Gemini CLI |
+| `opencode` | OpenCode |
+| `pi` | Pi |
+
+### 三個提醒
+
+- **一次只讓一個 AI 改這個 repo**，兩個同時改會互相 rebase 打架。
+- 任何 AI 都要能跑 `hugo.exe --buildFuture` 0 錯誤才算完成（驗證清單在 `AGENTS.md` 第 7 節）。
+- 換 AI 不等於換權限：憑證紅線、不刪檔、push 前 `gh auth switch --user aweholy777` 全部照舊。
