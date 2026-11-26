@@ -1,200 +1,195 @@
 # AGENTS.md — 接手這個專案的唯一權威文件
 
-> **寫給任何 AI 代理（Claude Code／Codex／Gemini CLI／opencode／pi／Cursor）看的。**
-> 最後更新：2026-11-27。若本檔與其他交接文件（`HANDOFF.md`、`新機接手說明.md`、
-> `AI_HANDOVER.md`、`CLAUDE.local.md`）衝突，**以本檔為準**；那些是歷史文件，只作背景。
-> 看完請先回報你的理解，不要立刻動手。
+> **寫給任何 AI 代理（Claude Code／Codex／Gemini CLI／Antigravity／opencode／pi／Cursor）看的。**
+> 最後更新：2026-11-27。若本檔與其他歷史交接文件（`HANDOFF.md`、`新機接手說明.md`、`AI_HANDOVER.md`、`CLAUDE.local.md`）衝突，**一律以本檔為準**。
+> 若在 Windows 主機上從 `D:\AI成品` 總目錄出發，請一併遵守 `D:\AI成品\AGENTS.md`（本資料夾內另有 gitignored 的本機 `進度.md` 與 `經驗.md` 可讀寫）。
 
 ---
 
-## 0. 給 AI 的第一句話
+## 0. 開工第一件事（照抄執行）
 
-進到這個 repo，先做三件事：
-
-```bash
-git pull --rebase --autostash origin main     # 先同步
-gh auth switch --user aweholy777              # push 前必做（Windows）
+**PowerShell（Windows 主機 `D:\AI成品\qtproject`）：**
+```powershell
+cd D:\AI成品\qtproject
+git pull --rebase --autostash origin main   # Mac 每小時 :05 會 push，沒先 pull 必撞
+gh auth switch --user aweholy777             # push 前必切帳號（避開 galilee7989）
+.\hugo.exe --minify --buildFuture            # 必須用根目錄釘死 0.144.2 的 hugo.exe
 ```
 
-然後讀完本檔再動手。**任何改動都要能跑 `hugo.exe --buildFuture` 0 錯誤。**
+**Bash / Git Bash：**
+```bash
+cd /d/AI成品/qtproject
+git pull --rebase --autostash origin main
+gh auth switch --user aweholy777
+/d/AI成品/qtproject/hugo.exe --minify --buildFuture
+```
+
+若本機有 `進度.md` 與 `經驗.md`，動手前先讀完；收工前更新這兩檔與 `D:\AI成品\00-AI工作規則\專案總表.md`（兩檔已加 `.gitignore`，僅留本機不推進公開 repo）。
 
 ---
 
-## 1. 這是什麼專案
+## 1. 專案總覽與部署架構
 
 | 項目 | 內容 |
 |---|---|
-| 網站 | <https://cmtc.tw> — 城市宣培中心（Hugo 靜態網站，theme `mainroad`）|
-| Repo（Windows 主機）| `D:\AI成品\qtproject`（branch `main`）|
+| 網站 | <https://cmtc.tw> — 城市宣培中心（Hugo 靜態網站，theme `mainroad`） |
+| Repo（Windows 主機） | `D:\AI成品\qtproject`（branch `main`） |
 | Remote | `https://github.com/aweholy777/aweholy777.github.io.git` |
-| 部署 | **Cloudflare Pages**，專案名 `cmtc`；push 到 `main` → 自動建置 → 上線 |
-| CF 帳號 | `ee4d7f3e51b89be421114501fa50bf09`（Aweholy@gmail.com）|
-| Hugo 版本 | **0.144.2**，由 CF 專案環境變數 `HUGO_VERSION` 決定；本機 repo 根目錄有一份釘死同版本的 `hugo.exe`（gitignored）|
+| 正式部署 | **Cloudflare Pages**，專案名 `cmtc`；push 到 `main` → 自動建置 → 1～3 分鐘上線 |
+| CF 帳號 | `ee4d7f3e51b89be421114501fa50bf09`（Aweholy@gmail.com） |
+| Hugo 版本 | **0.144.2**（CF 端環境變數 `HUGO_VERSION=0.144.2`；本機 repo 根目錄有同版 `hugo.exe`，gitignored） |
+| GitHub Actions CI | `.github/workflows/deploy.yml` 已改為 `Hugo Build Check`（僅網站核心檔變動觸發，含 20 MiB 單檔警戒，不再重複部署 GitHub Pages） |
 
-⚠️ `AI_HANDOVER.md`／`CLAUDE.md` 舊版寫「GitHub Pages 部署」是**錯的**（`deploy.yml` 只是舊鏡像）。
-真正上線走 Cloudflare Pages。
+> ⚠️ `AI_HANDOVER.md`／`HANDOFF.md`／`新機接手說明.md` 等舊文件寫「GitHub Pages 部署」或「Vercel 代理」皆已**過期作廢**，不可再依其操作。
 
-### 內容主體
-- `content/daily-qt/ntqt/` — 新約 QT（849 篇）
-- `content/daily-qt/otqt/` — 舊約 QT（1862 篇）
-- `content/today-qt.md` — **今日**的當日QT（每天自動產生，勿手改格式）
-- `content/deep-calls-deep/` — 深淵響應（文章＋影片，卡片式，21 篇/頁分頁）
-- `data/qtvideos.json` — QT 影音庫資料，`/qt-video/` 頁由它產生
+### Cloudflare Pages 兩大技術紅線（必看）
+1. **單檔上限 25 MiB**：
+   - `hugo.toml` 已設 `rssLimit = 50`（壓在 ~408 KB；未設時 `index.xml` 曾達 25.13 MiB 差點炸部署）。
+   - 全站搜尋索引拆為 4 個分片（`index-ot1.json`、`index-ot2.json`、`index-nt.json`、`index-other.json`，單檔最大 ~10.4 MiB，`index.json` 為 manifest）。
+   - CI 內建檢查：任何輸出檔 > 20 MiB 直接失敗提醒。
+2. **靜態資產 4 小時快取問題**：
+   - Cloudflare Pages 對 `.js`／`.css` 預設回傳 `Cache-Control: public, max-age=14400`（4 小時），而 HTML 是 `max-age=0`。
+   - 因此 `layouts/_default/baseof.html`、`layouts/qt-video/list.html`、`layouts/search/list.html` 皆透過 Hugo `md5` 為自訂 CSS／JS／JSON 加上 `?v=<8碼雜湊>`；只要重跑 Hugo 就會自動換新網址，絕不可移除 `?v=`，否則改版後回訪瀏覽器會用舊 JS 配新 HTML 導致頁面空白。
 
 ---
 
-## 2. 這台機器與其他機器（別搞混）
+## 2. 專案檔案地圖
 
-| 角色 | 位置 | 負責 |
+| 路徑 | 用途 | 能否修改 / 注意事項 |
 |---|---|---|
-| **Windows 主機**（你現在在的地方）| `D:\AI成品\qtproject` | 網站內容、當日QT 自動產生、影片生成（ComfyUI＋Breeze TTS）、建置驗證 |
-| **Mac mini** | `192.168.68.60`，`/Users/haoguozi/qtproject` | **只負責** YouTube 滴傳：launchd `com.cmtc.qtupload`，每小時 :05 上傳 1 支（24h 上限 24）|
-| Cloudflare | — | 建置與部署（不用手動上傳）|
-
-- **不要在 Mac mini 生成影片**（Breeze TTS＋CUDA 只在 Windows）。
-- **不要同時開 Windows 上傳器與 Mac launchd**（會重複上傳）。Windows 的 `QT-Upload-5090` 已停用。
-- `video-pipeline/yt_uploaded.csv` 是上傳的唯一權威記錄，不要隨手編輯。
-
----
-
-## 3. 鐵則（破壞了就很難救）
-
-1. **改東西前先 `git pull --rebase --autostash origin main`**。Mac 每小時會 push，常撞。
-2. **push 前 `gh auth switch --user aweholy777`**，否則會用錯帳號（常見錯誤 `Permission denied to galilee7989`）。
-3. **不要用 `git add -A`**。只 commit 你這次動到的檔案（Mac 的 CSV／json 可能同時在變）。
-4. **改完網站必跑建置**：repo 根目錄 `hugo.exe --buildFuture`（Windows 走 bash 時用絕對路徑，
-   `.\hugo.exe` 會失敗）。0 錯誤才算完成。
-5. **`public/` 是產物，不要手改、不要 commit**。
-6. **憑證紅線**：`video-pipeline/client_secret.json`、`video-pipeline/yt_token.json`、
-   任何 token/key/password —— 不讀、不印、不 commit、不傳給外部服務。看到就跳過。
-7. **不要刪檔案**，除非使用者明確確認。
-8. 使用者是**繁體中文**使用者，回覆用繁中。
+| `hugo.toml` | 站台設定、選單、`rssLimit = 50`、搜尋分片 `outputFormats` | 可；注意選單「讀經進度記錄表」須為 `/daily-qt/biblereadingtracker/`（不能寫 `.html`） |
+| `content/today-qt.md` | **今日**的當日QT（每日自動產生） | 勿手改格式 |
+| `content/daily-qt/otqt/` | 舊約 QT 文章（2,013 篇） | 可新增、**不可批次刪除** |
+| `content/daily-qt/ntqt/` | 新約 QT 文章（1,495 篇） | 可新增、**不可批次刪除** |
+| `content/daily-qt/Biblereadingtracker.html` | 讀經進度記錄表（編譯為 `/daily-qt/biblereadingtracker/`） | 可 |
+| `content/deep-calls-deep/` | 深淵響應（文章＋影片，21 篇/頁分頁） | 可 |
+| `layouts/_default/baseof.html` | 全站基底版型、SEO meta fallback、按頁條件載入專屬 CSS（含 `?v=`） | 可，改完必建置 |
+| `layouts/index.json` + `index.search_*.json` + `partials/search-shard.json` | 搜尋索引 manifest 與 4 分片模板（3,715 篇） | 改動須驗證 4 分片與 `static/js/site-search.js` |
+| `layouts/qt-video/list.html` + `static/js/qt-library.js` | QT 影音庫：Hugo 動態發布 `/data/qtvideos.json`，前端按書卷／分批 60 支渲染＋150ms debounce | 改動須驗證 `/qt-video/` 卡片與燈箱播放 |
+| `static/qt-generator/index.html` | 自家「QT 產生器」（自動載入、選候選舊文、線上微調、複製/下載 `.md`） | 可 |
+| `static/data/archive-index.json` | 典藏索引（**3,508 篇 / 66 卷正規化**） | **由 `build_archive_index.py` 產生，勿手改** |
+| `functions/api/*.js` | Cloudflare Pages Functions 3 支 API | 可，**只在 CF 生效（本機預覽會 404）** |
+| `tasks/daily-qt/generate_today_qt.py` | 當日QT 產生器（與網頁邏輯對齊） | 核心，改前先讀並 `--dry-run` 測試 |
+| `tasks/daily-qt/build_archive_index.py` | 重建 `archive-index.json`（含書卷別名正規化） | 新增 QT 文章後必跑一次 |
+| `data/qtvideos.json` | QT 影音庫資料（Mac 上傳後自動更新） | Mac 會更新，衝突時 pull |
+| `video-pipeline/yt_uploaded.csv` | YouTube 上傳唯一權威紀錄 | 勿隨手編輯 |
+| `static/robots.txt` | 搜尋爬蟲規則（`Sitemap: https://cmtc.tw/sitemap.xml`） | 可 |
+| `public/` | Hugo 建置產物 | **gitignored，勿手改、勿 commit** |
+| `進度.md`、`經驗.md` | 本機跨 AI 工作進度與踩坑紀錄（gitignored） | 僅留本機，不推進公開 repo |
 
 ---
 
-## 4. 當日QT：每天自動產生（最容易壞的地方）
+## 3. 機器分工（別搞混）
 
-### 流程
-`tasks/daily-qt/generate_today_qt.py` 會：
-1. 取得今日《活潑的生命》進度（三層來源，見下）
-2. 依進度抓和合本經文（信望愛 FHL `bible.fhl.net/json/qb.php`，`version=unv`）
-3. 比對典藏文章，找出**涵蓋**該範圍的舊文，沿用它的「分享默想經文」「今天的回應」
-4. 寫入 `content/today-qt.md`
-
-### 進度來源優先序（`get_daily_reference()`）
-1. `https://www.duranno.tw/livinglife/index.php/daily` 直抓（憑證缺 SKID，**要用 curl** 不能用 requests）
-2. **CGN 中文《活潑的生命》YouTube 頻道 RSS**：`channel_id=UCqUnxXxHSFb6At-njlSX9AQ`
-   （標題格式 `[活潑的生命] YYYYMMDD 主題(書卷 章:節~節)`，需帶瀏覽器 UA）
-3. 自家 `https://cmtc.tw/api/daily-reference`
-
-> `duranno.tw` 從 2026-11-22 起長期「系統維護中」（`/daily` 只回約 927 bytes、含「維護中」，
-> `daily_p`／`daily_n` 一律 500）。這時 **CGN 會自動接手**，是正常行為不是壞掉。
-
-### 排程
-| 排程 | 時間 | 用途 |
+| 角色 | 位置 | 負責項目 |
 |---|---|---|
-| Hermes cron `7713df5c5e26` → `daily_qt_local.py` | 台北 **00:05** | 本機準時產生＋push（成功靜默，失敗才通知）|
-| `.github/workflows/daily-qt.yml` | `5 16 * * *`（16:05Z＝台北 00:05）| 備援 |
-| 同上第二道 | `30 20 * * *` | 再一層備援 |
-| Hermes cron `72e54234771a` → `check_daily_qt.py` | 台北 **07:30** | 檢查線上頁面是否已更新，異常才通知 |
+| **Windows 主機**（本機） | `D:\AI成品\qtproject` | 網站維護、建置驗證、每日 QT 自動產生與補產、影片生成（ComfyUI＋Breeze TTS＋CUDA，整套已渲染完成） |
+| **Mac mini** | `192.168.68.60`，`/Users/haoguozi/qtproject` | **只負責** YouTube 滴傳：launchd `com.cmtc.qtupload`，每小時 :05 上傳 1 支（24h 上限 24） |
+| **Cloudflare Pages** | 專案 `cmtc` | 建置與上線、執行 `functions/api/*.js` |
 
-⚠️ **GitHub Actions 的 schedule 實測會延遲 3.5～6.5 小時**，所以別指望它準時；
-準時的是本機那條。改 cron 時記得這件事。
+- **YouTube 上傳進度**：截至 2026-11-27 新約 `848/848` 已全數完成，舊約已上傳 `1,750/1,861`（剩約 111 支，約 4～5 天後全數傳完即可停用 Mac 的 `com.cmtc.qtupload`）。
+- **不可在 Mac mini 生成影片**（TTS＋CUDA 只在 Windows）。
+- **不可同時開啟 Windows 上傳器 `QT-Upload-5090` 與 Mac launchd**（會重複上傳；Windows 排程已停用）。
+- Mac 端腳本細節與回滾步驟見 `tasks/mac-handover/README.md`（macOS `/bin/bash` 3.2 變數一律寫 `${VAR}`）。
 
-### 手動補產（自動掛掉時）
-```bash
-cd /d/AI成品/qtproject
-python tasks/daily-qt/generate_today_qt.py                          # 用今天的日期
-python tasks/daily-qt/generate_today_qt.py --date 2026-11-27 \
-  --reference "哥林多後書4：1∼10" --archive-date 2018-03-07          # 指定日期/範圍/舊文
+---
+
+## 4. 八條鐵則（違反就很難救）
+
+1. **改動前先 `git pull --rebase --autostash origin main`**（Mac 每小時 :05 會 push）。
+2. **push 前先 `gh auth switch --user aweholy777`**（避開另一個帳號 `galilee7989`）。
+3. **禁用 `git add -A`**，只 `git add` 這次明確改動的檔案（避免誤收 Mac 更新或私密本機檔）。
+4. **改完網站必跑 `.\hugo.exe --minify --buildFuture`**（0 錯誤才算通過）。
+5. **憑證紅線**：`video-pipeline/client_secret.json`、`video-pipeline/yt_token.json`、`_new_settings.json`、`_claude2_settings.json` 及任何 token/key/password —— **不讀、不印、不 commit、不傳給外部服務**。
+6. **不刪檔案**，除非使用者明確確認。
+7. **不手改 `public/`、`.venv/`、`video-output/`、`.claude/`**。
+8. **回覆使用者一律使用繁體中文**（台灣用語，指令／工具名保留英文）。
+
+---
+
+## 5. 當日 QT 每日自動化（`tasks/daily-qt/`）
+
+### 執行流程（`generate_today_qt.py`）
+1. 依優先序取得進度：
+   - ① `https://www.duranno.tw/livinglife/index.php/daily`（僅查詢「今天」時使用；憑證缺 SKID，用 `curl` 抓；自 2026-11-22 起長期維護中，自動降級屬正常）
+   - ② **CGN 中文《活潑的生命》YouTube RSS**（`channel_id=UCqUnxXxHSFb6At-njlSX9AQ`，保留近 15 天影片）
+   - ③ 自家備援 `https://cmtc.tw/api/daily-reference`
+2. 向信望愛 FHL（`bible.fhl.net/json/qb.php?version=unv`）以**單次範圍查詢（`sec=v1-v2`）**抓和合本經文（支援 66 卷簡稱與別名，跨章遇空章末即 `break`）。
+3. 比對 `content/daily-qt/{otqt,ntqt}` 典藏（支援 `詩`→`詩篇`、`箴言書`→`箴言`、`約翰壹/貳/參書`→`約翰一/二/三書`、`詩篇73篇 1~14`、整篇詩篇、全形 `～`、冒號後空格）：
+   - 優先序：`exact`（完全同範圍，多篇取最新日期）→ `cover`（最小涵蓋範圍、最新日期）→ `partial`（部分重疊，於頁首加註提醒；可加 `--no-partial` 關閉）。
+4. 寫入 `content/today-qt.md` 與本機 `tasks/daily-qt/last-run.json`（gitignored）。
+
+### 排程現況
+| 排程 | 時間（台北） | 用途 |
+|---|---|---|
+| 本機 Hermes cron `7713df5c5e26` → `daily_qt_local.py` | **00:05** | 準時產生＋push（成功靜默，失敗才通知） |
+| GitHub Actions `.github/workflows/daily-qt.yml` | `5 16 * * *` / `30 20 * * *` | 雙層備援（⚠️ GitHub schedule 實測常延遲 3.5～6.5 小時） |
+| 本機 Hermes cron `72e54234771a` → `check_daily_qt.py` | **07:30** | 檢查線上 `/today-qt/` 是否已更新，異常才通知 |
+
+### 手動補產指令
+```powershell
+python tasks/daily-qt/generate_today_qt.py --dry-run
+python tasks/daily-qt/generate_today_qt.py --date 2026-11-27 --reference "林後4：1∼10" --archive-date 2018-03-07
 ```
-`--archive-date` 是必要的逃生口：新舊版本分段不同（例 2026 版 1:15~24 vs 2018 版 1:12~22）時，
-「完全涵蓋」比對會失敗，要手動指定用哪篇。
 
 ---
 
-## 5. `/qt-generator/`：自家版「生成當日QT」
+## 6. 自家 `/qt-generator/` 與 Cloudflare Pages Functions
 
 | 路徑 | 檔案 | 說明 |
 |---|---|---|
-| `/qt-generator/` | `static/qt-generator/index.html` | 手動產生器：自動載入進度→抓經文→比對典藏→帶入分享→輸出 Markdown |
-| `/api/daily-reference` | `functions/api/daily-reference.js` | duranno → CGN 備援；CORS `*` |
-| `/api/verses` | `functions/api/verses.js` | FHL 和合本代理，一次最多 50 節 |
-| `/api/archive-sections` | `functions/api/archive-sections.js` | 抓舊文的「2 默想／3 分享／4 回應」|
-| `/data/archive-index.json` | `static/data/archive-index.json` | 3,473 篇典藏索引（日期/書卷/範圍/URL）|
-
-- 這三支是 **Cloudflare Pages Functions**，只在 CF 生效；**本機 Hugo 預覽會 404**。
-- 新增典藏文章後要重跑 `python tasks/daily-qt/build_archive_index.py` 更新索引。
-- 2026-11-27 前的舊版是外部第三方 `index-html-clean-copy.vercel.app`（只抓 duranno，已停用），
-  全站與程式都不可再引用它。
+| `/qt-generator/` | `static/qt-generator/index.html` | 開頁自動載入今日進度並產生；含昨天/今天/明天快捷鍵、簡稱/單節/整篇詩篇解析、最多 12 篇候選舊文切換、當日QT/典藏格式切換、2/3/4 段直接編輯與下載 `.md`、線上 `/today-qt/` 狀態列 |
+| `/api/daily-reference` | `functions/api/daily-reference.js` | 今日走 duranno → CGN；歷史日期略過 duranno 直接查 CGN（近 15 天） |
+| `/api/verses` | `functions/api/verses.js` | FHL 和合本單次範圍代理（支援 66 卷全名＋簡稱＋古字別名，單次上限 200 節） |
+| `/api/archive-sections` | `functions/api/archive-sections.js` | 優先用 `context.env.ASSETS.fetch` 站內直讀舊文並正則抽取 2/3/4 段（支援 2016 早期長標題） |
+| `/data/archive-index.json` | `static/data/archive-index.json` | 3,508 篇正規化索引；新增 QT 文章後跑 `python tasks/daily-qt/build_archive_index.py` 重建 |
 
 ---
 
-## 6. 內容規則
+## 7. 內容與影音規格
 
-- QT 文章固定四段：`1. 經文誦讀` → `2. 今天默想經文` → `3. 分享默想經文` → `4. 今天的回應`
-- front matter 至少 `title`、`date`、`draft`
-- 檔名 `YYYY-MM-DD.md`；標題格式 `YYYY – MM – DD QT 書卷 章：節~節`
-- 書卷順序索引 `_index.md` 遇重複經文只保留最新一篇，**舊檔不可批次刪除**
-- 文章內**不要**嵌 YouTube shortcode，影音統一由 `/qt-video/` 呈現
-- 字幕／標題規則（做影片時）：字幕不加標點、句讀用半形空格；《》〈〉【】（）()、破折號、刪節號保留；
-  標題只留純經文，不放日期
-- 影片參數（勿改）：25 fps、`audio_scale=0.8`、SageAttention、720p、BGM 0.10、`amix=...normalize=0`
-- 宗教影片對裸露敏感：梳洗/更衣場景要衣著完整，只拍肩頸以上或背影
+- QT 文章檔名 `YYYY-MM-DD.md`，標題 `YYYY – MM – DD QT 書卷 章：節~節`（注意 `hugo.toml` 已關 `strikethrough = false`，`~` 不需跳脫）。
+- 固定四段：`1. 經文誦讀` → `2. 今天默想經文` → `3. 分享默想經文` → `4. 今天的回應`。
+- 書卷 `_index.md` 遇重複經文只留最新一篇；文章內不嵌 YouTube shortcode（影音統一由 `/qt-video/` 呈現）。
+- 影片參數（勿改）：25 fps、`audio_scale=0.8`、SageAttention、720p、BGM 0.10、`amix=...normalize=0`；字幕不加標點、句讀用半形空格、標題只留純經文；梳洗/更衣鏡頭衣著完整，只拍肩頸以上或背影。
 
 ---
 
-## 7. 驗證清單（說「完成」之前）
+## 8. 驗收標準（說「完成」之前必做）
 
-```bash
-# 1) 建置 0 錯誤
-/d/AI成品/qtproject/hugo.exe --buildFuture
+```powershell
+# 1) 本機建置 0 錯誤（帶 --minify 與實際上線一致）
+.\hugo.exe --minify --buildFuture
 
-# 2) 確認 Cloudflare 建置成功（用你剛 push 的 commit）
-gh api repos/aweholy777/aweholy777.github.io/commits/<sha>/check-runs \
+# 2) 推送後確認 Cloudflare Pages 部署成功（將 <sha> 換成 push 的 commit）
+gh api "repos/aweholy777/aweholy777.github.io/commits/<sha>/check-runs" `
   --jq '.check_runs[] | select(.name=="Cloudflare Pages") | {status,conclusion}'
 
-# 3) 線上真的更新了
-curl -s https://cmtc.tw/today-qt/ | grep -o "<title>[^<]*"
+# 3) 實測線上目標頁面 / API 回傳 HTTP 200 與預期內容
+curl.exe -s "https://cmtc.tw/today-qt/?cb=$(Get-Random)" | Select-String -Pattern "<title>[^<]+"
 ```
 
-看到 `{"conclusion":"success"}` 且線上內容正確，才算完成。**不要只看 push 成功就說做完。**
+看到 `Cloudflare Pages` 的 `"conclusion":"success"` 且線上實際內容驗證無誤，才可回報完成。
 
 ---
 
-## 8. 常見故障 → 處理
+## 9. 常見故障排錯表
 
 | 症狀 | 原因／處理 |
 |---|---|
-| push 被拒 `non-fast-forward` | Mac 剛 push 過 → `git pull --rebase --autostash` 再 push |
+| push 被拒 `non-fast-forward` | Mac 剛 push → `git pull --rebase --autostash origin main` 再 push |
 | push 拒絕 `Permission denied to galilee7989` | 帳號錯 → `gh auth switch --user aweholy777` |
-| 當日QT 沒更新 | 看 `generate_today_qt.py` 輸出；duranno 維護時應走 CGN；必要時手動補產 |
-| 頁面停在昨天 | CF 建置還在跑（1~3 分鐘）或排程延遲；查 check-runs |
-| 建置錯誤提到 `strings.TrimSpace` | 用錯 Hugo 版本，改用 repo 根目錄的 `hugo.exe`（0.144.2）|
-| CF 建置抓錯 Hugo 版本 | Pages 專案 `cmtc` → 設定 → 變數與機密 → `HUGO_VERSION` 應為 `0.144.2` |
-| `/api/*` 本機 404 | 正常，Functions 只在 Cloudflare 生效 |
+| 改了 JS/CSS 但回訪畫面沒更新或空白 | 檢查模板是否漏加 `?v={{ printf "%.8s" (... \| md5) }}`（CF 預設快取 JS/CSS 4 小時） |
+| 選單或新頁連結在線上回 404 | 獨立 `.html` 放 `content/` 會被 Hugo 編為 `/檔名/` 資料夾網址（例 `/daily-qt/biblereadingtracker/`） |
+| 建置錯誤提到 `strings.TrimSpace` | 用錯 Hugo 版本，改用 repo 根目錄 `.\hugo.exe`（0.144.2） |
+| `/api/*` 本機預覽回 404 | 正常，Pages Functions 只在 Cloudflare 生效 |
+| 當日QT 沒更新 | 看 `generate_today_qt.py` 輸出；必要時用 `--reference`＋`--archive-date` 手動補產 |
+| 索引頁順序亂 | 重跑書卷 `_index.md` 產生流程，不要手改 |
 
 ---
 
-## 9. 批次作業的方法論（內容類大改動適用）
+## 10. 批次作業與歷史文件對照
 
-**大原則：先寫計畫，再派工，最後驗收。** 超過 5 個檔案的重複性編輯，不要一個一個手改。
-
-```
-tasks/<任務名>/
-├── plan.md      # 目標、規格、檔案清單、驗收標準
-├── result.md    # 執行的回報（<50 行）
-└── log.txt      # 完整輸出（不讀）
-```
-可用 `opencode run "讀取 tasks/<任務名>/plan.md 並完整執行…" -m <model>` 派工。
-驗收看 `git diff --stat`，範圍與 plan.md 不符就退回。
-
----
-
-## 10. 不要做的事
-
-- 不要改 `public/`、`.venv/`、`video-output/`、`.claude/`（除非使用者明確要求）
-- 不要重新生成整套影片目錄（已渲染完成）
-- 不要啟用 Windows 上傳排程（Mac 那條在跑）
-- 不要為了「比較乾淨」而批次刪除舊 QT 文章
-- 不要把見證、代禱事項等個人資料丟給雲端免費模型
+- **批次作業**：超過 5 個檔案的重複性修改，先在 `tasks/<任務名>/plan.md` 寫明目標、範圍、驗收標準再派工，驗收看 `git diff --stat`。
+- **歷史背景檔**（僅供查考，內容部分過期）：`AI_HANDOVER.md`、`HANDOFF.md`、`新機接手說明.md`、`遷移到Cloudflare指南.md`、`CLAUDE.local.md`、`5090-每日備忘.md`。
+- **人類操作手冊**：`更新網站SOP.md`（含 `qt-push`、`qt-sync`、`qt-status` 快捷指令說明）。

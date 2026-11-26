@@ -51,7 +51,7 @@
   git push
   ```
 - **`index.lock` / index corrupt**：`qt-push` 已內建自動清；手動清是 `Remove-Item .git\index.lock -Force`。
-- **改了看不到**：等 1~2 分鐘讓 Cloudflare 建置完，再 Ctrl+Shift+R 強制重整。
+- **改了看不到**：等 1~2 分鐘讓 Cloudflare 建置完再重新整理（全站靜態資源已加版號雜湊，一般重新整理即可）。
 
 ---
 
@@ -60,8 +60,8 @@
 - **GitHub repo `aweholy777/aweholy777.github.io`** = 網站原始碼，**必留**（Cloudflare 靠它建置）。
 - **本機 repo 路徑** = `D:\AI成品\qtproject`。
 - **Cloudflare Pages「cmtc」專案** = 服務 cmtc.tw，push 到 main 自動部署。網域 DNS 已搬到 Cloudflare（nameserver：phil/uma.ns.cloudflare.com）。
-- **GitHub Pages（deploy.yml）** = 舊的備份鏡像，可留可停，非必要。
-- **5090** = 每晚自動推影片到同一個 repo；跟你手動更新內容互不影響，都走同一條路（push → Cloudflare 自動部署）。
+- **GitHub Actions（deploy.yml）** = 建置檢查（`Hugo Build Check`，僅網站核心檔變動時執行並檢查輸出檔不得超過 20 MiB，不再重複部署 GitHub Pages）。
+- **Mac mini（192.168.68.60）** = 每小時 :05 自動上傳 1 支影片到 YouTube 並推回 `data/qtvideos.json`（舊約剩下約 111 支，約 4～5 天後傳完可停用）；跟你手動更新網站內容互不影響。
 - 網站用 **Hugo** 產生；內容在 `content/daily-qt/`。
 - 更詳細的來龍去脈見 `tasks/影片生成專案-完整脈絡.md`。
 
