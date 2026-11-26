@@ -156,6 +156,21 @@ async function generate() {
     let archive = null;
     try { archive = matchArchive(await loadArchiveIndex(), p); } catch (e) { /* 索引失敗不擋 */ }
 
+    // 抓對應舊文章的「默想／分享／回應」
+    let sec2 = "", sec3 = "", sec4 = "";
+    if (archive) {
+      try {
+        const rs = await fetch(`/api/archive-sections?url=${encodeURIComponent(archive.item.url)}`);
+        const ds = await rs.json();
+        if (ds.status === "success") {
+          sec2 = ds.section2 || "";
+          sec3 = ds.section3 || "";
+          sec4 = ds.section4 || "";
+        }
+      } catch (e) { /* 抓不到就留空，下面會標示 */ }
+    }
+    const hasSharing = Boolean(sec3 || sec4);
+
     const shortRef = `${p.book} ${p.ch1}：${p.v1}~${p.ch2 === p.ch1 ? "" : p.ch2 + "："}${p.v2}`;
     const verseLines = verses.map(v => `> ${v.chap}：${v.sec} ${v.text}  `);
 
@@ -166,6 +181,9 @@ async function generate() {
       const modeText = archive.mode === "exact" ? "完全相同" : archive.mode === "cover" ? "涵蓋今日範圍" : "部分重疊（原文範圍不同）";
       metaHtml += `<br>對應舊文章：<a href="${it.url}" target="_blank" rel="noopener">${it.title}</a>`
         + `<span class="tag">${modeText}</span>`;
+      metaHtml += hasSharing
+        ? `<br><span class="tag" style="background:#ecfdf3;color:#17803d">已帶入分享與回應</span>`
+        : `<br><span style="color:#b45309">未取到分享內文（請自行補 3、4 段）</span>`;
       if (archive.mode === "partial") {
         metaHtml += `<br><span style="color:#b45309">注意：該文原範圍 ${it.start[0]}：${it.start[1]}~${it.end[0]}：${it.end[1]}，`
           + `未完全涵蓋今日進度，分享內容可能超出或不足。</span>`;
@@ -195,6 +213,19 @@ async function generate() {
       "",
       `> ${shortRef}  `,
       ...verseLines,
+      "",
+      "**1. 經文誦讀**",
+      "",
+      "（經文如上）",
+      "",
+      "**2. 今天默想經文**",
+      sec2 || "（請自行挑選今日默想經文）",
+      "",
+      "**3. 分享默想經文**",
+      sec3 || "（找不到對應的分享內容，請自行補。）",
+      "",
+      "**4. 今天的回應**",
+      sec4 || "（找不到對應的回應內容，請自行補。）",
       "",
     ].join("\n");
     const text = verses.map(v => `${v.chap}：${v.sec} ${v.text}`).join("\n");
