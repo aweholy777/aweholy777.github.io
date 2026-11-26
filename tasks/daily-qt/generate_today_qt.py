@@ -3,8 +3,7 @@
 """每日早上 6 點產生「當日QT」頁面（content/today-qt.md）。
 
 流程（與「生成當日QT」產生器一致）：
-  1. 取當日進度：https://index-html-clean-copy.vercel.app/api/daily-reference
-     （來源＝活潑的生命 duranno 每日進度）
+  1. 取當日進度：duranno.tw 官網 → CGN《活潑的生命》YouTube → 自家 https://cmtc.tw/api/daily-reference
   2. 依進度抓和合本經文：https://bible.fhl.net/json/qb.php （FHL，version=unv）
   3. 在既有 QT 典藏（content/daily-qt/{otqt,ntqt}）找出涵蓋同一段經文的舊文章，
      沿用它的「今天默想經文／分享默想經文／今天的回應」
@@ -38,8 +37,10 @@ ARCHIVE_DIRS = [CONTENT / "daily-qt" / "otqt", CONTENT / "daily-qt" / "ntqt"]
 OUT_FILE = CONTENT / "today-qt.md"
 LAST_RUN = Path(__file__).resolve().parent / "last-run.json"
 
-DAILY_REFERENCE_URL = "https://index-html-clean-copy.vercel.app/api/daily-reference"
-# 來源站（活潑的生命官網）：直接抓最可靠，Vercel API 只是它的代理，會偶發 500
+# 第三層備援：自家 Cloudflare Pages Function（functions/api/daily-reference.js，內部同樣 duranno → CGN）
+# 2026-11-27 起取代原本別人的 Vercel 代理（那支只抓 duranno，duranno 一維護就 500）
+DAILY_REFERENCE_URL = "https://cmtc.tw/api/daily-reference"
+# 來源站（活潑的生命官網）：直接抓最可靠
 DURANNO_URL = "https://www.duranno.tw/livinglife/index.php/daily"
 
 # 備援：CGN 中文《活潑的生命》YouTube 頻道（每日影片標題含 YYYYMMDD 與經文範圍）
@@ -149,15 +150,15 @@ def get_daily_reference(date: str | None) -> dict:
             "sourceUrl": CGN_RSS,
             "source": "cgn-youtube",
         }
-    print("  ⚠️ CGN 頻道也找不到今日進度，改用 Vercel API")
-    # 3) 退回 Vercel API（代理，偶發 500）
+    print("  ⚠️ CGN 頻道也找不到今日進度，改用自家 /api/daily-reference")
+    # 3) 退回自家 API（Cloudflare Pages Function，cmtc.tw）
     url = DAILY_REFERENCE_URL
     if date:
         url = f"{url}?date={date}"
     data = json.loads(http_get(url).decode("utf-8"))
     if data.get("status") != "success" or not data.get("reference"):
         raise RuntimeError(f"當日進度 API 回應異常：{data}")
-    data["source"] = "vercel-api"
+    data["source"] = "cmtc-api"
     return data
 
 

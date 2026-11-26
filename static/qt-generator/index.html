@@ -42,7 +42,8 @@ a{color:var(--accent-2)}
 <div class="wrap">
   <header class="top">
     <h1>QT 產生器</h1>
-    <p class="sub">自動取得《活潑的生命》今日進度 → 抓和合本經文 → 比對典藏文章</p>
+    <p class="sub">自動取得《活潑的生命》今日進度 → 抓和合本經文 → 比對典藏文章 → 帶入分享</p>
+    <p class="sub" style="font-size:.85rem;margin-top:6px">2026-11-27 起改為自家版本，不再依賴外部工具</p>
   </header>
 
   <div class="card">
@@ -68,6 +69,39 @@ a{color:var(--accent-2)}
       <button id="copyText" class="ghost">複製純文字</button>
     </div>
     <pre class="md" id="md"></pre>
+  </div>
+
+  <div class="card">
+    <details>
+      <summary style="cursor:pointer;font-weight:700;color:#c2410c;font-size:1rem">使用說明與常見問題（點開）</summary>
+      <div style="margin-top:14px;font-size:.94rem">
+        <p><b>為什麼有這個頁面？</b><br>
+        原本選單上的「生成當日QT」連到外面一支別人的工具，它只會抓 duranno.tw，
+        duranno 一進「系統維護」就整個不能用（2026-11-22 起連續多天）。
+        這個頁面是自家版本，邏輯相同但多了備援，上游掛掉照樣能用。</p>
+
+        <p><b>進度來源（依序嘗試）</b></p>
+        <ol style="margin:6px 0 12px 1.2rem">
+          <li>duranno.tw 官網 —— 正常時最即時</li>
+          <li>CGN 中文《活潑的生命》YouTube 頻道標題 —— duranno 維護時自動接手</li>
+          <li>自家 API（同樣走前兩層）—— 最後保險</li>
+        </ol>
+        <p>所以 duranno 維護期間按「自動載入進度」還是抓得到，只是訊息會標示來源是 CGN（黃色提示）。</p>
+
+        <p><b>每日自動更新</b><br>
+        網站上的「當日QT」頁面每天台北 <b>00:05</b> 由本機排程自動產生並發佈，GitHub 另有一道 00:05 的備援。
+        這個產生器是<b>手動檢查／臨時補產</b>用的，平常不需要動它。</p>
+
+        <p><b>怎麼用</b><br>
+        ① 按「自動載入進度」→ ② 確認範圍（可手動修改）→ ③ 按「產生」→ ④ 按「複製 Markdown」貼進網站後台。</p>
+
+        <p><b>要注意的地方</b><br>
+        分享內文是<b>原樣沿用</b>對應的典藏文章。若今日範圍和舊文範圍不完全相同，頁面會標「部分重疊（原文範圍不同）」並用橘字提醒，看到就自己微調一下。</p>
+
+        <p style="color:#7a7266;margin-bottom:0">經文：信望愛 FHL 和合本（unv）。典藏索引：3,473 篇，新增文章後需重跑
+        <code style="font-size:.85em">tasks/daily-qt/build_archive_index.py</code>。</p>
+      </div>
+    </details>
   </div>
 
   <div class="card" id="statusCard">
