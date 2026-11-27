@@ -190,7 +190,7 @@ D:\AI成品\qtproject\                          ← 專案根目錄（版控 4,2
 | `resources/`、`.hugo_build.lock` | — | Hugo 快取與建置鎖 | 自動 |
 | `video-output/` | **81 GB** | 影片成品：`head/` 1,549 支、`head/old/` 1,159 支（已上傳的 YouTube 上都有） | 不需要重建；全部上傳結束後要不要刪由本人決定 |
 | `video-pipeline/client_secret.json`、`yt_token.json` | — | YouTube OAuth 憑證（Mac 也有一份） | 用隨身碟／AirDrop 從舊機複製，**絕不經過對話或雲端** |
-| `video-pipeline/_new_settings.json`、`_claude2_settings.json` | — | 舊的 Claude Code 設定快照，**含金鑰**，已無用途 | **不可讀、不可 commit、不可分享**；建議刪除（待本人確認） |
+| ~~`video-pipeline/_new_settings.json`、`_claude2_settings.json`~~ | — | 舊的 Claude Code 設定快照，含金鑰；**本機檔已於 2026-11-27 刪除** | 它們仍存在 GitHub 歷史裡（`53892e85` 起），由 §11 #7 的排程清除；在那之前一樣不可讀、不可 commit |
 | `video-pipeline/` 其餘 log、截圖、`.gen_*` | — | 影片生成時代的執行紀錄 | 不需要 |
 | `tasks/daily-qt/last-run.json` | — | 當日QT 產生器最近一次執行紀錄 | 自動 |
 | `.claude/` | 21 KB | Claude Code 本機權限設定 `settings.local.json` | 自動；**不手改** |
@@ -246,7 +246,7 @@ D:\AI成品\qtproject\                          ← 專案根目錄（版控 4,2
 2. **push 前先 `gh auth switch --user aweholy777`**（避開另一個帳號 `galilee7989`）。
 3. **禁用 `git add -A`**，只 `git add` 這次明確改動的檔案（避免誤收 Mac 更新或私密本機檔）。
 4. **改完網站必跑 `.\hugo.exe --minify --buildFuture`**（0 錯誤才算通過）。
-5. **憑證紅線**：`video-pipeline/client_secret.json`、`video-pipeline/yt_token.json`、`_new_settings.json`、`_claude2_settings.json` 及任何 token/key/password —— **不讀、不印、不 commit、不傳給外部服務**；交接文件、筆記、對話一律不貼 key。金鑰一旦進過 repo 就視為外洩：**到平台撤銷重發**＋**從歷史移除**兩件都要做，只「取消追蹤」沒有用（2026-06 的兩個 settings 檔就是這樣留在公開歷史裡）。
+5. **憑證紅線**：`video-pipeline/client_secret.json`、`video-pipeline/yt_token.json`、`_new_settings.json`、`_claude2_settings.json` 及任何 token/key/password —— **不讀、不印、不 commit、不傳給外部服務**；交接文件、筆記、對話一律不貼 key。金鑰一旦進過 repo 就視為外洩：**到平台撤銷重發**＋**從歷史移除**兩件都要做，只「取消追蹤」沒有用（2026-06 的兩個 settings 檔就是這樣留在公開歷史裡）。這兩個 settings 檔的本機副本已於 2026-11-27 刪除，歷史裡的舊版本由 §11 #7 的排程清除。
 6. **不刪檔案**，除非使用者明確確認。
 7. **不手改 `public/`、`.venv/`、`video-output/`、`.claude/`**。
 8. **回覆使用者一律使用繁體中文**（台灣用語，指令／工具名保留英文）。
@@ -422,7 +422,7 @@ curl.exe -s "https://cmtc.tw/today-qt/?cb=$(Get-Random)" | Select-String -Patter
    - `/api/daily-reference` 對上游沒有逾時也沒有快取
    - 頁尾的 Google 自訂搜尋框是否移除（站內已有 `/search/`）
    - 搜尋是否改用 Pagefind（目前 4 分片 ≤ 10.42 MiB 且已改成輸入才下載，短期無壓力）
-5. 本機 `video-pipeline/_new_settings.json`、`_claude2_settings.json` 已無用途且含金鑰，建議刪除（待本人確認）。
+5. 本機的 `video-pipeline/_new_settings.json`、`_claude2_settings.json` 已於 2026-11-27 刪除（本人同意）。它們的舊版本仍在 GitHub 歷史裡，由 §11 #7 的排程清除。
 
 ---
 
