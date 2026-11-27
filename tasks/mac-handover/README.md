@@ -266,7 +266,7 @@ schtasks /change /tn "\QT-Upload-5090" /enable
 | 檔案 | 用途 |
 |---|---|
 | `README.md` | 本文件（步驟總覽） |
-| `upload_mac.sh` | macOS 版滴傳主程式（對應 Windows 的 `tasks/5090-migration/upload_5090.ps1`） |
+| `upload_mac.sh` | macOS 版滴傳主程式（Windows 版上傳器已於 2026-09-25 停用、腳本已於 2026-11-27 刪除，目前只有這一支在上傳） |
 | `install_mac.sh` | 一次性安裝：venv + 套件 + launchd 排程 |
 | `com.cmtc.qtupload.plist` | launchd 排程樣板（路徑由 install_mac.sh 填入） |
 
