@@ -102,6 +102,7 @@ disableKinds = ["taxonomy", "term"]
   weight = 20
 
   # 每日QT 子選單（區塊順序＝畫面順序；weight 由小到大）
+  # 「當日QT」「生成當日QT」已於 2026-11-28 移到首頁的「今日當日QT」區塊（layouts/index.html），不再放選單
   [[menu.main]]
     identifier = "otqt"
     name = "舊約QT"
@@ -115,26 +116,15 @@ disableKinds = ["taxonomy", "term"]
     weight = 22
     parent = "daily-qt"
   [[menu.main]]
-    name = "當日QT"
-    url = "/today-qt/"
-    weight = 23
-    parent = "daily-qt"
-  [[menu.main]]
-    name = "生成當日QT"
-    url = "/qt-generator/"
-    params = { target = "_blank" }   # 開新分頁
-    weight = 24
-    parent = "daily-qt"
-  [[menu.main]]
     name = "QT影音庫"
     pageRef = "qt-video"
-    weight = 25
+    weight = 23
     parent = "daily-qt"
   [[menu.main]]
     name = "讀經進度記錄表"
     url = "/daily-qt/biblereadingtracker/"
     params = { target = "_blank" }   # 開新分頁
-    weight = 26
+    weight = 24
     parent = "daily-qt"
 
 [[menu.main]]

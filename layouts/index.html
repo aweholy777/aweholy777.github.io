@@ -6,18 +6,22 @@
       {{/* content/_index.md 的內容（首頁圖與標題） */}}
       {{ .Content }}
 
-      {{/* --- 今日當日QT：取 content/today-qt.md 的標題與連結 --- */}}
-      {{/* 原「最新消息」區塊因站內沒有該分類的文章，一律顯示「沒有文章」，已於 2026-11-27 改為本區塊 */}}
-      {{ with .Site.GetPage "/today-qt.md" }}
+      {{/* --- 今日當日QT：首頁下方的兩個連結 --- */}}
+      {{/* 「當日QT」「生成當日QT」原本放在上方選單，2026-11-28 依使用者指示移到這裡 */}}
+      {{/* 原本的「最新消息」區塊因站內沒有該分類的文章，一律顯示「沒有文章」，已於 2026-11-27 改為本區塊 */}}
       <section class="homepage-section today-qt"> {{/* 用 section 包裹，方便加樣式 */}}
         <h2>今日當日QT</h2> {{/* 區塊標題 */}}
         <ul class="post-list">
+          {{ with .Site.GetPage "/today-qt.md" }}
           <li class="post-item">
             <a href="{{ .RelPermalink }}">{{ .Title }}</a>
           </li>
+          {{ end }}
+          <li class="post-item">
+            <a href="{{ "qt-generator/" | relURL }}" target="_blank" rel="noopener noreferrer">生成當日QT（自行選日期、輸入經文來產生）↗</a>
+          </li>
         </ul>
       </section>
-      {{ end }}
 
     </div>
   </main>
