@@ -101,23 +101,7 @@ disableKinds = ["taxonomy", "term"]
   pageRef = "daily-qt"  # 假設連結到 content/daily-qt/_index.md
   weight = 20
 
-  # 每日QT 子菜單 (根據圖片)
-  [[menu.main]]
-    name = "當日QT"
-    url = "/today-qt/"
-    weight = 20
-    parent = "daily-qt"
-  [[menu.main]]
-    name = "生成當日QT"
-    url = "/qt-generator/"
-    params = { target = "_blank" }   # 開新分頁
-    weight = 24
-    parent = "daily-qt"
-  [[menu.main]]
-    name = "停更公告"
-    pageRef = "daily-qt/announcement" # 連結到 content/daily-qt/announcement.md
-    weight = 99
-    parent = "daily-qt"
+  # 每日QT 子選單（區塊順序＝畫面順序；weight 由小到大）
   [[menu.main]]
     identifier = "otqt"
     name = "舊約QT"
@@ -131,21 +115,26 @@ disableKinds = ["taxonomy", "term"]
     weight = 22
     parent = "daily-qt"
   [[menu.main]]
-    name = "QT影音庫"
-    pageRef = "qt-video"
+    name = "當日QT"
+    url = "/today-qt/"
     weight = 23
     parent = "daily-qt"
   [[menu.main]]
-    name = "線上聖經"
-    url = "https://bible.fhl.net/"  # 信望愛聖經網站（原 bible.jbride.cc 已失效，回 503）
+    name = "生成當日QT"
+    url = "/qt-generator/"
     params = { target = "_blank" }   # 開新分頁
-    weight = 31
+    weight = 24
+    parent = "daily-qt"
+  [[menu.main]]
+    name = "QT影音庫"
+    pageRef = "qt-video"
+    weight = 25
     parent = "daily-qt"
   [[menu.main]]
     name = "讀經進度記錄表"
     url = "/daily-qt/biblereadingtracker/"
     params = { target = "_blank" }   # 開新分頁
-    weight = 32
+    weight = 26
     parent = "daily-qt"
 
 [[menu.main]]
