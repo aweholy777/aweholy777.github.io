@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1767,
+   "video_count": 1768,
    "passage_count": 1861,
    "books": [
     {
@@ -10802,6 +10802,12 @@
        "passage": "何西阿書 4：1~10",
        "date": "2024-10-05",
        "yt": "wbwLn0tGvSE"
+      },
+      {
+       "slug": "2024-10-06",
+       "passage": "何西阿書 4：11~19",
+       "date": "2024-10-06",
+       "yt": "drytiYI2-Ys"
       }
      ]
     },
