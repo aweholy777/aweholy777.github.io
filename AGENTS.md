@@ -65,7 +65,7 @@ gh auth switch --user aweholy777
 | `content/deep-calls-deep/` | 深淵響應（文章＋影片，21 篇/頁分頁） | 可 |
 | `layouts/_default/baseof.html` | 全站基底版型、SEO meta fallback、canonical（404 頁除外）、按頁條件載入專屬 CSS（含 `?v=`） | 可，改完必建置 |
 | `layouts/index.html` | 首頁：`content/_index.md` 內容＋「今日當日QT」連結（取 `content/today-qt.md` 的標題） | 可 |
-| `layouts/index.json` + `index.search_*.json` + `partials/search-shard.json` | 搜尋索引 manifest 與 4 分片模板（3,715 篇；日期以檔名為準，因 3,050 篇舊文的 front matter `date` 是搬家匯入日 2025-04-12） | 改動須驗證 4 分片與 `static/js/site-search.js` |
+| `layouts/index.json` + `index.search_*.json` + `partials/search-shard.json` | 搜尋索引 manifest 與 4 分片模板（3,715 篇；日期以檔名為準，因 3,050 篇舊文的 front matter `date` 是搬家匯入日 2025-04-12） | 改動須驗證 4 分片與 `static/js/site-search.js`（索引在訪客輸入關鍵字後才下載，改 `render()`／`ensureShardsLoaded()` 時注意兩者會互相呼叫，要先標記載入中再 render，否則無限遞迴） |
 | `layouts/qt-video/list.html` + `static/js/qt-library.js` | QT 影音庫：Hugo 動態發布 `/data/qtvideos.json`，前端按書卷／分批 60 支渲染＋150ms debounce | 改動須驗證 `/qt-video/` 卡片與燈箱播放 |
 | `static/qt-generator/index.html` | 自家「QT 產生器」（自動載入、選候選舊文、線上微調、複製/下載 `.md`） | 可 |
 | `static/data/archive-index.json` | 典藏索引（**3,508 篇 / 66 卷正規化**） | **由 `build_archive_index.py` 產生，勿手改** |
@@ -99,7 +99,7 @@ gh auth switch --user aweholy777
 
 ## 4. 九條鐵則（違反就很難救）
 
-1. **改動前先 `git pull --rebase --autostash origin main`**（Mac 每小時 :05 會 push）。
+1. **改動前先 `git pull --rebase --autostash origin main`**（Mac 每小時 :05 會 push）。順序很重要：**先 pull → 再改檔 → 最後才 `git add`**。已經 `git add`（暫存）之後才 pull，`--autostash` 會把暫存狀態解開，接著 `git commit` 只會收到一部分檔案（2026-11-27 的 `70edb8d6` 就是這樣只收到新增檔）。若已經暫存了，就先 commit，再 `git pull --rebase`，再 push。
 2. **push 前先 `gh auth switch --user aweholy777`**（避開另一個帳號 `galilee7989`）。
 3. **禁用 `git add -A`**，只 `git add` 這次明確改動的檔案（避免誤收 Mac 更新或私密本機檔）。
 4. **改完網站必跑 `.\hugo.exe --minify --buildFuture`**（0 錯誤才算通過）。
@@ -184,6 +184,7 @@ curl.exe -s "https://cmtc.tw/today-qt/?cb=$(Get-Random)" | Select-String -Patter
 | 症狀 | 原因／處理 |
 |---|---|
 | push 被拒 `non-fast-forward` | Mac 剛 push → `git pull --rebase --autostash origin main` 再 push |
+| commit 只收到一部分檔案（`git status` 還有一堆沒提交） | 暫存之後才 `git pull --autostash`，暫存被解除 → 用 `git status --short` 看清楚，把剩下的明確 `git add` 後補一個 commit；不要 `git add -A` |
 | push 拒絕 `Permission denied to galilee7989` | 帳號錯 → `gh auth switch --user aweholy777` |
 | 改了 JS/CSS 但回訪畫面沒更新或空白 | 檢查模板是否漏加 `?v={{ printf "%.8s" (... \| md5) }}`（CF 預設快取 JS/CSS 4 小時） |
 | 選單或新頁連結在線上回 404 | 獨立 `.html` 放 `content/` 會被 Hugo 編為 `/檔名/` 資料夾網址（例 `/daily-qt/biblereadingtracker/`） |

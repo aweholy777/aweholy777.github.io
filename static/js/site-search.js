@@ -51,10 +51,11 @@
   function ensureShardsLoaded(section) {
     const targets = shardsForSection(section).filter((s) => !loadedByUrl.has(s.url));
     if (!targets.length) return;
+    // 先標記載入中再 render：render 也會呼叫本函式，順序錯了會無限遞迴
+    targets.forEach((shard) => loadedByUrl.set(shard.url, null));
     loadingCount += targets.length;
     render();
     targets.forEach((shard) => {
-      loadedByUrl.set(shard.url, null); // 標記載入中，避免重複請求
       fetch(shard.url, { credentials: "same-origin" })
         .then((r) => {
           if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -112,6 +113,8 @@
   function render() {
     const terms = termsFrom(input.value);
     const section = sectionSelect.value;
+    // 索引很大（4 個分片壓縮後約 8 MB），等訪客真的輸入關鍵字才下載需要的分片
+    if (terms.length) ensureShardsLoaded(section);
     const index = allLoadedItems();
     const loadingSuffix = loadingCount > 0 ? "（其餘分片載入中…）" : "";
 
@@ -120,6 +123,8 @@
         status.textContent = "正在載入搜尋索引...";
       } else if (loadFailed && !index.length) {
         status.textContent = "搜尋索引載入失敗，請稍後再試。";
+      } else if (!index.length && shards.length) {
+        status.textContent = "請輸入經文、關鍵字或日期開始搜尋。";
       } else {
         status.textContent = `已載入 ${index.length} 篇文章，請輸入關鍵字搜尋。${loadingSuffix}`;
       }
@@ -136,7 +141,7 @@
 
     status.textContent = matches.length
       ? `找到 ${matches.length} 筆結果${matches.length === 80 ? "，只顯示前 80 筆" : ""}。${loadingSuffix}`
-      : (loadingCount > 0 ? "搜尋索引載入中…" : "找不到符合的文章。");
+      : (loadingCount > 0 ? "搜尋索引載入中…" : (loadFailed && !index.length ? "搜尋索引載入失敗，請稍後再試。" : "找不到符合的文章。"));
 
     results.innerHTML = matches.map(({ item }) => `
       <article class="site-search__result">
@@ -166,7 +171,7 @@
         render();
       } else if (data && Array.isArray(data.shards)) {
         shards = data.shards;
-        ensureShardsLoaded(sectionSelect.value);
+        render();
       } else {
         throw new Error("格式錯誤");
       }
@@ -177,8 +182,5 @@
     });
 
   input.addEventListener("input", debounce(render, 120));
-  sectionSelect.addEventListener("change", () => {
-    ensureShardsLoaded(sectionSelect.value);
-    render();
-  });
+  sectionSelect.addEventListener("change", render);
 }());
