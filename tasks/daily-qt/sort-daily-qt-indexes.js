@@ -1,0 +1,315 @@
+const fs = require("fs");
+const path = require("path");
+
+// 本腳本位於 tasks/daily-qt/，要整理的內容在 content/daily-qt/
+//（不可放回 content/，否則會被 Hugo 發布成公開檔案 /daily-qt/sort-daily-qt-indexes.js）
+const ROOT = path.join(__dirname, "..", "..", "content", "daily-qt");
+const OT_SECTION = "otqt";
+const NT_SECTION = "ntqt";
+
+const BOOKS = [
+  "創世記", "出埃及記", "利未記", "民數記", "申命記",
+  "約書亞記", "士師記", "路得記", "撒母耳記上", "撒母耳記下",
+  "列王紀上", "列王紀下", "歷代志上", "歷代志下", "以斯拉記",
+  "尼希米記", "以斯帖記", "約伯記", "詩篇", "箴言",
+  "傳道書", "雅歌", "以賽亞書", "耶利米書", "耶利米哀歌",
+  "以西結書", "但以理書", "何西阿書", "約珥書", "阿摩司書",
+  "俄巴底亞書", "約拿書", "彌迦書", "那鴻書", "哈巴谷書",
+  "西番雅書", "哈該書", "撒迦利亞書", "瑪拉基書", "馬太福音",
+  "馬可福音", "路加福音", "約翰福音", "使徒行傳", "羅馬書",
+  "哥林多前書", "哥林多後書", "加拉太書", "以弗所書", "腓立比書",
+  "歌羅西書", "帖撒羅尼迦前書", "帖撒羅尼迦後書", "提摩太前書",
+  "提摩太後書", "提多書", "腓利門書", "希伯來書", "雅各書",
+  "彼得前書", "彼得後書", "約翰壹書", "約翰貳書", "約翰參書",
+  "猶大書", "啟示錄",
+];
+
+const OLD_TESTAMENT_BOOKS = new Set(BOOKS.slice(0, BOOKS.indexOf("馬太福音")));
+const NEW_TESTAMENT_BOOKS = new Set(BOOKS.slice(BOOKS.indexOf("馬太福音")));
+const BOOK_INDEX = new Map(BOOKS.map((book, index) => [book, index]));
+
+const ALIASES = new Map(BOOKS.map((book) => [book, book]));
+[
+  ["詩", "詩篇"],
+  ["箴言書", "箴言"],
+  ["西番亞書", "西番雅書"],
+  ["撒上", "撒母耳記上"],
+  ["撒下", "撒母耳記下"],
+  ["王上", "列王紀上"],
+  ["王下", "列王紀下"],
+  ["代上", "歷代志上"],
+  ["代下", "歷代志下"],
+  ["約壹", "約翰壹書"],
+  ["約貳", "約翰貳書"],
+  ["約參", "約翰參書"],
+].forEach(([alias, book]) => ALIASES.set(alias, book));
+
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+// 本站單一 ~ 會被渲染器當刪除線符號；改用 HTML 實體 &#126; 顯示字面 ~（markdown 不會當它是符號）
+const escapeTilde = (value) => value.replace(/\\*~/g, "&#126;");
+const BOOK_PATTERN = [...ALIASES.keys()]
+  .sort((a, b) => b.length - a.length)
+  .map(escapeRegExp)
+  .join("|");
+
+const TITLE_REF_RE = new RegExp(
+  `QT\\s+(?<book>${BOOK_PATTERN})\\s*(?<chap>\\d+)?\\s*(?:[：:]|篇)?\\s*` +
+    `(?<start>\\d+)?(?:\\s*(?:[~～-]|\\\\~)\\s*(?:(?<endchap>\\d+)\\s*[：:])?(?<end>\\d+))?(?:節)?`
+);
+const INDEX_LINK_RE = /^- \[(?<title>.+?)\]\((?<href>[^)]+)\)/;
+
+function walkDateFiles(dir) {
+  const files = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...walkDateFiles(fullPath));
+    } else if (entry.isFile() && /^\d{4}-\d{2}-\d{2}\.md$/.test(entry.name)) {
+      files.push(fullPath);
+    }
+  }
+  return files;
+}
+
+function titleFrom(markdown) {
+  return markdown.match(/^title:\s*"([^"]+)"/m)?.[1] || "";
+}
+
+function frontMatter(markdown, title) {
+  const match = markdown.match(/^(---[\s\S]*?---)\s*/);
+  if (match) return match[1];
+
+  return `---\ntitle: "${title}"\ndraft: false\n---`;
+}
+
+function parseReference(title) {
+  const match = title.match(TITLE_REF_RE);
+  if (!match?.groups?.book || !match.groups.chap) return null;
+
+  return {
+    book: ALIASES.get(match.groups.book),
+    chap: Number(match.groups.chap),
+    start: Number(match.groups.start || 1),
+    endchap: Number(match.groups.endchap || match.groups.chap),
+    end: Number(match.groups.end || match.groups.start || 999),
+  };
+}
+
+function sectionFor(book) {
+  if (OLD_TESTAMENT_BOOKS.has(book)) return OT_SECTION;
+  if (NEW_TESTAMENT_BOOKS.has(book)) return NT_SECTION;
+  return "";
+}
+
+function sortItems(a, b) {
+  return (
+    BOOK_INDEX.get(a.ref.book) - BOOK_INDEX.get(b.ref.book) ||
+    a.ref.chap - b.ref.chap ||
+    a.ref.start - b.ref.start ||
+    a.ref.endchap - b.ref.endchap ||
+    a.ref.end - b.ref.end ||
+    a.date.localeCompare(b.date)
+  );
+}
+
+function buildFallbackTitles() {
+  const fallbackTitles = new Map();
+
+  for (const indexPath of [
+    path.join(ROOT, "_index.md"),
+    path.join(ROOT, OT_SECTION, "_index.md"),
+    path.join(ROOT, NT_SECTION, "_index.md"),
+  ]) {
+    if (!fs.existsSync(indexPath)) continue;
+
+    const indexMarkdown = fs.readFileSync(indexPath, "utf8");
+    for (const line of indexMarkdown.split(/\r?\n/)) {
+      const match = line.match(INDEX_LINK_RE);
+      if (!match) continue;
+
+      const date = match.groups.href.match(/(\d{4}-\d{2}-\d{2})\//)?.[1];
+      if (date) {
+        // 索引連結文字已改為只顯示經文（去掉日期）；這裡補回「QT 」讓 parseReference 能解析。
+        const t = /QT/i.test(match.groups.title) ? match.groups.title : `QT ${match.groups.title}`;
+        fallbackTitles.set(`${date}.md`, t);
+      }
+    }
+  }
+
+  return fallbackTitles;
+}
+
+function parseItems() {
+  const fallbackTitles = buildFallbackTitles();
+  const items = [];
+  const unparsed = [];
+
+  for (const filePath of walkDateFiles(ROOT)) {
+    const rel = path.relative(ROOT, filePath).replace(/\\/g, "/");
+    const date = path.basename(filePath, ".md");
+    const markdown = fs.readFileSync(filePath, "utf8");
+
+    let title = titleFrom(markdown);
+    if (!parseReference(title) && fallbackTitles.has(`${date}.md`)) {
+      title = fallbackTitles.get(`${date}.md`);
+    }
+
+    let ref = parseReference(title);
+    if (!ref) {
+      const originalUrl = markdown.match(/^# original_url:\s*(\S+)/m)?.[1] || "";
+      try {
+        const decoded = decodeURIComponent(originalUrl).replace(/-/g, " ");
+        ref = parseReference(decoded.replace(/(\d{4}) (\d{2}) (\d{2}) qt /i, "$1 - $2 - $3 QT "));
+        if (ref && !title) title = fallbackTitles.get(`${date}.md`) || decoded;
+      } catch {
+        // Leave this item in the unparsed group below.
+      }
+    }
+
+    if (!ref) {
+      unparsed.push({ rel, date, title, filePath });
+    } else {
+      const section = sectionFor(ref.book);
+      items.push({ rel, date, title, ref, section, filePath });
+    }
+  }
+
+  items.sort(sortItems);
+  return { items, unparsed };
+}
+
+function ensureSectionDirs() {
+  for (const section of [OT_SECTION, NT_SECTION]) {
+    const dir = path.join(ROOT, section);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+  }
+}
+
+function moveItems(items) {
+  ensureSectionDirs();
+  let moved = 0;
+
+  for (const item of items) {
+    const target = path.join(ROOT, item.section, `${item.date}.md`);
+    if (path.resolve(item.filePath) === path.resolve(target)) continue;
+    if (fs.existsSync(target)) {
+      throw new Error(`Target already exists: ${target}`);
+    }
+    fs.renameSync(item.filePath, target);
+    moved += 1;
+  }
+
+  return moved;
+}
+
+function buildRootIndex(rootIndexMarkdown, otCount, ntCount, unparsed) {
+  const fm = frontMatter(rootIndexMarkdown, "每日QT");
+  // 不再輸出「# 每日QT」：頁面上方已由 front matter 的 title 顯示標題，再輸出會重複一行。
+  let output = `${fm}\n\n`;
+  output += "每日 QT 已依聖經分為舊約 QT 與新約 QT。\n\n";
+  output += `- [otqt 舊約QT](${OT_SECTION}/) (${otCount} 篇)\n`;
+  output += `- [ntqt 新約QT](${NT_SECTION}/) (${ntCount} 篇)\n`;
+
+  if (unparsed.length) {
+    output += "\n## 未辨識經文\n\n";
+    for (const item of unparsed) {
+      output += `- [${escapeTilde(item.title || item.date)}](${item.date}/)\n`;
+    }
+  }
+
+  return output;
+}
+
+// 索引頁連結文字只留聖經章節：去掉「YYYY – MM – DD QT 」前綴（以及可能殘留的「QT 」）。
+function passageOnly(title) {
+  return String(title)
+    .replace(/^\s*\d{4}\s*[–\-]\s*\d{1,2}\s*[–\-]\s*\d{1,2}\s*QT\s+/, "")
+    .replace(/^QT\s+/, "")
+    .trim();
+}
+
+function buildSectionIndex(existingMarkdown, title, description, items) {
+  const fm = frontMatter(existingMarkdown || "", title);
+  // 不再輸出「# 標題」：頁面上方已由 front matter 的 title 顯示標題，再輸出會重複一行。
+  // 說明行（description）為空時就整行不輸出，不留空行。
+  let output = `${fm}\n\n`;
+  if (description) output += `${description}\n\n`;
+
+  let currentBook = "";
+  for (const item of items) {
+    if (item.ref.book !== currentBook) {
+      currentBook = item.ref.book;
+      output += `## ${currentBook}\n\n`;
+    }
+    output += `- [${escapeTilde(passageOnly(item.title))}](${item.date}/)\n`;
+  }
+
+  return output;
+}
+
+// 經文正規化（與 nightly_head.norm_key 一致）：去空白、統一波浪號（含 HTML 實體）。
+function normKey(passage) {
+  return String(passage)
+    .replace(/\s+/g, "")
+    .replace(/&#126;/g, "~")
+    .replace(/[～〜]/g, "~");
+}
+
+// 同一段經文（正規化後完全相同）只保留「日期最新」的一筆；
+// 日期較舊的重複文章檔案仍保留在 repo，只是不在索引頁列出（與影片生成規則一致）。
+function dedupeLatest(items) {
+  const byKey = new Map();
+  const order = [];
+  for (const item of items) {
+    const k = normKey(passageOnly(item.title));
+    if (!byKey.has(k)) {
+      byKey.set(k, item);
+      order.push(k);
+    } else if (item.date > byKey.get(k).date) {
+      byKey.set(k, item);
+    }
+  }
+  return order.map((k) => byKey.get(k));
+}
+
+function writeIndexes(items, unparsed) {
+  const otItems = dedupeLatest(items.filter((item) => item.section === OT_SECTION).sort(sortItems));
+  const ntItems = dedupeLatest(items.filter((item) => item.section === NT_SECTION).sort(sortItems));
+
+  const rootIndexPath = path.join(ROOT, "_index.md");
+  const rootIndexMarkdown = fs.existsSync(rootIndexPath) ? fs.readFileSync(rootIndexPath, "utf8") : "";
+  fs.writeFileSync(rootIndexPath, buildRootIndex(rootIndexMarkdown, otItems.length, ntItems.length, unparsed), "utf8");
+
+  const otIndexPath = path.join(ROOT, OT_SECTION, "_index.md");
+  const ntIndexPath = path.join(ROOT, NT_SECTION, "_index.md");
+  const otMarkdown = fs.existsSync(otIndexPath) ? fs.readFileSync(otIndexPath, "utf8") : "";
+  const ntMarkdown = fs.existsSync(ntIndexPath) ? fs.readFileSync(ntIndexPath, "utf8") : "";
+
+  fs.writeFileSync(
+    otIndexPath,
+    buildSectionIndex(otMarkdown, "舊約QT", "", otItems),
+    "utf8"
+  );
+  fs.writeFileSync(
+    ntIndexPath,
+    buildSectionIndex(ntMarkdown, "新約QT", "", ntItems),
+    "utf8"
+  );
+
+  return { otItems: otItems.length, ntItems: ntItems.length };
+}
+
+function main() {
+  ensureSectionDirs();
+  let { items, unparsed } = parseItems();
+  const moved = moveItems(items);
+
+  if (moved > 0) {
+    ({ items, unparsed } = parseItems());
+  }
+
+  const counts = writeIndexes(items, unparsed);
+  console.log(JSON.stringify({ moved, ...counts, unparsed: unparsed.map(({ rel, date, title }) => ({ rel, date, title })) }, null, 2));
+}
+
+main();
