@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""每日早上 6 點產生「當日QT」頁面（content/today-qt.md）。
+"""每天台北 00:05 產生「當日QT」頁面（content/today-qt.md）。
 
 流程（與「生成當日QT」產生器一致）：
   1. 取當日進度：duranno.tw 官網 → CGN《活潑的生命》YouTube → 自家 https://cmtc.tw/api/daily-reference

@@ -1,4 +1,6 @@
-# 每日「當日QT」：台北時間 06:00 自動產生、commit、push
+# 每日「當日QT」：備援排程，自動產生、commit、push
+# 準時的那一次由本機 Hermes cron 於台北 00:05 執行（見 AGENTS.md 第 5 節）；這裡的 schedule 會延遲數小時，
+# 跑到的時候內容通常已經一樣，commit 步驟會自動跳過。
 #
 # 產生器：tasks/daily-qt/generate_today_qt.py
 #   1) 取活潑的生命當日進度（與「生成當日QT」產生器同一個 API）
@@ -8,8 +10,7 @@
 #
 # 部署：正式站是 Cloudflare Pages（cmtc.tw），push main 就自動建置部署，
 #       所以這裡不需要（也不應該）自己跑 deploy-pages。
-#       ⚠️ GitHub Pages 那條 deploy.yml 的 run 目前幾乎全部 cancelled（實測 39/40），
-#          但那不代表網站沒更新——實際部署是 Cloudflare Pages 在做。
+#       deploy.yml 現在只做 Hugo Build Check，不負責部署。
 
 name: 每日當日QT
 

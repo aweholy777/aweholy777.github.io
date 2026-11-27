@@ -57,20 +57,23 @@ gh auth switch --user aweholy777
 
 | 路徑 | 用途 | 能否修改 / 注意事項 |
 |---|---|---|
-| `hugo.toml` | 站台設定、選單、`rssLimit = 50`、搜尋分片 `outputFormats` | 可；注意選單「讀經進度記錄表」須為 `/daily-qt/biblereadingtracker/`（不能寫 `.html`） |
+| `hugo.toml` | 站台設定、選單、`rssLimit = 50`、`defaultContentLanguage = "zh-tw"`（必須全小寫）、`hasCJKLanguage`、`disableKinds`、搜尋分片 `outputFormats` | 可；選單「讀經進度記錄表」須為 `/daily-qt/biblereadingtracker/`（不能寫 `.html`）；TOML 表格（`[xxx]`）一律加在所有頂層設定之後（最保險是檔尾），否則其後的頂層設定會被歸進該表格、主題整個沒載入 |
 | `content/today-qt.md` | **今日**的當日QT（每日自動產生） | 勿手改格式 |
 | `content/daily-qt/otqt/` | 舊約 QT 文章（2,013 篇） | 可新增、**不可批次刪除** |
 | `content/daily-qt/ntqt/` | 新約 QT 文章（1,495 篇） | 可新增、**不可批次刪除** |
 | `content/daily-qt/Biblereadingtracker.html` | 讀經進度記錄表（編譯為 `/daily-qt/biblereadingtracker/`） | 可 |
 | `content/deep-calls-deep/` | 深淵響應（文章＋影片，21 篇/頁分頁） | 可 |
-| `layouts/_default/baseof.html` | 全站基底版型、SEO meta fallback、按頁條件載入專屬 CSS（含 `?v=`） | 可，改完必建置 |
-| `layouts/index.json` + `index.search_*.json` + `partials/search-shard.json` | 搜尋索引 manifest 與 4 分片模板（3,715 篇） | 改動須驗證 4 分片與 `static/js/site-search.js` |
+| `layouts/_default/baseof.html` | 全站基底版型、SEO meta fallback、canonical（404 頁除外）、按頁條件載入專屬 CSS（含 `?v=`） | 可，改完必建置 |
+| `layouts/index.html` | 首頁：`content/_index.md` 內容＋「今日當日QT」連結（取 `content/today-qt.md` 的標題） | 可 |
+| `layouts/index.json` + `index.search_*.json` + `partials/search-shard.json` | 搜尋索引 manifest 與 4 分片模板（3,715 篇；日期以檔名為準，因 3,050 篇舊文的 front matter `date` 是搬家匯入日 2025-04-12） | 改動須驗證 4 分片與 `static/js/site-search.js` |
 | `layouts/qt-video/list.html` + `static/js/qt-library.js` | QT 影音庫：Hugo 動態發布 `/data/qtvideos.json`，前端按書卷／分批 60 支渲染＋150ms debounce | 改動須驗證 `/qt-video/` 卡片與燈箱播放 |
 | `static/qt-generator/index.html` | 自家「QT 產生器」（自動載入、選候選舊文、線上微調、複製/下載 `.md`） | 可 |
 | `static/data/archive-index.json` | 典藏索引（**3,508 篇 / 66 卷正規化**） | **由 `build_archive_index.py` 產生，勿手改** |
 | `functions/api/*.js` | Cloudflare Pages Functions 3 支 API | 可，**只在 CF 生效（本機預覽會 404）** |
 | `tasks/daily-qt/generate_today_qt.py` | 當日QT 產生器（與網頁邏輯對齊） | 核心，改前先讀並 `--dry-run` 測試 |
 | `tasks/daily-qt/build_archive_index.py` | 重建 `archive-index.json`（含書卷別名正規化） | 新增 QT 文章後必跑一次 |
+| `tasks/daily-qt/daily_qt_local.py`、`check_daily_qt.py` | 本機 Hermes cron 執行的兩支腳本（00:05 產生並 push／07:30 檢查線上），repo 內這兩份是版本控管的正本 | 可；改完要同步到 `%LOCALAPPDATA%\Hermes\scripts\`（cron 實際執行的是那裡的副本） |
+| `tasks/daily-qt/sort-daily-qt-indexes.js` | 重建 `otqt/ntqt/_index.md` 的書卷排序：`node tasks/daily-qt/sort-daily-qt-indexes.js` | 不可放回 `content/`（會被 Hugo 發布成公開檔） |
 | `data/qtvideos.json` | QT 影音庫資料（Mac 上傳後自動更新） | Mac 會更新，衝突時 pull |
 | `video-pipeline/yt_uploaded.csv` | YouTube 上傳唯一權威紀錄 | 勿隨手編輯 |
 | `static/robots.txt` | 搜尋爬蟲規則（`Sitemap: https://cmtc.tw/sitemap.xml`） | 可 |
@@ -94,16 +97,17 @@ gh auth switch --user aweholy777
 
 ---
 
-## 4. 八條鐵則（違反就很難救）
+## 4. 九條鐵則（違反就很難救）
 
 1. **改動前先 `git pull --rebase --autostash origin main`**（Mac 每小時 :05 會 push）。
 2. **push 前先 `gh auth switch --user aweholy777`**（避開另一個帳號 `galilee7989`）。
 3. **禁用 `git add -A`**，只 `git add` 這次明確改動的檔案（避免誤收 Mac 更新或私密本機檔）。
 4. **改完網站必跑 `.\hugo.exe --minify --buildFuture`**（0 錯誤才算通過）。
-5. **憑證紅線**：`video-pipeline/client_secret.json`、`video-pipeline/yt_token.json`、`_new_settings.json`、`_claude2_settings.json` 及任何 token/key/password —— **不讀、不印、不 commit、不傳給外部服務**。
+5. **憑證紅線**：`video-pipeline/client_secret.json`、`video-pipeline/yt_token.json`、`_new_settings.json`、`_claude2_settings.json` 及任何 token/key/password —— **不讀、不印、不 commit、不傳給外部服務**；交接文件、筆記、對話一律不貼 key。金鑰一旦進過 repo 就視為外洩：**到平台撤銷重發**＋**從歷史移除**兩件都要做，只「取消追蹤」沒有用（2026-06 的兩個 settings 檔就是這樣留在公開歷史裡）。
 6. **不刪檔案**，除非使用者明確確認。
 7. **不手改 `public/`、`.venv/`、`video-output/`、`.claude/`**。
 8. **回覆使用者一律使用繁體中文**（台灣用語，指令／工具名保留英文）。
+9. **本機 commit 之前就要確定內容可以公開**：00:05 的 `daily_qt_local.py` 會直接 `git push origin main`，任何「已 commit 但還沒 push」的本機內容都會被它半夜自動推上線。
 
 ---
 
@@ -125,6 +129,8 @@ gh auth switch --user aweholy777
 | 本機 Hermes cron `7713df5c5e26` → `daily_qt_local.py` | **00:05** | 準時產生＋push（成功靜默，失敗才通知） |
 | GitHub Actions `.github/workflows/daily-qt.yml` | `5 16 * * *` / `30 20 * * *` | 雙層備援（⚠️ GitHub schedule 實測常延遲 3.5～6.5 小時） |
 | 本機 Hermes cron `72e54234771a` → `check_daily_qt.py` | **07:30** | 檢查線上 `/today-qt/` 是否已更新，異常才通知 |
+
+> 兩支腳本的 repo 正本在 `tasks/daily-qt/`；cron 目前實際執行的是 `%LOCALAPPDATA%\Hermes\scripts\` 的副本（2026-11-27 兩邊內容相同）。要修改時改 repo 這份，再複製覆蓋過去（或把 cron 指向 repo 這份）。
 
 ### 手動補產指令
 ```powershell
@@ -184,7 +190,11 @@ curl.exe -s "https://cmtc.tw/today-qt/?cb=$(Get-Random)" | Select-String -Patter
 | 建置錯誤提到 `strings.TrimSpace` | 用錯 Hugo 版本，改用 repo 根目錄 `.\hugo.exe`（0.144.2） |
 | `/api/*` 本機預覽回 404 | 正常，Pages Functions 只在 Cloudflare 生效 |
 | 當日QT 沒更新 | 看 `generate_today_qt.py` 輸出；必要時用 `--reference`＋`--archive-date` 手動補產 |
-| 索引頁順序亂 | 重跑書卷 `_index.md` 產生流程，不要手改 |
+| 索引頁順序亂 | 跑 `node tasks/daily-qt/sort-daily-qt-indexes.js`，不要手改（內容沒變時應輸出 `moved: 0、otItems: 1861、ntItems: 848`） |
+| 全站 `lang`、行動版選單或 404 頁變回英文 | `hugo.toml` 的 `defaultContentLanguage` 被拿掉，或寫成大寫 `zh-TW`（0.144.2 會報 `does not match any language definition`）→ 改回全小寫 `zh-tw` |
+| 改了 `hugo.toml` 後主題整個沒載入（`resources.Get` 回 nil） | 新增的 `[xxx]` 表格插在頂層設定中間 → 表格移到所有頂層設定之後 |
+| 想讓日期以檔名為準 | 不可用 `[frontmatter] date = [":filename", …]`：實測會把 `2012-03-10-1.md` 這類檔名的網址塌縮成 `/1/`、`/2/`。搜尋索引的日期已在 `search-shard.json` 處理 |
+| 搜尋結果日期全是 2025-04-12、輸入日期搜不到 | `search-shard.json` 的 `date` 被改回 `.Date` → 改回以檔名為準 |
 
 ---
 

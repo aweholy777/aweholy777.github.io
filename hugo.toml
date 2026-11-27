@@ -14,6 +14,8 @@ title = "城市宣培中心"
 theme = "mainroad"
 # 限制 RSS 篇數，避免 index.xml 突破 Cloudflare Pages 25 MiB 單檔上限
 rssLimit = 50
+# 不產生空的分類／標籤頁：站內文章沒有使用分類與標籤，開著只會多出 /categories/、/tags/ 兩個空頁
+disableKinds = ["taxonomy", "term"]
 # 正確的 GA4 設定方式
 [services]
   [services.googleAnalytics]

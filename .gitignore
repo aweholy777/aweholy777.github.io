@@ -1,12 +1,12 @@
 public/
 resources/
 .hugo_build.lock
-hugo.exe* # 忽略 hugo 執行檔
+# 忽略 hugo 執行檔（釘版 0.144.2，只放本機；.gitignore 不支援行尾註解，註解要單獨一行）
+hugo.exe*
 *.log
-*.py
 *.exe
+# Python 腳本預設進版控。2026-11-27 起不再用全域 *.py（它會默默吃掉新腳本），不要追蹤的個別列在下面。
 download_images.py
-!video-pipeline/*.py
 video-output/
 # YouTube OAuth 憑證與權杖：絕不可進公開 repo
 video-pipeline/client_secret.json
@@ -47,8 +47,6 @@ video-pipeline/*_log.txt
 # 自動備份檔（*.bak / *.bak-時間戳）：留本機、不進 repo
 *.bak
 *.bak-*
-# 當日QT 產生器：上面的 *.py 全域規則會連它一起吃掉，必須明示保留（GitHub Actions 要用）
-!tasks/daily-qt/*.py
 # 當日QT 執行紀錄（每次執行都會變，只留本機）
 tasks/daily-qt/last-run.json
 
