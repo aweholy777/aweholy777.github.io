@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1762,
+   "video_count": 1763,
    "passage_count": 1861,
    "books": [
     {
@@ -10772,7 +10772,14 @@
      "name": "何西阿書",
      "total": 17,
      "passages": 17,
-     "videos": []
+     "videos": [
+      {
+       "slug": "2024-10-01",
+       "passage": "何西阿書 1：1~2：1",
+       "date": "2024-10-01",
+       "yt": "VbUgwUU2FUc"
+      }
+     ]
     },
     {
      "name": "約珥書",
