@@ -11,7 +11,7 @@
 
 - 外洩內容（都已從最新版移除，但舊 commit 仍免登入可抓）：
   - `video-pipeline/_new_settings.json`、`video-pipeline/_claude2_settings.json`（2026-06-12 `53892e85` 進 repo，06-16 只取消追蹤）
-  - `tasks/handoff/5090-to-3060.md` 歷史版本中的一行 DeepSeek key（2026-06-14 起，最新版已於 `1363c6f1` 移除；key 本人已於 2026-06-16 撤銷）
+  - `tasks/handoff/5090-to-3060.md`（該檔已於 2026-11-27 刪除，只存在於 git 歷史）歷史版本中的一行 DeepSeek key（2026-06-14 起，最新版已於 `1363c6f1` 移除；key 本人已於 2026-06-16 撤銷）
 - 順便移除早已刪除的兩張舊大圖 `static/images/聖經難字注音_1.jpg`、`_2.jpg`（2026-05-17 加入、07-03 刪除，約 49 MiB）
 - 只能動 git 歷史；`content/`、`layouts/`、`static/` 等最新版內容一個位元組都不能變（以 HEAD 的 tree 雜湊驗證）
 - 金鑰內容全程不讀、不印、不寫檔（掃描只輸出筆數）

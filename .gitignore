@@ -36,8 +36,6 @@ __pycache__/
 video-pipeline/.gen_*
 video-pipeline/.upload_*
 # AGENTS.md：2026-11-27 起改為「唯一權威交接文件」，所有 AI 代理（Claude/Codex/Gemini/opencode）共用，必須進版控
-# SageAttention 測試殘檔（樣片/輸入/結果，約 26MB）：留本機、不進 repo
-tasks/sageattn-speedup/_*
 # Claude CLI 對話記錄本機備份（含路徑/權杖討論等私密內容）：絕不進公開 repo
 /_chat-logs/
 # 上傳/生成 log 檔（.txt 不被 *.log 規則涵蓋）：留本機、不進 repo
