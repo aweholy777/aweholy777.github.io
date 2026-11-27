@@ -35,8 +35,8 @@ gh auth switch --user aweholy777
 | 網站 | <https://cmtc.tw> — 城市宣培中心（Hugo 靜態網站，theme `mainroad`） |
 | Repo（Windows 主機） | `D:\AI成品\qtproject`（branch `main`） |
 | Remote | `https://github.com/aweholy777/aweholy777.github.io.git` |
-| 正式部署 | **Cloudflare Pages**，專案名 `cmtc`；push 到 `main` → 自動建置 → 1～3 分鐘上線 |
-| CF 帳號 | `ee4d7f3e51b89be421114501fa50bf09`（Aweholy@gmail.com） |
+| 正式部署 | **Cloudflare Pages**，專案名 `cmtc`；自訂網域 `cmtc.tw`、`www.cmtc.tw`、`aweholy.eu.cc`；push 到 `main` → 自動建置 → 1～3 分鐘上線 |
+| CF 帳號 | `ee4d7f3e51b89be421114501fa50bf09`（Aweholy@gmail.com）。⚠️ 本人另有第二個 Cloudflare 帳號，本機 wrangler 登入的是那一個；進後台或用 API 動網站設定一律用上面這個帳號（專案頁：`https://dash.cloudflare.com/ee4d7f3e51b89be421114501fa50bf09/pages/view/cmtc`） |
 | Hugo 版本 | **0.144.2**（CF 端環境變數 `HUGO_VERSION=0.144.2`；本機 repo 根目錄有同版 `hugo.exe`，gitignored） |
 | GitHub Actions CI | `.github/workflows/deploy.yml` 已改為 `Hugo Build Check`（僅網站核心檔變動觸發，含 20 MiB 單檔警戒，不再重複部署 GitHub Pages） |
 
@@ -196,6 +196,8 @@ curl.exe -s "https://cmtc.tw/today-qt/?cb=$(Get-Random)" | Select-String -Patter
 | 改了 `hugo.toml` 後主題整個沒載入（`resources.Get` 回 nil） | 新增的 `[xxx]` 表格插在頂層設定中間 → 表格移到所有頂層設定之後 |
 | 想讓日期以檔名為準 | 不可用 `[frontmatter] date = [":filename", …]`：實測會把 `2012-03-10-1.md` 這類檔名的網址塌縮成 `/1/`、`/2/`。搜尋索引的日期已在 `search-shard.json` 處理 |
 | 搜尋結果日期全是 2025-04-12、輸入日期搜不到 | `search-shard.json` 的 `date` 被改回 `.Date` → 改回以檔名為準 |
+| 打 `www.cmtc.tw` 出現 522／523 錯誤頁 | `www` 的 DNS 記錄被改回 `CNAME → cmtc.tw`，或 `www.cmtc.tw` 從 Pages 自訂網域被移除 → 到 Pages 專案 `cmtc` → 自訂網域確認 `www.cmtc.tw` 為「使用中」；DNS 的 `www` 應為 `CNAME → cmtc.pages.dev`（2026-11-27 修好；www 是直接服務網站內容，不會自動轉向 `cmtc.tw`，canonical 已指向 `cmtc.tw`） |
+| `@cmtc.tw` 收不到信 | `mail.cmtc.tw` 的 Proxy 狀態必須是「僅 DNS」（信件埠 25／993 不經過 Proxy）；被改成「通過 Proxy 處理」就會退信（2026-11-27 修好） |
 
 ---
 
