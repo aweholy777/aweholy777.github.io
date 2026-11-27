@@ -115,6 +115,27 @@ acquire_lock || exit 0
 trap release_lock EXIT
 
 cd "$REPO" || { log "找不到 repo：$REPO"; exit 1; }
+
+# 0. 收工檢查：影片全數上傳後，這台就不再 pull／push（2026-11-27 起）
+#    Windows 端會在影片傳完後改寫 repo 歷史（清除外洩金鑰）；這台若再用舊歷史 pull --rebase，
+#    會把舊紀錄接回去。data/qtvideos.json 是本機每次上傳後重建的，以此判斷是否已全部傳完。
+#    任何檢查失敗都視為「還沒傳完」，照常繼續（絕不影響上傳）。
+retire_check="$("$PY3" - "$REPO/data/qtvideos.json" <<'PYEOF'
+import json, sys
+try:
+    lib = json.load(open(sys.argv[1], encoding="utf-8"))
+    tests = lib.get("testaments") or []
+    done = bool(tests) and all(t.get("video_count", 0) >= t.get("passage_count", 1) for t in tests)
+except Exception:
+    done = False
+print("done" if done else "continue")
+PYEOF
+)" || retire_check="continue"
+if [ "${retire_check}" = "done" ] && [ "$(date +%Y%m%d)" -ge 20261201 ]; then
+  log "影片已全數上傳，本排程退休（不再 pull／push）。可停用：launchctl bootout gui/$(id -u)/com.cmtc.qtupload"
+  exit 0
+fi
+
 log "=== 滴傳開始（macOS, DailyCap=${DAILY_CAP}）==="
 
 # 1. 同步（拿到最新 csv 與文章，跨機共用同一份權威清單）
