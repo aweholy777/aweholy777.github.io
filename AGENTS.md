@@ -100,7 +100,7 @@ D:\AI成品\qtproject\                          ← 專案根目錄（版控 4,2
 ├─ layouts/ …………………… 版型（覆寫主題；客製一律寫這裡，不要改主題）
 │  ├─ _default/baseof.html … 全站基底：<head>、canonical、CSS 載入（含 ?v=）
 │  ├─ _default/list.html ……… 列表頁：只顯示 _index.md 內容＋書卷目錄
-│  ├─ index.html ………………… 首頁（_index.md 內容＋「今日當日QT」區塊：當日QT、生成當日QT 兩個連結）
+│  ├─ index.html ………………… 首頁（_index.md 內容＋下方兩個連結：今日QT、生成當日QT）
 │  ├─ index.json ………………… 搜尋索引 manifest
 │  ├─ index.search_ot1/ot2/nt/other.json … 搜尋索引 4 分片模板
 │  ├─ partials/ ………………… header、menu、logo、footer、google-search、search-shard.json
@@ -163,7 +163,7 @@ D:\AI成品\qtproject\                          ← 專案根目錄（版控 4,2
 | `content/deep-calls-deep/` | 深淵響應（文章＋影片，21 篇/頁分頁） | 可 |
 | `content/testimonies/` | 雲彩見證（`baptism/` 的 `_index.md` 是人工維護的列表；`life-stories/` 的 `_index.md` 是空的） | 可；見證屬敏感個人資料，不要丟給雲端 AI 批次處理 |
 | `layouts/_default/baseof.html` | 全站基底版型、SEO meta fallback、canonical（404 頁除外）、按頁條件載入專屬 CSS（含 `?v=`） | 可，改完必建置 |
-| `layouts/index.html` | 首頁：`content/_index.md` 內容＋「今日當日QT」區塊（今日當日QT 的標題連結，以及開新分頁的「生成當日QT」→ `/qt-generator/`）。這兩個連結已不在上方選單（2026-11-28 移到這裡） | 可 |
+| `layouts/index.html` | 首頁：`content/_index.md` 內容＋下方兩個連結（不另加標題）：「今日QT <日期> <經文>」→ `/today-qt/`（顯示文字把文章標題開頭的「當日QT」換成「今日QT」，文章標題本身不變），以及開新分頁的「生成當日QT」→ `/qt-generator/`。這兩個連結已不在上方選單（2026-11-28 移到這裡） | 可 |
 | `layouts/index.json` + `index.search_*.json` + `partials/search-shard.json` | 搜尋索引 manifest 與 4 分片模板（3,715 篇；日期以檔名為準，因 3,050 篇舊文的 front matter `date` 是搬家匯入日 2025-04-12） | 改動須驗證 4 分片與 `static/js/site-search.js`（索引在訪客輸入關鍵字後才下載，改 `render()`／`ensureShardsLoaded()` 時注意兩者會互相呼叫，要先標記載入中再 render，否則無限遞迴） |
 | `layouts/qt-video/list.html` + `static/js/qt-library.js` | QT 影音庫：Hugo 動態發布 `/data/qtvideos.json`，前端按書卷／分批 60 支渲染＋150ms debounce | 改動須驗證 `/qt-video/` 卡片與燈箱播放 |
 | `static/qt-generator/index.html` | 自家「QT 產生器」（自動載入、選候選舊文、線上微調、複製/下載 `.md`） | 可 |
