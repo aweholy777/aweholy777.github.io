@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1755,
+   "video_count": 1756,
    "passage_count": 1861,
    "books": [
     {
@@ -10723,6 +10723,12 @@
        "passage": "但以理書 9：1~14",
        "date": "2020-12-05",
        "yt": "BdkN6j7lpi4"
+      },
+      {
+       "slug": "2020-12-06",
+       "passage": "但以理書 9：15~27",
+       "date": "2020-12-06",
+       "yt": "A0DzuFGAHgk"
       }
      ]
     },
