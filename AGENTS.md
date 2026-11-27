@@ -74,6 +74,7 @@ gh auth switch --user aweholy777
 | `tasks/daily-qt/build_archive_index.py` | 重建 `archive-index.json`（含書卷別名正規化） | 新增 QT 文章後必跑一次 |
 | `tasks/daily-qt/daily_qt_local.py`、`check_daily_qt.py` | 本機 Hermes cron 執行的兩支腳本（00:05 產生並 push／07:30 檢查線上），repo 內這兩份是版本控管的正本 | 可；改完要同步到 `%LOCALAPPDATA%\Hermes\scripts\`（cron 實際執行的是那裡的副本） |
 | `tasks/daily-qt/sort-daily-qt-indexes.js` | 重建 `otqt/ntqt/_index.md` 的書卷排序：`node tasks/daily-qt/sort-daily-qt-indexes.js` | 不可放回 `content/`（會被 Hugo 發布成公開檔） |
+| `tasks/purge-history/` | 清除 git 歷史裡外洩金鑰的工具 `rewrite_history.py` 與計畫書 `plan.md` | 預設只演練；加 `--push` 會改寫歷史並強制推送，只能在 Mac 影片全數上傳後執行 |
 | `data/qtvideos.json` | QT 影音庫資料（Mac 上傳後自動更新） | Mac 會更新，衝突時 pull |
 | `video-pipeline/yt_uploaded.csv` | YouTube 上傳唯一權威紀錄 | 勿隨手編輯 |
 | `static/robots.txt` | 搜尋爬蟲規則（`Sitemap: https://cmtc.tw/sitemap.xml`） | 可 |
@@ -90,7 +91,9 @@ gh auth switch --user aweholy777
 | **Mac mini** | `192.168.68.60`，`/Users/haoguozi/qtproject` | **只負責** YouTube 滴傳：launchd `com.cmtc.qtupload`，每小時 :05 上傳 1 支（24h 上限 24） |
 | **Cloudflare Pages** | 專案 `cmtc` | 建置與上線、執行 `functions/api/*.js` |
 
-- **YouTube 上傳進度**：截至 2026-11-27 新約 `848/848` 已全數完成，舊約已上傳 `1,750/1,861`（剩約 111 支，約 4～5 天後全數傳完即可停用 Mac 的 `com.cmtc.qtupload`）。
+- **YouTube 上傳進度**：截至 2026-11-27 新約 `848/848` 已全數完成，舊約已上傳 `1,759/1,861`（剩約 102 支，約 4 天後全數傳完）。
+- **Mac 的上傳腳本已內建「收工保險」（`4b9a7041`）**：`tasks/mac-handover/upload_mac.sh` 開頭會檢查本機 `data/qtvideos.json`，新舊約全數上傳（且日期 ≥ 2026-12-01）後直接 `exit 0`，不再 pull／push。**改這支腳本時務必保留這段**，否則歷史改寫後 Mac 會用舊歷史做 rebase、把舊紀錄接回去。傳完後 Mac 的 `com.cmtc.qtupload` 可停用。
+- **影片傳完後會自動清除 GitHub 歷史裡的金鑰**：ZCode 排程「Mac 的影片傳完後（約 4 天）清除 GitHub 舊紀錄裡的金鑰」於每月 1～10 號 14:30 檢查，條件成立就執行 `python tasks/purge-history/rewrite_history.py --push`（改寫歷史＋強制推送；規格見 `tasks/purge-history/plan.md`）。**做完後 2026-05-17 之後所有 commit 的 SHA 都會改變**，舊文件引用的 SHA 會失效。手動做法：先跑不帶 `--push` 的演練。
 - **不可在 Mac mini 生成影片**（TTS＋CUDA 只在 Windows）。
 - **不可同時開啟 Windows 上傳器 `QT-Upload-5090` 與 Mac launchd**（會重複上傳；Windows 排程已停用）。
 - Mac 端腳本細節與回滾步驟見 `tasks/mac-handover/README.md`（macOS `/bin/bash` 3.2 變數一律寫 `${VAR}`）。
@@ -198,6 +201,8 @@ curl.exe -s "https://cmtc.tw/today-qt/?cb=$(Get-Random)" | Select-String -Patter
 | 搜尋結果日期全是 2025-04-12、輸入日期搜不到 | `search-shard.json` 的 `date` 被改回 `.Date` → 改回以檔名為準 |
 | 打 `www.cmtc.tw` 出現 522／523 錯誤頁 | `www` 的 DNS 記錄被改回 `CNAME → cmtc.tw`，或 `www.cmtc.tw` 從 Pages 自訂網域被移除 → 到 Pages 專案 `cmtc` → 自訂網域確認 `www.cmtc.tw` 為「使用中」；DNS 的 `www` 應為 `CNAME → cmtc.pages.dev`（2026-11-27 修好；www 是直接服務網站內容，不會自動轉向 `cmtc.tw`，canonical 已指向 `cmtc.tw`） |
 | `@cmtc.tw` 收不到信 | `mail.cmtc.tw` 的 Proxy 狀態必須是「僅 DNS」（信件埠 25／993 不經過 Proxy）；被改成「通過 Proxy 處理」就會退信（2026-11-27 修好） |
+| 歷史裡還抓得到金鑰／舊 commit | 跑 `python tasks/purge-history/rewrite_history.py`（預設只演練），確認無誤再加 `--push`。前提是 Mac 影片已全數上傳，否則會回「[尚不執行]」 |
+| Mac 的影片不再上傳了 | 先看是不是已經全部傳完（`data/qtvideos.json` 新舊約 `video_count == passage_count`）——那是腳本正常「退休」；沒傳完卻停了才需要查 `~/upload_mac.log` |
 
 ---
 

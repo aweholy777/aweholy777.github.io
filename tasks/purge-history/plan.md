@@ -44,7 +44,7 @@
 
 ## 驗收標準
 
-- [ ] `rewrite_history.py` 演練（不加 `--push`）通過：HEAD tree 雜湊不變、歷史無金鑰樣式
+- [x] `rewrite_history.py` 演練（不加 `--push`）通過：HEAD tree 雜湊不變、歷史無金鑰樣式（2026-11-27 演練：commit 數不變、掃描 33,771 個文字檔案版本、金鑰樣式 0 筆、約 2 分鐘）
 - [ ] 推送後 `git ls-remote` 的 tip 等於複本改寫後的 tip
 - [ ] GitHub 歷史掃描（只輸出檔名與筆數）無金鑰樣式、無那 4 個路徑
 - [ ] Cloudflare Pages 部署 `success`；`https://cmtc.tw/`、`/today-qt/`、`/search/` 回 HTTP 200
