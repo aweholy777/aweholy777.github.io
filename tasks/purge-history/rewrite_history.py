@@ -22,8 +22,10 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import os
 import re
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -151,29 +153,50 @@ def rewrite_mirror(url: str, work: Path) -> tuple[Path, int]:
     return mirror, before
 
 
-def count_secret_hits(repo: Path) -> int:
-    """掃描 repo 所有版本的文字內容，回傳「含金鑰樣式」的檔案版本數。只回傳數字。"""
-    objs = subprocess.Popen(["git", "rev-list", "--objects", "--all"], cwd=str(repo), stdout=subprocess.PIPE)
-    cat = subprocess.Popen(["git", "cat-file", "--batch"], cwd=str(repo), stdin=objs.stdout, stdout=subprocess.PIPE)
-    objs.stdout.close()
-    hits = 0
-    while True:
-        header = cat.stdout.readline()
-        if not header:
-            break
-        parts = header.split()
-        if len(parts) < 3:
-            continue
-        size = int(parts[2])
-        data = cat.stdout.read(size)
-        cat.stdout.read(1)
-        if size > 6_000_000 or b"\x00" in data[:4000]:
-            continue
-        if any(rx.search(data) for rx in SECRET_RES):
-            hits += 1
-    cat.wait()
-    objs.wait()
-    return hits
+def count_secret_hits(repo: Path) -> tuple[int, int]:
+    """掃描 repo 所有版本的文字內容，回傳（含金鑰樣式的檔案版本數, 掃過的文字檔案版本數）。只回傳數字。
+
+    git cat-file --batch 預設把「整行」當成物件名稱，而 rev-list --objects 的輸出是「SHA 路徑」，
+    直接串接會全部變成 missing；所以這裡只把 SHA 餵進去。"""
+    listed = out(["git", "rev-list", "--objects", "--all"], repo).split("\n")
+    shas = [ln.split()[0] for ln in listed if ln.strip()]
+    cat = subprocess.Popen(["git", "cat-file", "--batch"], cwd=str(repo), stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    hits = scanned = 0
+    try:
+        for sha in shas:
+            cat.stdin.write((sha + "\n").encode("ascii"))
+            cat.stdin.flush()
+            parts = cat.stdout.readline().split()
+            if len(parts) < 3:      # missing / dangling：不該發生，略過並由下面的計數發現
+                continue
+            size = int(parts[2])
+            data = cat.stdout.read(size)
+            cat.stdout.read(1)
+            if size > 6_000_000 or b"\x00" in data[:4000]:
+                continue
+            scanned += 1
+            if any(rx.search(data) for rx in SECRET_RES):
+                hits += 1
+    finally:
+        cat.stdin.close()
+        cat.wait()
+    return hits, scanned
+
+
+def remove_workdir(work: Path) -> None:
+    """Windows 上 git 的 pack 檔是唯讀的，shutil.rmtree 預設刪不掉。刪不乾淨只警告，不影響主流程。"""
+    def force(func, path, _exc):
+        try:
+            os.chmod(path, stat.S_IWRITE)
+        except OSError:
+            pass
+        func(path)
+    try:
+        shutil.rmtree(work, onexc=force)          # Python 3.12+
+    except TypeError:
+        shutil.rmtree(work, onerror=force)        # 舊版 Python
+    except OSError as exc:
+        print(f"警告：暫存目錄沒能完全刪除（{work}）：{exc}", file=sys.stderr)
 
 
 def verify(mirror: Path, old_tree: str) -> str:
@@ -185,10 +208,12 @@ def verify(mirror: Path, old_tree: str) -> str:
     still = [p for p in REMOVE_PATHS if p in names]
     if still:
         raise RuntimeError(f"改寫後歷史裡仍有應移除的檔案：{still}（尚未推送）")
-    hits = count_secret_hits(mirror)
+    hits, scanned = count_secret_hits(mirror)
+    if scanned < 1000:
+        raise RuntimeError(f"掃描異常：只掃到 {scanned} 個文字檔案版本（停止，尚未推送）")
     if hits:
         raise RuntimeError(f"改寫後歷史裡仍有 {hits} 個檔案版本含金鑰樣式（尚未推送）")
-    return new_tip
+    return new_tip, hits, scanned
 
 
 # ---------------------------------------------------------------- 推送與對齊
@@ -253,9 +278,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"[1/4] 複製遠端 repo 到暫存目錄並改寫歷史…")
         mirror, before = rewrite_mirror(info["url"], work)
         print(f"[2/4] 驗證改寫結果…")
-        new_tip = verify(mirror, info["tree"])
+        new_tip, hits, scanned = verify(mirror, info["tree"])
         after = int(out(["git", "rev-list", "--count", "--all"], mirror))
-        print(f"      commit 數 {before} -> {after}；HEAD 內容雜湊不變；歷史中已無金鑰樣式與 4 個應移除檔案")
+        print(f"      commit 數 {before} -> {after}；掃描 {scanned} 個文字檔案版本，金鑰樣式 {hits} 筆")
         print(f"      改寫前 tip {info['tip'][:10]}  ->  改寫後 tip {new_tip[:10]}")
         if not args.push:
             print("[演練完成] 未推送、未動本機 repo。加 --push 才會真正執行。")
@@ -271,7 +296,7 @@ def main(argv: list[str] | None = None) -> int:
         print("[完成] GitHub 歷史已清除金鑰。接下來請確認網站正常，並聯絡 GitHub Support 請他們清掉快取的舊 commit。")
         return 0
     finally:
-        shutil.rmtree(work, ignore_errors=True)
+        remove_workdir(work)
 
 
 if __name__ == "__main__":
