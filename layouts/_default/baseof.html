@@ -10,6 +10,8 @@
         {{- $metaDesc = .Params.Description | default (.Summary | plainify | replaceRE "\\s+" " " | strings.TrimSpace | truncate 160) | default .Site.Params.description -}}
     {{- end -}}
     <meta name="description" content="{{ $metaDesc }}">
+    {{/* canonical：告訴搜尋引擎本頁的正式網址（404 頁不加） */}}
+    {{ if ne .Kind "404" }}<link rel="canonical" href="{{ .Permalink }}">{{ end }}
     {{- if .Site.Params.opengraph }}
         {{ template "_internal/opengraph.html" . }}
     {{- end }}

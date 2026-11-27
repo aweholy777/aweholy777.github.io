@@ -5,6 +5,11 @@
 
 baseURL = "https://cmtc.tw/"
 languageCode = "zh-TW"
+# 站台語言。defaultContentLanguage 必須全小寫（寫 "zh-TW" 會報 does not match any language definition）；
+# 沒設時 <html lang> 會是 en，行動版選單按鈕與 404 頁也會是英文。
+defaultContentLanguage = "zh-tw"
+# 中日韓文字依「字」計算字數與摘要（沒設時一篇三千字的 QT 只會被算成 54 字）
+hasCJKLanguage = true
 title = "城市宣培中心"
 theme = "mainroad"
 # 限制 RSS 篇數，避免 index.xml 突破 Cloudflare Pages 25 MiB 單檔上限
@@ -130,7 +135,7 @@ rssLimit = 50
     parent = "daily-qt"
   [[menu.main]]
     name = "線上聖經"
-    url = "http://bible.jbride.cc/"  # 直接指定連結
+    url = "https://bible.fhl.net/"  # 信望愛聖經網站（原 bible.jbride.cc 已失效，回 503）
     params = { target = "_blank" }   # 開新分頁
     weight = 31
     parent = "daily-qt"

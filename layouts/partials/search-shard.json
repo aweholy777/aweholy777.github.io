@@ -10,11 +10,16 @@
     {{- $section = "每日QT" -}}
   {{- end -}}
   {{- $plain := .Plain | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace -}}
+  {{- $date := .Date.Format "2006-01-02" -}}
+  {{- /* 檔名就是日期的文章（如 2018-03-07.md）以檔名為準：3,050 篇舊文的 front matter date 是搬家匯入日 2025-04-12 */ -}}
+  {{- if and .File (findRE `^\d{4}-\d{2}-\d{2}$` .File.BaseFileName) -}}
+    {{- $date = .File.BaseFileName -}}
+  {{- end -}}
   {{- $items = $items | append (dict
     "title" .Title
     "url" .RelPermalink
     "section" $section
-    "date" (.Date.Format "2006-01-02")
+    "date" $date
     "content" $plain
   ) -}}
 {{- end -}}
