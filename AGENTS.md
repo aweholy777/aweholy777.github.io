@@ -158,7 +158,7 @@ D:\AI成品\qtproject\                          ← 專案根目錄（版控 4,2
 | `content/today-qt.md` | **今日**的當日QT（每日自動產生） | 勿手改格式 |
 | `content/daily-qt/otqt/` | 舊約 QT 文章（2,013 篇） | 可新增、**不可批次刪除** |
 | `content/daily-qt/ntqt/` | 新約 QT 文章（1,495 篇） | 可新增、**不可批次刪除** |
-| `static/daily-qt/biblereadingtracker/index.html` | 讀經進度記錄表：**單獨頁面**（own `<html>`，不包網站版型），網址 `/daily-qt/biblereadingtracker/`，預設暖色主題；勾選進度存瀏覽器 localStorage（`bibleProgress`），可匯出／匯入 JSON | 可；2026-11-29 由 `content/` 搬來（獨立 `.html` 放 `content/` 會被包進版型且產生雙層 HTML）；同日刪除兩份舊重複（`content/daily-qt/bibletracker.html`、`static/daily-qt/bibletracker.html`，網址 `/daily-qt/bibletracker/`、`/daily-qt/bibletracker.html` 已不存在，舊檔在 git 歷史） |
+| `static/daily-qt/biblereadingtracker/index.html` | 讀經進度記錄表：**單獨頁面＋一頁式總覽**（66 卷卡片一個畫面全部看得到，點卷名彈出章節視窗勾選；「展開全部」把 66 卷章節格子攤平在同一頁整頁捲動勾選、「收合全部」回總覽；2026-11-29 依使用者指示改版），網址 `/daily-qt/biblereadingtracker/`，預設暖色主題；進度存瀏覽器 localStorage（`STORAGE_KEY = "bibleProgress"`，格式不變，舊進度延續），可匯出／匯入 JSON | 可；2026-11-29 由 `content/` 搬來（獨立 `.html` 放 `content/` 會被包進版型且產生雙層 HTML）；同日刪除兩份舊重複（`content/daily-qt/bibletracker.html`、`static/daily-qt/bibletracker.html`，網址 `/daily-qt/bibletracker/`、`/daily-qt/bibletracker.html` 已不存在，舊檔在 git 歷史） |
 | `content/deep-calls-deep/` | 深淵響應（文章＋影片，21 篇/頁分頁） | 可 |
 | `content/testimonies/` | 雲彩見證（`baptism/` 的 `_index.md` 是人工維護的列表；`life-stories/` 的 `_index.md` 是空的） | 可；見證屬敏感個人資料，不要丟給雲端 AI 批次處理 |
 | `layouts/_default/baseof.html` | 全站基底版型、SEO meta fallback、canonical（404 頁除外）、按頁條件載入專屬 CSS（含 `?v=`） | 可，改完必建置 |
