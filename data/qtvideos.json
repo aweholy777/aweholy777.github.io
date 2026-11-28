@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1781,
+   "video_count": 1782,
    "passage_count": 1861,
    "books": [
     {
@@ -10893,6 +10893,12 @@
        "passage": "約珥書 1：13~20",
        "date": "2024-02-25",
        "yt": "uTTYygTaMUE"
+      },
+      {
+       "slug": "2024-02-26",
+       "passage": "約珥書 2：1~17",
+       "date": "2024-02-26",
+       "yt": "N75RvmRKGuo"
       }
      ]
     },
