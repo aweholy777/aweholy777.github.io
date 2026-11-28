@@ -183,7 +183,7 @@
       font-size: 12px;
     }
 
-    /* ---- 一頁式總覽：66 卷排成緊湊格 ---- */
+    /* ---- 一頁式總覽：66 卷排成緊湊格（收合狀態） ---- */
     .overview {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
@@ -258,7 +258,75 @@
       text-align: center;
     }
 
-    /* ---- 彈出視窗：單卷章節 ---- */
+    /* ---- 展開全部：整頁攤平，66 卷的章節格子一起列出（整頁一起捲動） ---- */
+    .flat-book {
+      margin-top: 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--panel);
+      box-shadow: 0 6px 18px var(--shadow);
+      overflow: hidden;
+    }
+
+    .flat-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .flat-head h2 { margin: 0; font-size: 15px; font-weight: 800; }
+
+    .flat-head .meta { color: var(--muted); font-size: 12px; }
+
+    .flat-head .spacer { flex: 1; }
+
+    .flat-head button { min-height: 28px; padding: 4px 9px; font-size: 12px; }
+
+    .flat-body { padding: 10px 12px 14px; }
+
+    /* ---- 章節格子（彈出視窗與攤平共用） ---- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(54px, 1fr));
+      gap: 8px;
+    }
+
+    .cell {
+      display: flex;
+      min-height: 40px;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: color-mix(in srgb, var(--panel) 80%, transparent);
+      padding: 7px 8px;
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .cell input[type="checkbox"] {
+      flex: 0 0 auto;
+      width: 19px;
+      height: 19px;
+      margin: 0;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+
+    .cell > span { min-width: 1.6em; text-align: left; }
+
+    .cell.read {
+      border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+      background: color-mix(in srgb, var(--accent) 16%, var(--panel-solid));
+    }
+
+    .cell.flash { outline: 3px solid var(--accent-2); outline-offset: 1px; }
+
+    /* ---- 彈出視窗：單卷章節（收合狀態下點卡片用） ---- */
     .modal {
       position: fixed;
       inset: 0;
@@ -301,44 +369,6 @@
 
     .dialog-body { overflow: auto; padding: 12px 14px 16px; }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(54px, 1fr));
-      gap: 8px;
-    }
-
-    .cell {
-      display: flex;
-      min-height: 40px;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 8px;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      background: color-mix(in srgb, var(--panel) 80%, transparent);
-      padding: 7px 8px;
-      font-size: 14px;
-      font-weight: 650;
-    }
-
-    .cell input[type="checkbox"] {
-      flex: 0 0 auto;
-      width: 19px;
-      height: 19px;
-      margin: 0;
-      cursor: pointer;
-      accent-color: var(--accent);
-    }
-
-    .cell > span { min-width: 1.6em; text-align: left; }
-
-    .cell.read {
-      border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
-      background: color-mix(in srgb, var(--accent) 16%, var(--panel-solid));
-    }
-
-    .cell.flash { outline: 3px solid var(--accent-2); outline-offset: 1px; }
-
     .foot { margin-top: 18px; text-align: center; }
 
     .hidden { display: none !important; }
@@ -366,6 +396,7 @@
           <button id="themeWarm" type="button" aria-pressed="true">暖色</button>
         </span>
         <button id="toggleUnread" type="button" aria-pressed="false">只看未讀完</button>
+        <button id="expandAll" type="button" aria-pressed="false">展開全部</button>
         <button id="exportBtn" type="button">匯出進度</button>
         <label class="btn">
           匯入進度
@@ -378,7 +409,8 @@
 
   <main class="container">
     <section id="overview" class="overview" aria-label="66 卷總覽"></section>
-    <div class="foot">v2.0 · 一頁式 · 資料只存在這台裝置的瀏覽器，不會上傳 · <a href="/">← 回 cmtc.tw</a></div>
+    <div id="flatView" hidden></div>
+    <div class="foot">v2.1 · 一頁式整頁捲動 · 資料只存在這台裝置的瀏覽器，不會上傳 · <a href="/">← 回 cmtc.tw</a></div>
   </main>
 
   <div class="modal" id="modal" hidden>
@@ -429,6 +461,8 @@ const totalChapters = bibleData.reduce((sum, [, chapters]) => sum + chapters, 0)
 
 const els = {
   overview: document.getElementById("overview"),
+  flatView: document.getElementById("flatView"),
+  expandAll: document.getElementById("expandAll"),
   totalChapters: document.getElementById("totalChapters"),
   readCount: document.getElementById("readCount"),
   percent: document.getElementById("percent"),
@@ -450,11 +484,13 @@ const state = {
   progress: loadProgress(),
   hideFinished: false,
   query: "",
-  openBook: null,       // 目前彈出視窗顯示的書卷名
-  highlightChapter: null // 開啟視窗時要高亮的章節（來自搜尋「創世記 3」）
+  flatMode: false,      // false＝總覽（收合）；true＝全部攤平，整頁一起捲動
+  openBook: null,       // 彈出視窗目前顯示的書卷名
+  highlightChapter: null
 };
 
-const cardEls = new Map(); // 書卷名 → 總覽卡片元素
+const cardEls = new Map();   // 總覽模式：書卷名 → 卡片元素
+const flatMetaEls = new Map(); // 攤平模式：書卷名 → 進度文字元素
 
 els.totalChapters.textContent = totalChapters;
 els.progress.max = totalChapters;
@@ -499,6 +535,10 @@ function parseSearch(query) {
   return { book: aliases.get(rawBook) || rawBook, chapter: Number(match[2]) };
 }
 
+function bookOf(name) {
+  return bibleData.find(([n]) => n === name);
+}
+
 function getBookProgress(name) {
   return state.progress[name] || {};
 }
@@ -530,26 +570,45 @@ function updateStats() {
   els.progress.value = read;
 }
 
-function updateCard(name) {
-  const card = cardEls.get(name);
-  if (!card) return;
-  const chapters = bibleData.find(([n]) => n === name)[1];
+// 更新「某卷」在目前版面上的進度顯示（卡片或攤平標題）
+function updateBookMeta(name) {
+  const chapters = bookOf(name)[1];
   const read = readCountOf(name);
-  card.querySelector(".meta").textContent = `${read}/${chapters}`;
-  card.querySelector(".bar i").style.width = `${(read / chapters) * 100}%`;
-  card.classList.toggle("is-done", read === chapters);
+  const card = cardEls.get(name);
+  if (card) {
+    card.querySelector(".meta").textContent = `${read}/${chapters}`;
+    card.querySelector(".bar i").style.width = `${(read / chapters) * 100}%`;
+    card.classList.toggle("is-done", read === chapters);
+  }
+  const flat = flatMetaEls.get(name);
+  if (flat) flat.textContent = `已讀 ${read} / ${chapters} 章`;
+}
+
+function visibleBooks() {
+  const search = parseSearch(state.query);
+  return bibleData.filter(([name, chapters]) => {
+    if (state.hideFinished && readCountOf(name) === chapters) return false;
+    if (search.book && !normalize(name).includes(normalize(search.book))) return false;
+    return true;
+  });
 }
 
 function renderOverview() {
-  const search = parseSearch(state.query);
+  if (state.flatMode) renderFlat();
+  else renderCompact();
+}
+
+/* ---- 總覽（收合）：66 卷卡片，點卡片彈出章節視窗 ---- */
+function renderCompact() {
+  els.flatView.hidden = true;
+  els.flatView.innerHTML = "";
+  flatMetaEls.clear();
+  els.overview.hidden = false;
   els.overview.innerHTML = "";
   cardEls.clear();
   let visible = 0;
 
-  for (const [name, chapters] of bibleData) {
-    if (state.hideFinished && readCountOf(name) === chapters) continue;
-    if (search.book && !normalize(name).includes(normalize(search.book))) continue;
-
+  for (const [name, chapters] of visibleBooks()) {
     const read = readCountOf(name);
     const card = document.createElement("button");
     card.type = "button";
@@ -582,14 +641,141 @@ function renderOverview() {
   if (!visible) {
     const empty = document.createElement("div");
     empty.className = "empty";
-    empty.textContent = state.hideFinished ? "每卷都有未讀的章節已被隱藏，或找不到符合的書卷" : "找不到符合的書卷";
+    empty.textContent = state.hideFinished ? "讀完的卷已隱藏，或找不到符合的書卷" : "找不到符合的書卷";
     els.overview.appendChild(empty);
   }
   updateStats();
 }
 
+/* ---- 展開全部：66 卷的章節格子直接攤平在整頁裡，一起捲動 ---- */
+function renderFlat() {
+  els.overview.hidden = true;
+  els.overview.innerHTML = "";
+  cardEls.clear();
+  els.flatView.hidden = false;
+  els.flatView.innerHTML = "";
+  flatMetaEls.clear();
+
+  const search = parseSearch(state.query);
+  let visible = 0;
+
+  for (const [name, chapters] of visibleBooks()) {
+    const section = document.createElement("section");
+    section.className = "flat-book";
+    section.dataset.book = name;
+
+    const head = document.createElement("div");
+    head.className = "flat-head";
+
+    const title = document.createElement("h2");
+    title.textContent = name;
+
+    const meta = document.createElement("span");
+    meta.className = "meta";
+    meta.textContent = `已讀 ${readCountOf(name)} / ${chapters} 章`;
+
+    const spacer = document.createElement("span");
+    spacer.className = "spacer";
+
+    const markAll = document.createElement("button");
+    markAll.type = "button";
+    markAll.textContent = "全選";
+    markAll.addEventListener("click", () => {
+      for (let i = 1; i <= chapters; i++) setRead(name, i, true);
+      refreshFlatBook(name);
+      saveProgress();
+    });
+
+    const clearAll = document.createElement("button");
+    clearAll.type = "button";
+    clearAll.textContent = "清除";
+    clearAll.addEventListener("click", () => {
+      for (let i = 1; i <= chapters; i++) setRead(name, i, false);
+      refreshFlatBook(name);
+      saveProgress();
+    });
+
+    head.append(title, meta, spacer, markAll, clearAll);
+
+    const body = document.createElement("div");
+    body.className = "flat-body";
+    const grid = document.createElement("div");
+    grid.className = "grid";
+
+    for (let chapter = 1; chapter <= chapters; chapter++) {
+      grid.appendChild(buildCell(name, chapter, () => {
+        updateFlatMetaByName(name);
+        updateStats();
+        saveProgress();
+      }));
+    }
+
+    body.append(grid);
+    section.append(head, body);
+    els.flatView.appendChild(section);
+    flatMetaEls.set(name, meta);
+    visible++;
+  }
+
+  if (!visible) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = state.hideFinished ? "讀完的卷已隱藏，或找不到符合的書卷" : "找不到符合的書卷";
+    els.flatView.appendChild(empty);
+  }
+
+  if (search.chapter) {
+    const target = els.flatView.querySelector(`.flat-book[data-book="${search.book}"] .cell[data-chapter="${search.chapter}"]`);
+    if (target) {
+      target.classList.add("flash");
+      setTimeout(() => target.classList.remove("flash"), 1600);
+    }
+  }
+  updateStats();
+}
+
+function updateFlatMetaByName(name) {
+  const meta = flatMetaEls.get(name);
+  if (meta) {
+    const chapters = bookOf(name)[1];
+    meta.textContent = `已讀 ${readCountOf(name)} / ${chapters} 章`;
+  }
+}
+
+function refreshFlatBook(name) {
+  els.flatView.querySelectorAll(`.flat-book[data-book="${name}"] .cell`).forEach((cell) => {
+    const chapter = Number(cell.dataset.chapter);
+    const box = cell.querySelector("input");
+    box.checked = isRead(name, chapter);
+    cell.classList.toggle("read", box.checked);
+  });
+  updateFlatMetaByName(name);
+}
+
+/* 共用：建立一個章節格子 */
+function buildCell(name, chapter, onChange) {
+  const cell = document.createElement("label");
+  cell.className = "cell";
+  cell.dataset.chapter = chapter;
+
+  const box = document.createElement("input");
+  box.type = "checkbox";
+  box.checked = isRead(name, chapter);
+  box.addEventListener("change", () => {
+    setRead(name, chapter, box.checked);
+    cell.classList.toggle("read", box.checked);
+    onChange();
+  });
+
+  const num = document.createElement("span");
+  num.textContent = chapter;
+  cell.append(box, num);
+  return cell;
+}
+
+/* ---- 彈出視窗（總覽模式下點卡片用） ---- */
 function openModal(name) {
-  const chapters = bibleData.find(([n]) => n === name)[1];
+  const chapters = bookOf(name)[1];
   state.openBook = name;
   state.highlightChapter = parseSearch(state.query).chapter;
 
@@ -597,25 +783,12 @@ function openModal(name) {
   els.chapterGrid.innerHTML = "";
 
   for (let chapter = 1; chapter <= chapters; chapter++) {
-    const cell = document.createElement("label");
-    cell.className = "cell";
-    cell.dataset.chapter = chapter;
-
-    const box = document.createElement("input");
-    box.type = "checkbox";
-    box.checked = isRead(name, chapter);
-    box.addEventListener("change", () => {
-      setRead(name, chapter, box.checked);
-      cell.classList.toggle("read", box.checked);
+    els.chapterGrid.appendChild(buildCell(name, chapter, () => {
       updateDialogMeta();
-      updateCard(name);
+      updateBookMeta(name);
+      updateStats();
       saveProgress();
-    });
-
-    const num = document.createElement("span");
-    num.textContent = chapter;
-    cell.append(box, num);
-    els.chapterGrid.appendChild(cell);
+    }));
   }
 
   updateDialogMeta();
@@ -635,7 +808,7 @@ function openModal(name) {
 
 function updateDialogMeta() {
   if (!state.openBook) return;
-  const chapters = bibleData.find(([n]) => n === state.openBook)[1];
+  const chapters = bookOf(state.openBook)[1];
   els.dialogMeta.textContent = `已讀 ${readCountOf(state.openBook)} / ${chapters} 章`;
 }
 
@@ -657,29 +830,41 @@ document.addEventListener("keydown", (event) => {
 
 els.markAll.addEventListener("click", () => {
   if (!state.openBook) return;
-  const chapters = bibleData.find(([n]) => n === state.openBook)[1];
+  const chapters = bookOf(state.openBook)[1];
   for (let i = 1; i <= chapters; i++) setRead(state.openBook, i, true);
-  refreshAfterBulk(state.openBook);
+  els.chapterGrid.querySelectorAll(".cell").forEach((cell) => {
+    const chapter = Number(cell.dataset.chapter);
+    const box = cell.querySelector("input");
+    box.checked = isRead(state.openBook, chapter);
+    cell.classList.toggle("read", box.checked);
+  });
+  updateDialogMeta();
+  updateBookMeta(state.openBook);
+  saveProgress();
 });
 
 els.clearBook.addEventListener("click", () => {
   if (!state.openBook) return;
-  const chapters = bibleData.find(([n]) => n === state.openBook)[1];
+  const chapters = bookOf(state.openBook)[1];
   for (let i = 1; i <= chapters; i++) setRead(state.openBook, i, false);
-  refreshAfterBulk(state.openBook);
-});
-
-function refreshAfterBulk(name) {
   els.chapterGrid.querySelectorAll(".cell").forEach((cell) => {
     const chapter = Number(cell.dataset.chapter);
     const box = cell.querySelector("input");
-    box.checked = isRead(name, chapter);
+    box.checked = isRead(state.openBook, chapter);
     cell.classList.toggle("read", box.checked);
   });
   updateDialogMeta();
-  updateCard(name);
+  updateBookMeta(state.openBook);
   saveProgress();
-}
+});
+
+/* ---- 工具列 ---- */
+els.expandAll.addEventListener("click", () => {
+  state.flatMode = !state.flatMode;
+  els.expandAll.textContent = state.flatMode ? "收合全部" : "展開全部";
+  els.expandAll.setAttribute("aria-pressed", String(state.flatMode));
+  renderOverview();
+});
 
 els.toggleUnread.addEventListener("click", () => {
   state.hideFinished = !state.hideFinished;
