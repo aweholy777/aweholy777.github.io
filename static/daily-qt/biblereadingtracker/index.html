@@ -311,19 +311,19 @@
     }
   </style>
 </head>
-<body>
+<body data-theme="warm">
   <header>
     <div class="container">
       <h1>聖經已讀統計</h1>
       <div class="sub">
-        參考 <a href="https://cmtc.tw/daily-qt/bibletracker.html" target="_blank" rel="noopener">CMTC 讀經追蹤</a>，可勾選章節、統計進度、匯出/匯入，並自動儲存在本機裝置。
+        可勾選章節、統計進度、匯出／匯入；進度自動儲存在這台裝置的瀏覽器，不會上傳。<a href="/" style="text-decoration:none">← 回 cmtc.tw</a>
       </div>
       <div class="toolbar">
         <span class="chip">全書章數：<b id="totalChapters">-</b>　已讀：<b id="readCount">0</b>　(<b id="percent">0</b>%)</span>
         <progress id="progress" value="0" max="1189" aria-label="總進度"></progress>
         <span class="theme-switch" aria-label="背景主題">
-          <button id="themeDark" type="button" aria-pressed="true">深色</button>
-          <button id="themeWarm" type="button" aria-pressed="false">暖色</button>
+          <button id="themeDark" type="button" aria-pressed="false">深色</button>
+          <button id="themeWarm" type="button" aria-pressed="true">暖色</button>
         </span>
         <button id="toggleUnread" type="button" aria-pressed="false">只顯示未讀</button>
         <button id="expandAll" type="button">展開全部</button>
@@ -682,7 +682,7 @@ elements.search.addEventListener("input", (event) => {
 elements.themeDark.addEventListener("click", () => setTheme("dark"));
 elements.themeWarm.addEventListener("click", () => setTheme("warm"));
 
-setTheme(localStorage.getItem(THEME_KEY) || "dark");
+setTheme(localStorage.getItem(THEME_KEY) || "warm");
 render();
 </script>
 </body>

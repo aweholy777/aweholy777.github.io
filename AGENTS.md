@@ -86,8 +86,7 @@ D:\AI成品\qtproject\                          ← 專案根目錄（版控 4,2
 │  │  ├─ _index.md …………… 每日QT 索引頁
 │  │  ├─ otqt/ …………………… 舊約 QT：2,013 篇 YYYY-MM-DD.md ＋ _index.md（書卷排序索引）
 │  │  ├─ ntqt/ …………………… 新約 QT：1,495 篇 ＋ _index.md
-│  │  ├─ Biblereadingtracker.html … 讀經進度記錄表 → /daily-qt/biblereadingtracker/（選單用這個）
-│  │  ├─ bibletracker.html ……… 同上的舊版 → /daily-qt/bibletracker/（重複，見 §14）
+│  │  ├─ Biblereadingtracker 已移到 static/（見下方 static/daily-qt/）
 │  │  └─ announcement.md ………… 停更公告頁（已從選單移除，頁面仍在）
 │  ├─ deep-calls-deep/ ……… 深淵響應：12 個文章檔（含草稿與重複）＋ _index.md ＋ 1 個 _index 草稿副本
 │  ├─ testimonies/ …………… 雲彩見證
@@ -114,7 +113,7 @@ D:\AI成品\qtproject\                          ← 專案根目錄（版控 4,2
 │  ├─ js/ ……………………… menu.js、site-search.js（全站搜尋）、qt-library.js（影音庫）
 │  ├─ qt-generator/index.html … QT 產生器
 │  ├─ data/archive-index.json … 典藏索引（腳本產生，勿手改）
-│  ├─ daily-qt/bibletracker.html … 讀經記錄表第 3 份副本（重複，見 §14）
+│  ├─ daily-qt/biblereadingtracker/index.html … 讀經進度記錄表（單獨頁面，原樣發布到 /daily-qt/biblereadingtracker/；2026-11-29 起預設暖色主題）
 │  ├─ images/ …………………… 文章用圖片 382 個（40 MB）
 │  ├─ img/ ……………………… 主題用 avatar.png、placeholder.png
 │  └─ robots.txt、favicon.ico、apple-touch-icon.png、googled33be0e0f13982a9.html（Google Search Console 驗證檔，勿刪）
@@ -159,7 +158,7 @@ D:\AI成品\qtproject\                          ← 專案根目錄（版控 4,2
 | `content/today-qt.md` | **今日**的當日QT（每日自動產生） | 勿手改格式 |
 | `content/daily-qt/otqt/` | 舊約 QT 文章（2,013 篇） | 可新增、**不可批次刪除** |
 | `content/daily-qt/ntqt/` | 新約 QT 文章（1,495 篇） | 可新增、**不可批次刪除** |
-| `content/daily-qt/Biblereadingtracker.html` | 讀經進度記錄表（編譯為 `/daily-qt/biblereadingtracker/`） | 可 |
+| `static/daily-qt/biblereadingtracker/index.html` | 讀經進度記錄表：**單獨頁面**（own `<html>`，不包網站版型），網址 `/daily-qt/biblereadingtracker/`，預設暖色主題；勾選進度存瀏覽器 localStorage（`bibleProgress`），可匯出／匯入 JSON | 可；2026-11-29 由 `content/` 搬來（獨立 `.html` 放 `content/` 會被包進版型且產生雙層 HTML）；同日刪除兩份舊重複（`content/daily-qt/bibletracker.html`、`static/daily-qt/bibletracker.html`，網址 `/daily-qt/bibletracker/`、`/daily-qt/bibletracker.html` 已不存在，舊檔在 git 歷史） |
 | `content/deep-calls-deep/` | 深淵響應（文章＋影片，21 篇/頁分頁） | 可 |
 | `content/testimonies/` | 雲彩見證（`baptism/` 的 `_index.md` 是人工維護的列表；`life-stories/` 的 `_index.md` 是空的） | 可；見證屬敏感個人資料，不要丟給雲端 AI 批次處理 |
 | `layouts/_default/baseof.html` | 全站基底版型、SEO meta fallback、canonical（404 頁除外）、按頁條件載入專屬 CSS（含 `?v=`） | 可，改完必建置 |
@@ -417,7 +416,6 @@ curl.exe -s "https://cmtc.tw/today-qt/?cb=$(Get-Random)" | Select-String -Patter
    - 選單「生活故事」點進去是空頁（`content/testimonies/life-stories/_index.md` 是空檔，沒有文章列表）
    - `www.cmtc.tw` 要不要加轉向規則自動轉到 `cmtc.tw`
    - `content/deep-calls-deep/` 的草稿與重複頁（`_index - 複製.md`、`追求生命的長進 .md`、`超前部署.md`、`生活故事 .md`）
-   - 讀經記錄表有 3 份重複（`content/daily-qt/bibletracker.html`、`static/daily-qt/bibletracker.html`、`Biblereadingtracker.html`）
    - `content/daily-qt/announcement.md`（停更公告）已從選單移除，頁面是否刪除
    - `/api/daily-reference` 對上游沒有逾時也沒有快取
    - 頁尾的 Google 自訂搜尋框是否移除（站內已有 `/search/`）
