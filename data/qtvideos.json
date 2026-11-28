@@ -4,7 +4,7 @@
    "id": "otqt",
    "name": "舊約",
    "book_count": 39,
-   "video_count": 1779,
+   "video_count": 1780,
    "passage_count": 1861,
    "books": [
     {
@@ -10881,7 +10881,14 @@
      "name": "約珥書",
      "total": 6,
      "passages": 6,
-     "videos": []
+     "videos": [
+      {
+       "slug": "2024-02-24",
+       "passage": "約珥書 1：1~12",
+       "date": "2024-02-24",
+       "yt": "69jVTtQRJ1k"
+      }
+     ]
     },
     {
      "name": "阿摩司書",
